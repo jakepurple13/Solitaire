@@ -43,26 +43,7 @@ fun PlayingCard(
     interactionSource = interactionSource,
     modifier = modifier//.size(100.dp, 150.dp),
 ) {
-    Column(verticalArrangement = Arrangement.SpaceBetween) {
-        Text(
-            text = card.toSymbolString(),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(2.dp),
-            textAlign = TextAlign.Start
-        )
-        FlowRow(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            horizontalArrangement = Arrangement.Center
-        ) { repeat(card.value) { Text(text = card.suit.unicodeSymbol, textAlign = TextAlign.Center) } }
-        Text(
-            text = card.toSymbolString(),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(2.dp),
-            textAlign = TextAlign.End
-        )
-    }
+    CardDetail(card)
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -76,6 +57,7 @@ fun PlayingCard(
     contentColor: Color = contentColorFor(color),
     shadowElevation: Dp = 0.dp,
     border: BorderStroke? = null,
+    showFullDetail: Boolean = true,
 ) = Surface(
     shape = shape,
     tonalElevation = tonalElevation,
@@ -84,25 +66,65 @@ fun PlayingCard(
     border = border,
     modifier = modifier//.size(100.dp, 150.dp),
 ) {
-    Column(verticalArrangement = Arrangement.SpaceBetween) {
-        Text(
-            text = card.toSymbolString(),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(2.dp),
-            textAlign = TextAlign.Start
-        )
-        FlowRow(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            horizontalArrangement = Arrangement.Center
-        ) { repeat(card.value) { Text(text = card.suit.unicodeSymbol, textAlign = TextAlign.Center) } }
-        Text(
-            text = card.toSymbolString(),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(2.dp),
-            textAlign = TextAlign.End
-        )
+    CardDetail(card, showFullDetail)
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun CardDetail(
+    card: Card,
+    showFullDetail: Boolean = true,
+) {
+    if (showFullDetail) {
+        Column(verticalArrangement = Arrangement.SpaceBetween) {
+            Text(
+                text = card.toSymbolString(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(2.dp),
+                textAlign = TextAlign.Start
+            )
+            FlowRow(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                horizontalArrangement = Arrangement.Center
+            ) { repeat(card.value) { Text(text = card.suit.unicodeSymbol, textAlign = TextAlign.Center) } }
+            Text(
+                text = card.toSymbolString(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(2.dp),
+                textAlign = TextAlign.End
+            )
+        }
+    } else {
+        Box {
+            Text(
+                text = card.toSymbolString(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopStart)
+                    .padding(2.dp),
+                textAlign = TextAlign.Start
+            )
+
+            Text(
+                text = card.suit.unicodeSymbol,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center)
+                    .padding(2.dp),
+                textAlign = TextAlign.Center
+            )
+
+            Text(
+                text = card.toSymbolString(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomEnd)
+                    .padding(2.dp),
+                textAlign = TextAlign.End
+            )
+        }
     }
 }
 

@@ -1,5 +1,6 @@
 package com.programmersbox.common
 
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,9 +13,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import moe.tlaster.precompose.PreComposeApp
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModel
+import moe.tlaster.precompose.viewmodel.viewModelScope
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 internal fun App() {
@@ -35,11 +44,13 @@ class CardLocation(val location: Int, val card: Card, val place: Int)
 //TODO: Make sure to change these to 3 and 13
 const val DRAW_AMOUNT = 1
 const val WIN_CARD_VALUE = 1
+val FIELD_HEIGHT = 100
 
 class SolitaireInfo(
-    val deck: Deck<Card> = Deck.defaultDeck(),
+    private val deck: Deck<Card> = Deck.defaultDeck(),
 ) : ViewModel() {
-    var cardLoc: CardLocation? by mutableStateOf(null)
+    var moveCount by mutableIntStateOf(0)
+    var score by mutableIntStateOf(0)
 
     var cardsLeft by mutableIntStateOf(0)
 
@@ -58,6 +69,15 @@ class SolitaireInfo(
         foundations.values.all { it.lastOrNull()?.value == WIN_CARD_VALUE }
     }
 
+    private var time by mutableLongStateOf(0)
+    private val minutes by derivedStateOf { time.milliseconds.inWholeMinutes }
+    private val seconds by derivedStateOf { (time - minutes * 60 * 1000).milliseconds.inWholeSeconds }
+    val timeText by derivedStateOf {
+        "${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}"
+    }
+
+    private var timeJob: Job? = null
+
     init {
         deck.addDeckListener {
             onDraw { card, size ->
@@ -66,8 +86,15 @@ class SolitaireInfo(
             onAdd {
 
             }
+            onShuffle { score -= 10 }
         }
         newGame()
+
+        snapshotFlow { hasWon }
+            .onEach {
+                if (it) timeJob?.cancel()
+            }
+            .launchIn(viewModelScope)
     }
 
     fun draw() {
@@ -81,6 +108,14 @@ class SolitaireInfo(
         }
     }
 
+    fun pauseTimer() {
+        timeJob?.cancel()
+    }
+
+    fun resumeTimer() {
+        timeJob?.start()
+    }
+
     fun newGame() {
         deck.removeAllCards()
         deck.addDeck(Deck.defaultDeck())
@@ -88,6 +123,13 @@ class SolitaireInfo(
         repeat(7) {
             fieldSlots[it] = FieldSlot(it, deck)
         }
+        score = 0
+        moveCount = 0
+        timeJob?.cancel()
+        time = 0
+        timeJob = tickerFlow(1.milliseconds)
+            .onEach { time++ }
+            .launchIn(viewModelScope)
     }
 }
 
@@ -105,14 +147,35 @@ private fun Solitaire(
     DragDropBox {
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = {},
-                    actions = {
-                        //TODO: Add dialog for confirmation
+                var newGameDialog by remember { mutableStateOf(false) }
+                if (newGameDialog) {
+                    AlertDialog(
+                        onDismissRequest = { newGameDialog = false },
+                        title = { Text("New Game?") },
+                        text = { Text("Are you sure you want to start a new game?") },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    info.newGame()
+                                    newGameDialog = false
+                                }
+                            ) { Text("Yes") }
+                        },
+                        dismissButton = {
+                            TextButton(
+                                onClick = { newGameDialog = false }
+                            ) { Text("No") }
+                        }
+                    )
+                }
+                CenterAlignedTopAppBar(
+                    navigationIcon = {
                         TextButton(
-                            onClick = { info.newGame() }
+                            onClick = { newGameDialog = true }
                         ) { Text("New Game") }
-                    }
+                    },
+                    title = { Text(info.timeText) },
+                    actions = { Text("Score: " + animateIntAsState(info.score).value.toString()) }
                 )
             }
         ) { padding ->
@@ -133,11 +196,18 @@ private fun Solitaire(
                                     if (foundationCheck(cardLocation.card, foundation.value)) {
                                         foundation.value.add(cardLocation.card)
                                         when (cardLocation.location) {
-                                            -1 -> info.drawList.remove(cardLocation.card)
+                                            -1 -> {
+                                                info.drawList.remove(cardLocation.card)
+                                                info.score += 10
+                                                info.moveCount++
+                                            }
+
                                             else -> {
                                                 info.fieldSlots[cardLocation.location]?.let { f ->
                                                     f.removeCard()
                                                     f.flipFaceDownCard()
+                                                    info.score += 10
+                                                    info.moveCount++
                                                 }
                                             }
                                         }
@@ -199,7 +269,7 @@ private fun Solitaire(
                         Text("Cards left: ${info.cardsLeft}")
                     }
                 }
-                //---------field
+                //---------field---------
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally),
                     modifier = Modifier.fillMaxWidth()
@@ -216,11 +286,15 @@ private fun Solitaire(
                                                 -1 -> {
                                                     fieldSlot.value.addCard(cardLocation.card)
                                                     info.drawList.remove(cardLocation.card)
+                                                    info.score += 5
+                                                    info.moveCount++
                                                 }
 
                                                 else -> {
                                                     info.fieldSlots[cardLocation.location]?.let { f: FieldSlot ->
                                                         fieldSlot.value.addCards(f.removeCards(cardLocation.place))
+                                                        info.score += 3
+                                                        info.moveCount++
                                                     }
                                                 }
                                             }
@@ -230,12 +304,14 @@ private fun Solitaire(
                             ) { d, f ->
                                 if (fieldSlot.value.list.isEmpty()) {
                                     EmptyCard(
-                                        modifier = cardSizeModifier.fillMaxSize(),
-                                        border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+                                        border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                                        modifier = Modifier
+                                            .height(FIELD_HEIGHT.dp)
+                                            .fillMaxSize(),
                                     )
                                 } else {
                                     LazyColumn(
-                                        verticalArrangement = Arrangement.spacedBy((-101.25).dp)
+                                        verticalArrangement = Arrangement.spacedBy(-(FIELD_HEIGHT * .75).dp)
                                     ) {
                                         itemsIndexed(fieldSlot.value.list) { index, card ->
                                             DragTarget(
@@ -244,7 +320,8 @@ private fun Solitaire(
                                             ) {
                                                 PlayingCard(
                                                     card = card,
-                                                    modifier = cardSizeModifier
+                                                    modifier = Modifier.height(FIELD_HEIGHT.dp),
+                                                    showFullDetail = false
                                                 )
                                             }
                                         }
@@ -318,4 +395,12 @@ private fun fieldCheck(
     fieldSlot: FieldSlot,
 ): Boolean {
     return fieldSlot.checkToAdd(card)
+}
+
+fun tickerFlow(period: Duration, initialDelay: Duration = Duration.ZERO) = flow {
+    delay(initialDelay)
+    while (true) {
+        emit(Unit)
+        delay(period)
+    }
 }
