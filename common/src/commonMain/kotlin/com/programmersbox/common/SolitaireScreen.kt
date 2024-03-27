@@ -3,9 +3,12 @@ package com.programmersbox.common
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
@@ -31,7 +34,7 @@ const val DRAW_AMOUNT = 3 //default 3
 const val WIN_CARD_VALUE = 13 //default 13
 val FIELD_HEIGHT = 100
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 internal fun SolitaireScreen(
     info: SolitaireViewModel = viewModel(SolitaireViewModel::class) { SolitaireViewModel() },
@@ -278,12 +281,27 @@ internal fun SolitaireScreen(
                     //---------field---------
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp)
                     ) {
                         info.fieldSlots.forEach { fieldSlot ->
                             Column(
                                 modifier = Modifier.weight(1f)
                             ) {
+                                Text(
+                                    fieldSlot.value.faceDownSize().toString(),
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .border(
+                                            BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                                            shape = MaterialTheme.shapes.medium.copy(
+                                                bottomEnd = CornerSize(0.dp),
+                                                bottomStart = CornerSize(0.dp)
+                                            )
+                                        )
+                                )
                                 DropTarget<CardLocation>(
                                     onDrop = {
                                         it?.let { cardLocation ->
@@ -315,7 +333,14 @@ internal fun SolitaireScreen(
                                                 }
                                             }
                                         }
-                                    }
+                                    },
+                                    modifier = Modifier.border(
+                                        BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                                        shape = MaterialTheme.shapes.medium.copy(
+                                            topEnd = CornerSize(0.dp),
+                                            topStart = CornerSize(0.dp)
+                                        )
+                                    )
                                 ) { d, f ->
                                     val canPlace = f?.let { cardLocation ->
                                         fieldCheck(cardLocation.card, fieldSlot.value) && d
@@ -330,18 +355,17 @@ internal fun SolitaireScreen(
                                             border = BorderStroke(2.dp, strokeColor),
                                             modifier = Modifier
                                                 .height(FIELD_HEIGHT.dp)
-                                                .padding(top = 4.dp)
                                                 .fillMaxSize(),
                                         )
                                     } else {
                                         LazyColumn(
                                             verticalArrangement = Arrangement.spacedBy(-(FIELD_HEIGHT * .75).dp),
-                                            modifier = Modifier.fillMaxSize()
+                                            modifier = Modifier.animateContentSize()
                                         ) {
                                             itemsIndexed(fieldSlot.value.list) { index, card ->
                                                 DragTarget(
                                                     dataToDrop = CardLocation(fieldSlot.key, card, index),
-                                                    modifier = Modifier.padding(top = 4.dp)
+                                                    modifier = Modifier.animateItemPlacement()
                                                 ) {
                                                     PlayingCard(
                                                         card = card,
