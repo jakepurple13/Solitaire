@@ -78,7 +78,7 @@ class FieldSlot {
     }
 
     fun removeCards(num: Int): List<Card> {
-        val removing = list.dropLast(num)
+        val removing = list.drop(num)
         list.removeAll(removing)
         if (list.isEmpty()) flipFaceDownCard()
         return removing
