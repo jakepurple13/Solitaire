@@ -31,7 +31,7 @@ fun PlayingCard(
     shadowElevation: Dp = 0.dp,
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) = Surface(
     onClick = onClick,
     shape = shape,
@@ -75,53 +75,68 @@ private fun CardDetail(
     card: Card,
     showFullDetail: Boolean = true,
 ) {
+    val colors = LocalCardColor.current
+    val textColor = when (card.color) {
+        CardColor.Black -> colors.black
+        CardColor.Red -> colors.red
+    }
     if (showFullDetail) {
-        Column(verticalArrangement = Arrangement.SpaceBetween) {
+        Column(
+            verticalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.padding(4.dp)
+        ) {
             Text(
                 text = card.toSymbolString(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(2.dp),
+                color = textColor,
+                modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
             )
             FlowRow(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 horizontalArrangement = Arrangement.Center
-            ) { repeat(card.value) { Text(text = card.suit.unicodeSymbol, textAlign = TextAlign.Center) } }
+            ) {
+                repeat(card.value) {
+                    Text(
+                        text = card.suit.unicodeSymbol, textAlign = TextAlign.Center,
+                        color = textColor,
+                    )
+                }
+            }
             Text(
                 text = card.toSymbolString(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(2.dp),
+                color = textColor,
+                modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.End
             )
         }
     } else {
-        Box {
+        Box(
+            modifier = Modifier.padding(4.dp)
+        ) {
             Text(
                 text = card.toSymbolString(),
+                color = textColor,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.TopStart)
-                    .padding(2.dp),
+                    .align(Alignment.TopStart),
                 textAlign = TextAlign.Start
             )
 
             Text(
                 text = card.suit.unicodeSymbol,
+                color = textColor,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.Center)
-                    .padding(2.dp),
+                    .align(Alignment.Center),
                 textAlign = TextAlign.Center
             )
 
             Text(
                 text = card.toSymbolString(),
+                color = textColor,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.BottomEnd)
-                    .padding(2.dp),
+                    .align(Alignment.BottomEnd),
                 textAlign = TextAlign.End
             )
         }
@@ -140,7 +155,7 @@ fun EmptyCard(
     shadowElevation: Dp = 0.dp,
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) = Surface(
     onClick = onClick,
     shape = shape,

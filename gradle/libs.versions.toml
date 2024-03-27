@@ -1,14 +1,15 @@
 [versions]
-kotlin-version = "1.9.10"
+kotlin-version = "1.9.23"
 agp-version = "7.3.0"
-compose-version = "1.5.10"
+compose-version = "1.6.1"
 kotlinx-datetime = "0.6.0-RC.2"
 precompose = "1.6.0-rc04"
+datastore-version = "1.1.0-beta02"
 
 [plugins]
-android-application = { id = "com.android.application", version.ref = "agp.version" }
-android-library = { id = "com.android.library", version.ref = "agp.version" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin.version" }
+android-application = { id = "com.android.application", version.ref = "agp-version" }
+android-library = { id = "com.android.library", version.ref = "agp-version" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-version" }
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version = "1.6.1" }
@@ -17,3 +18,5 @@ androidx-activity-compose = "androidx.activity:activity-compose:1.8.2"
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 precompose = { module = "moe.tlaster:precompose", version.ref = "precompose" }
 precompose-viewmodel = { module = "moe.tlaster:precompose-viewmodel", version.ref = "precompose" }
+datastore-core = { module = "androidx.datastore:datastore-core", version.ref = "datastore-version" }
+datastore-preferences = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore-version" }

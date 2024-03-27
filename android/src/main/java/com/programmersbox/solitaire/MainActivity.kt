@@ -1,23 +1,15 @@
 package com.programmersbox.solitaire
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
-import android.app.Activity
-import android.os.Build
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
 import com.programmersbox.common.UIShow
 
 class MainActivity : AppCompatActivity() {
@@ -44,8 +36,15 @@ fun CustomMaterialTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> darkColorScheme()
-        else -> lightColorScheme()
+        darkTheme -> darkColorScheme(
+            primary = Color(0xff90CAF9),
+            secondary = Color(0xff90CAF9),
+        )
+
+        else -> lightColorScheme(
+            primary = Color(0xff2196F3),
+            secondary = Color(0xff90CAF9),
+        )
     }
 
     MaterialTheme(

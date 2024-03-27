@@ -17,7 +17,7 @@ kotlin {
     }
     jvm("desktop") {
         compilations.all {
-            kotlinOptions.jvmTarget = "11"
+            kotlinOptions.jvmTarget = "17"
         }
     }
     ios()
@@ -47,6 +47,8 @@ kotlin {
                 api(libs.kotlinx.datetime)
                 api(libs.precompose)
                 api(libs.precompose.viewmodel)
+                api(libs.datastore.core)
+                api(libs.datastore.preferences)
             }
         }
 

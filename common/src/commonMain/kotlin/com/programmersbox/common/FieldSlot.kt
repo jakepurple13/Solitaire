@@ -1,17 +1,16 @@
 package com.programmersbox.common
 
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 
-class FieldSlot(
-    numOfCards: Int,
-    d: Deck<Card>,
-) {
+class FieldSlot {
 
     private val faceDownList = mutableStateListOf<Card>()
     val list = mutableStateListOf<Card>()
 
-    init {
+    fun setup(
+        numOfCards: Int,
+        d: Deck<Card>,
+    ) {
         for (i in 0 until numOfCards) {
             faceDownList.add(d.draw())
         }
@@ -24,7 +23,6 @@ class FieldSlot(
                 return true
             }
         } catch (e: Exception) {
-            e.printStackTrace()
             if (list.size == 0 && c[0].value == 13) {
                 return true
             }
@@ -33,17 +31,10 @@ class FieldSlot(
     }
 
     fun checkToAdd(c: Card): Boolean {
-        try {
-            if ((list.last().color != c.color && list.last().value - 1 == c.value)) {
-                return true
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            if (list.size == 0 && c.value == 13) {
-                return true
-            }
-        }
-        return false
+        return (list.size == 0 && c.value == 13)
+                || runCatching {
+            (list.last().color != c.color && list.last().value - 1 == c.value)
+        }.getOrElse { false }
     }
 
     fun addCards(c: List<Card>) {
@@ -52,6 +43,11 @@ class FieldSlot(
 
     fun addCard(c: Card) {
         list.add(c)
+    }
+
+    fun clear() {
+        list.clear()
+        faceDownList.clear()
     }
 
     @Throws(IndexOutOfBoundsException::class)
@@ -84,7 +80,7 @@ class FieldSlot(
     fun removeCards(num: Int): List<Card> {
         val removing = list.dropLast(num)
         list.removeAll(removing)
-        if(list.isEmpty()) flipFaceDownCard()
+        if (list.isEmpty()) flipFaceDownCard()
         return removing
         /*val cardList: ArrayList<Card> = arrayListOf()
         var i = num

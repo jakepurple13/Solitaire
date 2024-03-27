@@ -1,6 +1,10 @@
 package com.programmersbox.common
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 
 public actual fun getPlatformName(): String {
     return "Solitaire"
@@ -8,5 +12,14 @@ public actual fun getPlatformName(): String {
 
 @Composable
 public fun UIShow() {
-    App()
+    CompositionLocalProvider(
+        LocalCardColor provides ComposeCardColor(
+            black = MaterialTheme.colorScheme.onBackground,
+            red = Color.Red
+        )
+    ) {
+        App(
+            settings = remember { Settings { Settings.dataStoreFileName } }
+        )
+    }
 }

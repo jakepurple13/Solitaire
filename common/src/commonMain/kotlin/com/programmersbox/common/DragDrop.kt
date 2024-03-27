@@ -1,40 +1,29 @@
 package com.programmersbox.common
 
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.PointerInputChange
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.center
 import androidx.compose.ui.unit.toOffset
+import androidx.compose.ui.unit.toSize
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
-import androidx.compose.foundation.layout.size
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.toSize
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
-import androidx.compose.ui.composed
-import androidx.compose.ui.input.pointer.PointerInputChange
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onGloballyPositioned
-import kotlinx.coroutines.flow.collectLatest
 
 fun Modifier.attachAsContainer() = composed {
     val state = LocalDragDrop.current
@@ -82,7 +71,10 @@ fun <T> Modifier.dropTarget(
 }
 
 fun <T> Modifier.dragTarget(
-    enable: Boolean, dataToDrop: T?, dragType: DragType, draggableComposable: @Composable () -> Unit
+    enable: Boolean,
+    dataToDrop: T?,
+    dragType: DragType,
+    draggableComposable: @Composable () -> Unit,
 ) = composed {
     val currentState = LocalDragDrop.current
     val dragTargetState = rememberUpdatedState(newValue = DragTargetState(dataToDrop, dragType))

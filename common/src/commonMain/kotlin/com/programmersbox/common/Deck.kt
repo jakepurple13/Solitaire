@@ -1,5 +1,6 @@
 package com.programmersbox.common
 
+import androidx.compose.runtime.mutableStateListOf
 import kotlin.properties.Delegates
 
 @DslMarker
@@ -13,8 +14,13 @@ fun <T> Array<T>.toDeck(listener: (Deck.DeckListenerBuilder<T>.() -> Unit)? = nu
 
 class Deck<T> : AbstractDeck<T> {
 
-    constructor(cards: Iterable<T> = emptyList()) : super(cards)
-    constructor(vararg cards: T) : super(*cards)
+    constructor(cards: Iterable<T> = emptyList()) : super(cards) {
+        deckOfCards.addAll(cards)
+    }
+
+    constructor(vararg cards: T) : super(*cards) {
+        deckOfCards.addAll(cards)
+    }
 
     constructor(vararg cards: T, listener: (DeckListenerBuilder<T>.() -> Unit)?) : this(*cards) {
         listener?.let(this::addDeckListener)
@@ -33,6 +39,8 @@ class Deck<T> : AbstractDeck<T> {
     override fun cardAdded(vararg card: T) = listener?.onAdd(card.toList()) ?: Unit
     override fun cardDrawn(card: T, size: Int) = listener?.onDraw(card, size) ?: Unit
     override fun deckShuffled() = listener?.onShuffle() ?: Unit
+
+    override val deckOfCards: MutableList<T> = mutableStateListOf()
 
     /**
      * Add a listener to this deck!
