@@ -121,7 +121,7 @@ internal fun SolitaireScreen(
         snapshotFlow { drawerState.isOpen }
             .onEach {
                 if (it) info.pauseTimer()
-                else info.resumeTimer()
+                else if (!info.hasWon) info.resumeTimer()
             }
             .launchIn(this)
     }
@@ -194,6 +194,7 @@ internal fun SolitaireScreen(
                                         info.foundationPlace(cardLocation, foundation.value)
                                     }
                                 },
+                                enabled = !info.hasWon,
                                 modifier = Modifier.weight(1f)
                             ) { d, f ->
                                 val canPlace = f?.let { cardLocation ->
@@ -207,7 +208,8 @@ internal fun SolitaireScreen(
                                 foundation.value.lastOrNull()
                                     ?.let {
                                         DragTarget(
-                                            dataToDrop = CardLocation(FOUNDATION_LOCATION, it, foundation.key)
+                                            dataToDrop = CardLocation(FOUNDATION_LOCATION, it, foundation.key),
+                                            enable = !info.hasWon,
                                         ) {
                                             PlayingCard(
                                                 card = it,
@@ -246,7 +248,8 @@ internal fun SolitaireScreen(
 
                             info.drawList.lastOrNull()?.let {
                                 DragTarget(
-                                    dataToDrop = CardLocation(DRAW_LOCATION, it, 0)
+                                    dataToDrop = CardLocation(DRAW_LOCATION, it, 0),
+                                    enable = !info.hasWon,
                                 ) {
                                     PlayingCard(
                                         card = it,
@@ -317,6 +320,7 @@ internal fun SolitaireScreen(
                                             info.fieldPlace(cardLocation, fieldSlot.value)
                                         }
                                     },
+                                    enabled = !info.hasWon,
                                 ) { d, f ->
                                     val canPlace = f?.let { cardLocation ->
                                         fieldCheck(cardLocation.card, fieldSlot.value) && d
@@ -350,6 +354,7 @@ internal fun SolitaireScreen(
                                                 DragTarget(
                                                     dataToDrop = CardLocation(fieldSlot.key, card, index),
                                                     modifier = Modifier.animateItemPlacement(),
+                                                    enable = !info.hasWon,
                                                     customDragContent = {
                                                         PlayingCard(
                                                             card = card,
