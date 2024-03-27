@@ -43,10 +43,6 @@ class SolitaireViewModel(
     }
 
     init {
-        deck.addDeckListener {
-            onShuffle { score -= 10 }
-        }
-
         snapshotFlow { hasWon }
             .onEach {
                 if (it) stopwatch.pause()
@@ -66,6 +62,7 @@ class SolitaireViewModel(
         } else {
             deck.addCard(*drawList.toTypedArray())
             drawList.clear()
+            score -= 10
         }
     }
 
