@@ -8,6 +8,9 @@ import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
 import kotlin.time.Duration.Companion.milliseconds
 
+const val DRAW_LOCATION = -1
+const val FOUNDATION_LOCATION = -2
+
 class SolitaireViewModel(
     private val deck: Deck<Card> = Deck.defaultDeck(),
 ) : ViewModel() {
@@ -90,4 +93,110 @@ class SolitaireViewModel(
         stopwatch.start()
         time = 0
     }
+
+    fun autoMove() {
+        drawList.lastOrNull()?.let { card ->
+            for (i in foundations) {
+                if (
+                    foundationPlace(
+                        CardLocation(DRAW_LOCATION, card, 0),
+                        i.value
+                    )
+                ) break
+            }
+        }
+        fieldSlots.values.forEachIndexed { index, fieldSlot ->
+            foundations.forEach {
+                fieldSlot.lastCard()?.let { card ->
+                    foundationPlace(
+                        CardLocation(index, card, 0),
+                        it.value
+                    )
+                }
+            }
+        }
+    }
+
+    fun foundationPlace(
+        cardLocation: CardLocation,
+        foundation: SnapshotStateList<Card>,
+    ): Boolean {
+        return if (foundationCheck(cardLocation.card, foundation)) {
+            foundation.add(cardLocation.card)
+            when (cardLocation.location) {
+                FOUNDATION_LOCATION -> {
+                    foundations[cardLocation.place]?.removeLastOrNull()
+                    moveCount++
+                }
+
+                DRAW_LOCATION -> {
+                    drawList.remove(cardLocation.card)
+                    score += 10
+                    moveCount++
+                }
+
+                else -> {
+                    fieldSlots[cardLocation.location]?.let { f ->
+                        f.removeCard()
+                        f.flipFaceDownCard()
+                        score += 10
+                        moveCount++
+                    }
+                }
+            }
+            true
+        } else false
+    }
+
+    fun fieldPlace(
+        cardLocation: CardLocation,
+        fieldSlot: FieldSlot,
+    ): Boolean {
+        return if (fieldCheck(cardLocation.card, fieldSlot)) {
+            when (cardLocation.location) {
+                FOUNDATION_LOCATION -> {
+                    foundations[cardLocation.place]
+                        ?.removeLastOrNull()
+                        ?.let { lastCard -> fieldSlot.addCard(lastCard) }
+
+                    moveCount++
+                    score -= 10
+                }
+
+                DRAW_LOCATION -> {
+                    fieldSlot.addCard(cardLocation.card)
+                    drawList.remove(cardLocation.card)
+                    score += 5
+                    moveCount++
+                }
+
+                else -> {
+                    fieldSlots[cardLocation.location]?.let { f: FieldSlot ->
+                        fieldSlot.addCards(f.removeCards(cardLocation.place))
+                        score += 3
+                        moveCount++
+                    }
+                }
+            }
+            true
+        } else false
+    }
+}
+
+fun foundationCheck(
+    card: Card,
+    foundation: SnapshotStateList<Card>,
+): Boolean {
+    return try {
+        card.value == foundation.last().value + 1 && card.suit == foundation.last().suit
+    } catch (e: NoSuchElementException) {
+        card.value == 1
+    }
+}
+
+fun fieldCheck(
+    card: Card,
+    fieldSlot: FieldSlot,
+): Boolean {
+    return fieldSlot.checkToAdd(card)
 }

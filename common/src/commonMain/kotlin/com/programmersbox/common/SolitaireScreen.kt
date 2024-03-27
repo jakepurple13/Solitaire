@@ -10,10 +10,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoMode
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -133,7 +133,13 @@ internal fun SolitaireScreen(
                             }
                         },
                         title = { Text(info.timeText) },
-                        actions = { Text("Score: " + animateIntAsState(info.score).value.toString()) }
+                        actions = {
+                            IconButton(
+                                onClick = { info.autoMove() }
+                            ) { Icon(Icons.Default.AutoMode, null) }
+
+                            Text("Score: " + animateIntAsState(info.score).value.toString())
+                        }
                     )
                 },
                 bottomBar = {
@@ -165,30 +171,7 @@ internal fun SolitaireScreen(
                             DropTarget<CardLocation>(
                                 onDrop = {
                                     it?.let { cardLocation ->
-                                        if (foundationCheck(cardLocation.card, foundation.value)) {
-                                            foundation.value.add(cardLocation.card)
-                                            when (cardLocation.location) {
-                                                -2 -> {
-                                                    info.foundations[cardLocation.place]?.removeLastOrNull()
-                                                    info.moveCount++
-                                                }
-
-                                                -1 -> {
-                                                    info.drawList.remove(cardLocation.card)
-                                                    info.score += 10
-                                                    info.moveCount++
-                                                }
-
-                                                else -> {
-                                                    info.fieldSlots[cardLocation.location]?.let { f ->
-                                                        f.removeCard()
-                                                        f.flipFaceDownCard()
-                                                        info.score += 10
-                                                        info.moveCount++
-                                                    }
-                                                }
-                                            }
-                                        }
+                                        info.foundationPlace(cardLocation, foundation.value)
                                     }
                                 },
                                 modifier = Modifier.weight(1f)
@@ -204,7 +187,7 @@ internal fun SolitaireScreen(
                                 foundation.value.lastOrNull()
                                     ?.let {
                                         DragTarget(
-                                            dataToDrop = CardLocation(-2, it, foundation.key)
+                                            dataToDrop = CardLocation(FOUNDATION_LOCATION, it, foundation.key)
                                         ) {
                                             PlayingCard(
                                                 card = it,
@@ -241,7 +224,7 @@ internal fun SolitaireScreen(
 
                             info.drawList.lastOrNull()?.let {
                                 DragTarget(
-                                    dataToDrop = CardLocation(-1, it, 0)
+                                    dataToDrop = CardLocation(DRAW_LOCATION, it, 0)
                                 ) {
                                     PlayingCard(
                                         card = it,
@@ -305,33 +288,7 @@ internal fun SolitaireScreen(
                                 DropTarget<CardLocation>(
                                     onDrop = {
                                         it?.let { cardLocation ->
-                                            if (fieldCheck(cardLocation.card, fieldSlot.value)) {
-                                                when (cardLocation.location) {
-                                                    -2 -> {
-                                                        info.foundations[cardLocation.place]
-                                                            ?.removeLastOrNull()
-                                                            ?.let { lastCard -> fieldSlot.value.addCard(lastCard) }
-
-                                                        info.moveCount++
-                                                        info.score -= 10
-                                                    }
-
-                                                    -1 -> {
-                                                        fieldSlot.value.addCard(cardLocation.card)
-                                                        info.drawList.remove(cardLocation.card)
-                                                        info.score += 5
-                                                        info.moveCount++
-                                                    }
-
-                                                    else -> {
-                                                        info.fieldSlots[cardLocation.location]?.let { f: FieldSlot ->
-                                                            fieldSlot.value.addCards(f.removeCards(cardLocation.place))
-                                                            info.score += 3
-                                                            info.moveCount++
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                            info.fieldPlace(cardLocation, fieldSlot.value)
                                         }
                                     },
                                 ) { d, f ->
@@ -434,22 +391,4 @@ internal fun Explosion() {
             durationMillis = 10 * 1000
         )
     }
-}
-
-private fun foundationCheck(
-    card: Card,
-    foundation: SnapshotStateList<Card>,
-): Boolean {
-    return try {
-        card.value == foundation.last().value + 1 && card.suit == foundation.last().suit
-    } catch (e: NoSuchElementException) {
-        card.value == 1
-    }
-}
-
-private fun fieldCheck(
-    card: Card,
-    fieldSlot: FieldSlot,
-): Boolean {
-    return fieldSlot.checkToAdd(card)
 }

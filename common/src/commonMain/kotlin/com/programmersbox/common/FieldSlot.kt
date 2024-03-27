@@ -73,8 +73,8 @@ class FieldSlot {
     }
 
     @Throws(NoSuchElementException::class)
-    fun lastCard(): Card {
-        return list.last()
+    fun lastCard(): Card? {
+        return list.lastOrNull()
     }
 
     fun removeCards(num: Int): List<Card> {
