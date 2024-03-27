@@ -106,11 +106,11 @@ class SolitaireViewModel(
             }
         }
         fieldSlots.values.forEachIndexed { index, fieldSlot ->
-            foundations.forEach {
+            foundations.forEach { foundation ->
                 fieldSlot.lastCard()?.let { card ->
                     foundationPlace(
                         CardLocation(index, card, 0),
-                        it.value
+                        foundation.value
                     )
                 }
             }

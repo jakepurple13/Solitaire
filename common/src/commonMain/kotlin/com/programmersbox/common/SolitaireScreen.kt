@@ -1,9 +1,10 @@
 package com.programmersbox.common
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,9 +17,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -47,6 +52,21 @@ internal fun SolitaireScreen(
             .distinctUntilChanged()
             .onEach { info.newGame() }
             .launchIn(this)
+    }
+
+    val winModifier by remember {
+        derivedStateOf {
+            if (info.hasWon) {
+                Modifier.animatedBorder(
+                    borderColors = listOf(Color.Red, Color.Green, Color.Blue),
+                    backgroundColor = Color.White,
+                    shape = PlayingCardDefaults.shape,
+                    borderWidth = 4.dp
+                )
+            } else {
+                Modifier
+            }
+        }
     }
 
     val cardSizeModifier = Modifier.height(150.dp)
@@ -192,13 +212,15 @@ internal fun SolitaireScreen(
                                             PlayingCard(
                                                 card = it,
                                                 border = BorderStroke(2.dp, strokeColor),
-                                                modifier = cardSizeModifier
+                                                modifier = cardSizeModifier.then(winModifier)
                                             )
                                         }
                                     }
                                     ?: EmptyCard(
                                         border = BorderStroke(2.dp, strokeColor),
-                                        modifier = cardSizeModifier.fillMaxSize(),
+                                        modifier = cardSizeModifier
+                                            .fillMaxSize()
+                                            .then(winModifier),
                                     )
                             }
                         }
@@ -234,7 +256,9 @@ internal fun SolitaireScreen(
                                 }
                             } ?: EmptyCard(
                                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                                modifier = cardSizeModifier.width(100.dp)
+                                modifier = cardSizeModifier
+                                    .width(100.dp)
+                                    .then(winModifier)
                             )
                         }
 
@@ -243,7 +267,9 @@ internal fun SolitaireScreen(
                         ) {
                             EmptyCard(
                                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                                modifier = cardSizeModifier.width(100.dp),
+                                modifier = cardSizeModifier
+                                    .width(100.dp)
+                                    .then(winModifier),
                             ) { info.draw(drawAmount) }
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -312,7 +338,8 @@ internal fun SolitaireScreen(
                                                         topStart = CornerSize(0.dp)
                                                     )
                                                 )
-                                                .fillMaxSize(),
+                                                .fillMaxSize()
+                                                .then(winModifier),
                                         )
                                     } else {
                                         LazyColumn(
@@ -357,38 +384,39 @@ internal fun SolitaireScreen(
             }
         }
     }
-
-    if (info.hasWon) {
-        Explosion()
-    }
 }
 
-@Composable
-internal fun Explosion() {
-    BoxWithConstraints(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        CreateParticles(
-            modifier = Modifier.matchParentSize(),
-            x = with(LocalDensity.current) { maxWidth.toPx() / 2 },
-            y = -50f,
-            velocity = Velocity(xDirection = 1f, yDirection = 1f, randomize = true),
-            force = Force.Gravity(0.01f),
-            acceleration = Acceleration(),
-            particleSize = ParticleSize.RandomSizes(10..30),
-            particleColor = ParticleColor.RandomColors(
-                listOf(
-                    Color.Yellow,
-                    Color.Blue,
-                    Color.Red,
-                    Color.White,
-                    Color.Magenta,
-                    Color.Green
+fun Modifier.animatedBorder(
+    borderColors: List<Color>,
+    backgroundColor: Color,
+    shape: Shape = RectangleShape,
+    borderWidth: Dp = 1.dp,
+    animationDurationInMillis: Int = 1000,
+    easing: Easing = LinearEasing,
+): Modifier = composed {
+    val brush = Brush.sweepGradient(borderColors)
+    val infiniteTransition = rememberInfiniteTransition(label = "animatedBorder")
+    val angle by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = animationDurationInMillis, easing = easing),
+            repeatMode = RepeatMode.Restart
+        ), label = "angleAnimation"
+    )
+
+    this
+        .clip(shape)
+        .padding(borderWidth)
+        .drawWithContent {
+            rotate(angle) {
+                drawCircle(
+                    brush = brush,
+                    radius = size.width,
+                    blendMode = BlendMode.SrcIn,
                 )
-            ),
-            lifeTime = LifeTime(255f, 0.01f),
-            emissionType = EmissionType.FlowEmission(maxParticlesCount = 300, emissionRate = 0.5f),
-            durationMillis = 10 * 1000
-        )
-    }
+            }
+            drawContent()
+        }
+        .background(color = backgroundColor, shape = shape)
 }
