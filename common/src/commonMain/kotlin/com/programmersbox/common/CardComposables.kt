@@ -18,13 +18,17 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun rememberDeck(vararg key: Any) = remember(key) { Deck.defaultDeck() }
 
+object PlayingCardDefaults {
+    val shape = RoundedCornerShape(7.dp)
+}
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun PlayingCard(
     card: Card,
     modifier: Modifier = Modifier,
     tonalElevation: Dp = 4.dp,
-    shape: Shape = RoundedCornerShape(7.dp),
+    shape: Shape = PlayingCardDefaults.shape,
     enabled: Boolean = true,
     color: Color = MaterialTheme.colorScheme.surface,
     contentColor: Color = contentColorFor(color),
@@ -52,7 +56,7 @@ fun PlayingCard(
     card: Card,
     modifier: Modifier = Modifier,
     tonalElevation: Dp = 4.dp,
-    shape: Shape = RoundedCornerShape(7.dp),
+    shape: Shape = PlayingCardDefaults.shape,
     color: Color = MaterialTheme.colorScheme.surface,
     contentColor: Color = contentColorFor(color),
     shadowElevation: Dp = 0.dp,
@@ -148,7 +152,7 @@ private fun CardDetail(
 fun EmptyCard(
     modifier: Modifier = Modifier,
     tonalElevation: Dp = 4.dp,
-    shape: Shape = RoundedCornerShape(7.dp),
+    shape: Shape = PlayingCardDefaults.shape,
     enabled: Boolean = true,
     color: Color = MaterialTheme.colorScheme.surface,
     contentColor: Color = contentColorFor(color),
@@ -172,7 +176,7 @@ fun EmptyCard(
 fun EmptyCard(
     modifier: Modifier = Modifier,
     tonalElevation: Dp = 4.dp,
-    shape: Shape = RoundedCornerShape(7.dp),
+    shape: Shape = PlayingCardDefaults.shape,
     color: Color = MaterialTheme.colorScheme.surface,
     contentColor: Color = contentColorFor(color),
     shadowElevation: Dp = 0.dp,

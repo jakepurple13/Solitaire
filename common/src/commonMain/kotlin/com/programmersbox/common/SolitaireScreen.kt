@@ -334,13 +334,6 @@ internal fun SolitaireScreen(
                                             }
                                         }
                                     },
-                                    modifier = Modifier.border(
-                                        BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                                        shape = MaterialTheme.shapes.medium.copy(
-                                            topEnd = CornerSize(0.dp),
-                                            topStart = CornerSize(0.dp)
-                                        )
-                                    )
                                 ) { d, f ->
                                     val canPlace = f?.let { cardLocation ->
                                         fieldCheck(cardLocation.card, fieldSlot.value) && d
@@ -355,6 +348,13 @@ internal fun SolitaireScreen(
                                             border = BorderStroke(2.dp, strokeColor),
                                             modifier = Modifier
                                                 .height(FIELD_HEIGHT.dp)
+                                                .border(
+                                                    BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                                                    shape = MaterialTheme.shapes.medium.copy(
+                                                        topEnd = CornerSize(0.dp),
+                                                        topStart = CornerSize(0.dp)
+                                                    )
+                                                )
                                                 .fillMaxSize(),
                                         )
                                     } else {
@@ -365,11 +365,26 @@ internal fun SolitaireScreen(
                                             itemsIndexed(fieldSlot.value.list) { index, card ->
                                                 DragTarget(
                                                     dataToDrop = CardLocation(fieldSlot.key, card, index),
-                                                    modifier = Modifier.animateItemPlacement()
+                                                    modifier = Modifier.animateItemPlacement(),
+                                                    customDragContent = {
+                                                        PlayingCard(
+                                                            card = card,
+                                                            border = BorderStroke(2.dp, strokeColor),
+                                                            modifier = Modifier.height(FIELD_HEIGHT.dp),
+                                                            showFullDetail = false
+                                                        )
+                                                    }
                                                 ) {
                                                     PlayingCard(
                                                         card = card,
                                                         border = BorderStroke(2.dp, strokeColor),
+                                                        shape = if (index == 0)
+                                                            MaterialTheme.shapes.medium.copy(
+                                                                topEnd = CornerSize(0.dp),
+                                                                topStart = CornerSize(0.dp)
+                                                            )
+                                                        else
+                                                            PlayingCardDefaults.shape,
                                                         modifier = Modifier.height(FIELD_HEIGHT.dp),
                                                         showFullDetail = false
                                                     )

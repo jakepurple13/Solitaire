@@ -362,7 +362,8 @@ fun <T> DragTarget(
     enable: Boolean = true,
     dragType: DragType = LocalDragDrop.current.dragType,
     hiddenOnDragging: Boolean = false,
-    content: @Composable () -> Unit
+    customDragContent: (@Composable () -> Unit)? = null,
+    content: @Composable () -> Unit,
 ) {
     Box(
         modifier = modifier
@@ -370,7 +371,7 @@ fun <T> DragTarget(
                 enable,
                 dataToDrop,
                 dragType,
-                content
+                customDragContent ?: content
             )
     ) {
         val state = LocalDragDrop.current
