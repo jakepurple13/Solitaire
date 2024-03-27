@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
+import moe.tlaster.precompose.navigation.BackHandler
 import moe.tlaster.precompose.viewmodel.viewModel
 
 
@@ -116,6 +117,10 @@ internal fun SolitaireScreen(
     }
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
+
+    BackHandler(drawerState.isOpen) {
+        scope.launch { drawerState.close() }
+    }
 
     LaunchedEffect(drawerState.isOpen) {
         snapshotFlow { drawerState.isOpen }
@@ -356,6 +361,19 @@ internal fun SolitaireScreen(
                                                     modifier = Modifier.animateItemPlacement(),
                                                     enable = !info.hasWon,
                                                     customDragContent = {
+                                                        //FIXME: This isn't working because the size is the content size
+                                                        /*Column(
+                                                            verticalArrangement = Arrangement.spacedBy(-(FIELD_HEIGHT * .75).dp),
+                                                        ) {
+                                                            fieldSlot.value.getCards(index).forEach {
+                                                                PlayingCard(
+                                                                    card = it,
+                                                                    border = BorderStroke(2.dp, strokeColor),
+                                                                    modifier = Modifier.height(FIELD_HEIGHT.dp),
+                                                                    showFullDetail = false
+                                                                )
+                                                            }
+                                                        }*/
                                                         PlayingCard(
                                                             card = card,
                                                             border = BorderStroke(2.dp, strokeColor),

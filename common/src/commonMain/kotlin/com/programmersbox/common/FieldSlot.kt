@@ -59,9 +59,8 @@ class FieldSlot {
         return list[num]
     }
 
-    @Throws(IndexOutOfBoundsException::class)
     fun getCards(num: Int): List<Card> {
-        return list.subList(num, list.size)
+        return list.drop(num)
     }
 
     private fun removeCard(num: Int): Card {
