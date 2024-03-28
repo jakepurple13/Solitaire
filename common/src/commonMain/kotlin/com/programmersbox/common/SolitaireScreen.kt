@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -44,6 +45,7 @@ val FIELD_HEIGHT = 100
 @Composable
 internal fun SolitaireScreen(
     info: SolitaireViewModel = viewModel(SolitaireViewModel::class) { SolitaireViewModel() },
+    database: SolitaireDatabase = remember { SolitaireDatabase() },
     settings: Settings,
 ) {
     val drawAmount by settings.drawAmount.flow.collectAsStateWithLifecycle(DRAW_AMOUNT)
@@ -55,12 +57,26 @@ internal fun SolitaireScreen(
             .launchIn(this)
     }
 
+    LaunchedEffect(info.hasWon) {
+        snapshotFlow { info.hasWon }
+            .distinctUntilChanged()
+            .filter { it }
+            .onEach {
+                database.addHighScore(
+                    timeTaken = info.timeText,
+                    moveCount = info.moveCount,
+                    score = info.score
+                )
+            }
+            .launchIn(this)
+    }
+
     val winModifier by remember {
         derivedStateOf {
             if (info.hasWon) {
                 Modifier.animatedBorder(
                     borderColors = listOf(Color.Red, Color.Green, Color.Blue),
-                    backgroundColor = Color.White,
+                    backgroundColor = Color.Transparent,
                     shape = PlayingCardDefaults.shape,
                     borderWidth = 4.dp
                 )
@@ -116,6 +132,18 @@ internal fun SolitaireScreen(
         )
     }
 
+    var showStats by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState()
+
+    if (showStats) {
+        ModalBottomSheet(
+            onDismissRequest = { showStats = false },
+            sheetState = sheetState
+        ) {
+            StatsView(database)
+        }
+    }
+
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
     BackHandler(drawerState.isOpen) {
@@ -138,7 +166,10 @@ internal fun SolitaireScreen(
             drawerState = drawerState,
             drawerContent = {
                 ModalDrawerSheet {
-                    SettingsView(settings)
+                    SettingsView(
+                        settings = settings,
+                        onStatsClick = { showStats = true }
+                    )
                 }
             }
         ) {

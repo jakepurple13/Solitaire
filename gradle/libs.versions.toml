@@ -1,4 +1,5 @@
 [versions]
+realm-plugin = "1.11.0"
 kotlin-version = "1.9.23"
 agp-version = "7.3.0"
 compose-version = "1.6.1"
@@ -15,8 +16,10 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-ve
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version = "1.6.1" }
 androidx-core = { module = "androidx.core:core-ktx", version = "1.12.0" }
 androidx-activity-compose = "androidx.activity:activity-compose:1.8.2"
+realm-plugin = { module = "io.realm.kotlin:gradle-plugin", version.ref = "realm-plugin" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 precompose = { module = "moe.tlaster:precompose", version.ref = "precompose" }
 precompose-viewmodel = { module = "moe.tlaster:precompose-viewmodel", version.ref = "precompose" }
 datastore-core = { module = "androidx.datastore:datastore-core", version.ref = "datastore-version" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore-version" }
+library-base = { module = "io.realm.kotlin:library-base", version.ref = "realm-plugin" }

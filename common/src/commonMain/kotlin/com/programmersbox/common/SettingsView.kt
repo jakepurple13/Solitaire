@@ -1,5 +1,6 @@
 package com.programmersbox.common
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.*
@@ -12,6 +13,7 @@ import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 @Composable
 internal fun SettingsView(
     settings: Settings,
+    onStatsClick: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     Scaffold(
@@ -50,6 +52,12 @@ internal fun SettingsView(
                         }
                     )
                 }
+            }
+            item {
+                Button(
+                    onClick = onStatsClick,
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text("View Stats") }
             }
         }
     }

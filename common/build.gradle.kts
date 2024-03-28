@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.compose")
     id("com.android.library")
     kotlin("native.cocoapods")
+    id("io.realm.kotlin")
 }
 
 group = "com.programmersbox"
@@ -20,6 +21,9 @@ kotlin {
             kotlinOptions.jvmTarget = "17"
         }
     }
+
+    applyDefaultHierarchyTemplate()
+
     ios()
     iosX64()
     iosArm64()
@@ -49,6 +53,7 @@ kotlin {
                 api(libs.precompose.viewmodel)
                 api(libs.datastore.core)
                 api(libs.datastore.preferences)
+                api(libs.library.base)
             }
         }
 
@@ -95,7 +100,7 @@ android {
         targetSdk = 34
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
