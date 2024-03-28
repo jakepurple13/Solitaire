@@ -2,6 +2,7 @@ package com.programmersbox.common
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import moe.tlaster.precompose.viewmodel.ViewModel
@@ -10,11 +11,13 @@ import kotlin.time.Duration.Companion.milliseconds
 
 const val DRAW_LOCATION = -1
 const val FOUNDATION_LOCATION = -2
+private val SEED: Long? = null
 
 class SolitaireViewModel(
     private val deck: Deck<Card> = Deck.defaultDeck(),
+    database: SolitaireDatabase,
 ) : ViewModel() {
-    var moveCount by mutableIntStateOf(0)
+    private var moveCount by mutableIntStateOf(0)
     var score by mutableIntStateOf(0)
 
     val cardsLeft by derivedStateOf { deck.deck.size }
@@ -49,6 +52,19 @@ class SolitaireViewModel(
             }
             .launchIn(viewModelScope)
 
+        snapshotFlow { hasWon }
+            .distinctUntilChanged()
+            .onEach {
+                if (it) {
+                    database.addHighScore(
+                        timeTaken = timeText,
+                        moveCount = moveCount,
+                        score = score
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+
         stopwatch.time
             .onEach { time++ }
             .launchIn(viewModelScope)
@@ -77,7 +93,7 @@ class SolitaireViewModel(
     fun newGame() {
         deck.removeAllCards()
         deck.addDeck(Deck.defaultDeck())
-        deck.shuffle()
+        deck.shuffle(SEED)
         fieldSlots.values.forEach { it.clear() }
         repeat(7) {
             fieldSlots.getOrPut(it) { FieldSlot() }.setup(it, deck)

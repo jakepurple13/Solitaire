@@ -26,7 +26,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -44,8 +43,8 @@ const val FIELD_HEIGHT = 100
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 internal fun SolitaireScreen(
-    info: SolitaireViewModel = viewModel(SolitaireViewModel::class) { SolitaireViewModel() },
     database: SolitaireDatabase = remember { SolitaireDatabase() },
+    info: SolitaireViewModel = viewModel(SolitaireViewModel::class) { SolitaireViewModel(database = database) },
     settings: Settings,
 ) {
     val drawAmount by settings.drawAmount.flow.collectAsStateWithLifecycle(DRAW_AMOUNT)
@@ -54,20 +53,6 @@ internal fun SolitaireScreen(
         snapshotFlow { drawAmount }
             .distinctUntilChanged()
             .onEach { info.newGame() }
-            .launchIn(this)
-    }
-
-    LaunchedEffect(info.hasWon) {
-        snapshotFlow { info.hasWon }
-            .distinctUntilChanged()
-            .filter { it }
-            .onEach {
-                database.addHighScore(
-                    timeTaken = info.timeText,
-                    moveCount = info.moveCount,
-                    score = info.score
-                )
-            }
             .launchIn(this)
     }
 
@@ -150,7 +135,7 @@ internal fun SolitaireScreen(
         scope.launch { drawerState.close() }
     }
 
-    LaunchedEffect(drawerState.isOpen) {
+    LaunchedEffect(drawerState) {
         snapshotFlow { drawerState.isOpen }
             .onEach {
                 if (it) info.pauseTimer()

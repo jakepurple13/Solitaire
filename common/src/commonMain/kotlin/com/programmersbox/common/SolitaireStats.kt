@@ -12,7 +12,7 @@ import kotlinx.datetime.Clock
 
 internal const val HIGHSCORE_LIMIT = 15
 
-internal class SolitaireDatabase(name: String = Realm.DEFAULT_FILE_NAME) {
+class SolitaireDatabase(name: String = Realm.DEFAULT_FILE_NAME) {
     private val realm by lazy {
         Realm.open(
             RealmConfiguration.Builder(
@@ -43,6 +43,7 @@ internal class SolitaireDatabase(name: String = Realm.DEFAULT_FILE_NAME) {
 
     suspend fun addHighScore(scoreItem: SolitaireScore) {
         realm.updateInfo<SolitaireStats> {
+            it.wins++
             it.highScoresList.add(scoreItem)
             val sorted = it.highScoresList.sortedByDescending { it.score }
             if (sorted.size >= HIGHSCORE_LIMIT) {
@@ -82,12 +83,12 @@ private inline fun <reified T : RealmObject> Realm.initDbBlocking(crossinline de
     return f ?: writeBlocking { copyToRealm(default()) }
 }
 
-internal class SolitaireStats : RealmObject {
+class SolitaireStats : RealmObject {
     var highScoresList = realmListOf<SolitaireScore>()
     var wins = 0
 }
 
-internal class SolitaireScore : RealmObject {
+class SolitaireScore : RealmObject {
     @PrimaryKey
     var time: Long = Clock.System.now().toEpochMilliseconds()
     var score: Int = 0
