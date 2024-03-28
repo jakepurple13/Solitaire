@@ -4,7 +4,7 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -32,7 +32,7 @@ fun Modifier.attachAsContainer() = composed {
 
 @Suppress("UNCHECKED_CAST")
 fun <T> Modifier.dropTarget(
-    state: DropTargetState<T>, enabled: Boolean = true, onDrop: (T?) -> Unit
+    state: DropTargetState<T>, enabled: Boolean = true, onDrop: (T?) -> Unit,
 ) = composed {
     val isEnabled by rememberUpdatedState(newValue = enabled)
     val boundInBox = remember {
@@ -141,7 +141,7 @@ fun DragDropBox(
     alpha: Float = 0.9f,
     defaultDragType: DragType = DragType.LongPress,
     state: DragDropState = rememberDragDropState(scale, alpha, defaultDragType),
-    content: @Composable BoxScope.() -> Unit
+    content: @Composable BoxScope.() -> Unit,
 ) {
     DragDropBox(state, modifier, content)
 }
@@ -166,13 +166,33 @@ fun DragDropBox(
 
 @Composable
 fun DragDropOverlay(state: DragDropState = LocalDragDrop.current) {
-    if (state.isDragging) {
+    //This was the default...Figure out how to make this a lot more generic
+    /*if (state.isDragging) {
         val targetSizeDp = with(LocalDensity.current) {
             state.draggableSizePx.toSize().toDpSize()
         }
         Box(
             modifier = Modifier
                 .size(targetSizeDp)
+                .graphicsLayer {
+                    val offset = state.calculateTargetOffset()
+                    scaleX = state.scaleX
+                    scaleY = state.scaleY
+                    this.alpha = state.alpha
+                    translationX = offset.x
+                    translationY = offset.y
+                },
+        ) {
+            state.draggableComposition?.invoke()
+        }
+    }*/
+    if (state.isDragging) {
+        val targetSizeDp = with(LocalDensity.current) {
+            state.draggableSizePx.toSize().toDpSize()
+        }
+        Box(
+            modifier = Modifier
+                .width(targetSizeDp.width)
                 .graphicsLayer {
                     val offset = state.calculateTargetOffset()
                     scaleX = state.scaleX
@@ -225,7 +245,7 @@ fun rememberDragDropState(
     scaleX: Float,
     scaleY: Float,
     alpha: Float = 0.9f,
-    defaultDragType: DragType = DragType.LongPress
+    defaultDragType: DragType = DragType.LongPress,
 ): DragDropState {
     return remember(scaleX, scaleY, alpha, defaultDragType) {
         DragDropState(scaleX, scaleY, alpha, defaultDragType)
@@ -236,7 +256,7 @@ fun rememberDragDropState(
 fun rememberDragDropState(
     scale: Float = 1.2f,
     alpha: Float = 0.9f,
-    dragType: DragType = DragType.LongPress
+    dragType: DragType = DragType.LongPress,
 ): DragDropState {
     return rememberDragDropState(scale, scale, alpha, dragType)
 }
@@ -292,7 +312,7 @@ class DragDropState private constructor(
         offsetInBox: Offset,
         dragStartOffset: Offset,
         content: @Composable () -> Unit,
-        contentSizePx: IntSize
+        contentSizePx: IntSize,
     ) {
         isDragging = true
         this.dataToDrop = dataToDrop
@@ -343,7 +363,7 @@ class DragDropState private constructor(
             scaleX: Float,
             scaleY: Float,
             alpha: Float,
-            defaultDragType: DragType
+            defaultDragType: DragType,
         ): DragDropState {
             return DragDropState(DragTargetInfoImpl(scaleX, scaleY, alpha, defaultDragType))
         }
@@ -409,7 +429,7 @@ fun <T> DropTarget(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     dropTargetState: DropTargetState<T> = rememberDropTargetState(),
-    content: @Composable BoxScope.(isInBound: Boolean, data: T?) -> Unit
+    content: @Composable BoxScope.(isInBound: Boolean, data: T?) -> Unit,
 ) {
     Box(modifier = modifier.dropTarget(dropTargetState, enabled, onDrop)) {
         content(dropTargetState.isInBound, dropTargetState.dataToDrop)

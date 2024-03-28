@@ -361,8 +361,7 @@ internal fun SolitaireScreen(
                                                     modifier = Modifier.animateItemPlacement(),
                                                     enable = !info.hasWon,
                                                     customDragContent = {
-                                                        //FIXME: This isn't working because the size is the content size
-                                                        /*Column(
+                                                        Column(
                                                             verticalArrangement = Arrangement.spacedBy(-(FIELD_HEIGHT * .75).dp),
                                                         ) {
                                                             fieldSlot.value.getCards(index).forEach {
@@ -373,13 +372,13 @@ internal fun SolitaireScreen(
                                                                     showFullDetail = false
                                                                 )
                                                             }
-                                                        }*/
-                                                        PlayingCard(
+                                                        }
+                                                        /*PlayingCard(
                                                             card = card,
                                                             border = BorderStroke(2.dp, strokeColor),
                                                             modifier = Modifier.height(FIELD_HEIGHT.dp),
                                                             showFullDetail = false
-                                                        )
+                                                        )*/
                                                     }
                                                 ) {
                                                     PlayingCard(
