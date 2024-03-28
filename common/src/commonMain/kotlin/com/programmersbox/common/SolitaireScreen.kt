@@ -17,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -50,6 +51,12 @@ internal fun SolitaireScreen(
             .distinctUntilChanged()
             .onEach { info.newGame() }
             .launchIn(this)
+    }
+
+    val windowInfo = LocalWindowInfo.current.isWindowFocused
+    LaunchedEffect(windowInfo) {
+        if (windowInfo) info.resumeTimer()
+        else info.pauseTimer()
     }
 
     val winModifier by remember {
@@ -133,7 +140,7 @@ internal fun SolitaireScreen(
         snapshotFlow { drawerState.isOpen }
             .onEach {
                 if (it) info.pauseTimer()
-                else if (!info.hasWon) info.resumeTimer()
+                else info.resumeTimer()
             }
             .launchIn(this)
     }

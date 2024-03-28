@@ -87,7 +87,8 @@ class SolitaireViewModel(
     }
 
     fun resumeTimer() {
-        stopwatch.start()
+        if (!hasWon)
+            stopwatch.start()
     }
 
     fun newGame() {
