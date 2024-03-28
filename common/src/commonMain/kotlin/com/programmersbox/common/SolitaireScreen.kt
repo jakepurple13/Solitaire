@@ -37,7 +37,7 @@ const val FIELD_HEIGHT = 100
 
 private val cardSizeModifier = Modifier.height(150.dp)
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SolitaireScreen(
     database: SolitaireDatabase = remember { SolitaireDatabase() },

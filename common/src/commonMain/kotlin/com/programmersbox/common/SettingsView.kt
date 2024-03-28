@@ -6,6 +6,7 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 
@@ -58,6 +59,14 @@ internal fun SettingsView(
                     onClick = onStatsClick,
                     modifier = Modifier.fillMaxWidth()
                 ) { Text("View Stats") }
+            }
+
+            item {
+                Text(
+                    "Version: ${getPlatformName()}",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
     }

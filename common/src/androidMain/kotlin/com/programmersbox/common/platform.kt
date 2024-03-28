@@ -12,6 +12,6 @@ public actual fun getPlatformName(): String {
 public fun UIShow() {
     val context = LocalContext.current
     App(
-        settings = remember { Settings { context.filesDir.resolve(Settings.dataStoreFileName).absolutePath } }
+        settings = remember { Settings { context.filesDir.resolve(Settings.DATA_STORE_FILE_NAME).absolutePath } }
     )
 }

@@ -50,11 +50,6 @@ class FieldSlot {
         faceDownList.clear()
     }
 
-    @Throws(IndexOutOfBoundsException::class)
-    fun getCard(num: Int): Card {
-        return list[num]
-    }
-
     operator fun get(num: Int): Card {
         return list[num]
     }
@@ -81,23 +76,7 @@ class FieldSlot {
         list.removeAll(removing)
         if (list.isEmpty()) flipFaceDownCard()
         return removing
-        /*val cardList: ArrayList<Card> = arrayListOf()
-        var i = num
-        while (num < list.size) {
-            cardList.add(removeCard(i))
-            i--
-            i++
-        }
-        return cardList*/
     }
-
-    /*fun getImage(): @Composable () -> Unit {
-        return try {
-            list.last()
-        } catch (e: NoSuchElementException) {
-            Card(15, Suit.Spades)
-        }
-    }*/
 
     fun flipFaceDownCard(): Int {
         if (list.size == 0 && faceDownList.size > 0) {

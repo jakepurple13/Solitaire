@@ -22,7 +22,7 @@ class Settings(
     }
 
     companion object {
-        const val dataStoreFileName = "solitaire.preferences_pb"
+        const val DATA_STORE_FILE_NAME = "solitaire.preferences_pb"
     }
 
     val drawAmount by lazy {

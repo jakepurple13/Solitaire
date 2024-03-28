@@ -19,7 +19,7 @@ public fun UIShow() {
         )
     ) {
         App(
-            settings = remember { Settings { Settings.dataStoreFileName } }
+            settings = remember { Settings { Settings.DATA_STORE_FILE_NAME } }
         )
     }
 }
