@@ -39,7 +39,7 @@ data class CardLocation(val location: Int, val card: Card, val place: Int)
 
 const val DRAW_AMOUNT = 3 //default 3
 const val WIN_CARD_VALUE = 13 //default 13
-val FIELD_HEIGHT = 100
+const val FIELD_HEIGHT = 100
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
