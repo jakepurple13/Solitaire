@@ -217,6 +217,7 @@ internal fun SolitaireScreen(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(horizontal = 4.dp)
                         .padding(padding)
                 ) {
                     Row(
