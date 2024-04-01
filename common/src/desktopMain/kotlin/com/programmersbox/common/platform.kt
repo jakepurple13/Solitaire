@@ -7,7 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 
 public actual fun getPlatformName(): String {
-    return "Solitaire"
+    return "Desktop"
 }
 
 @Composable

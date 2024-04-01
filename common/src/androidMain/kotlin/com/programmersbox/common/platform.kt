@@ -5,7 +5,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 
 public actual fun getPlatformName(): String {
-    return "Solitaire"
+    return "Android"
 }
 
 @Composable
