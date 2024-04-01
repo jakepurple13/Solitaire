@@ -2,7 +2,6 @@ package com.programmersbox.common
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import moe.tlaster.precompose.viewmodel.ViewModel
@@ -53,7 +52,6 @@ class SolitaireViewModel(
             .launchIn(viewModelScope)
 
         snapshotFlow { hasWon }
-            .distinctUntilChanged()
             .onEach {
                 if (it) {
                     database.addHighScore(

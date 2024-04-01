@@ -20,6 +20,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.programmersbox.common.dragdrop.AnimatedDragDropBox
+import com.programmersbox.common.dragdrop.DragTarget
+import com.programmersbox.common.dragdrop.DragType
+import com.programmersbox.common.dragdrop.DropTarget
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -145,7 +149,7 @@ internal fun SolitaireScreen(
             .launchIn(this)
     }
 
-    DragDropBox(
+    AnimatedDragDropBox(
         defaultDragType = DragType.Immediate
     ) {
         ModalNavigationDrawer(
