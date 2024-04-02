@@ -14,9 +14,8 @@ private val SEED: Long? = null
 
 class SolitaireViewModel(
     private val deck: Deck<Card> = Deck.defaultDeck(),
-    database: SolitaireDatabase,
 ) : ViewModel() {
-    private var moveCount by mutableIntStateOf(0)
+    var moveCount by mutableIntStateOf(0)
     var score by mutableIntStateOf(0)
 
     val cardsLeft by derivedStateOf { deck.deck.size }
@@ -48,18 +47,6 @@ class SolitaireViewModel(
         snapshotFlow { hasWon }
             .onEach {
                 if (it) stopwatch.pause()
-            }
-            .launchIn(viewModelScope)
-
-        snapshotFlow { hasWon }
-            .onEach {
-                if (it) {
-                    database.addHighScore(
-                        timeTaken = timeText,
-                        moveCount = moveCount,
-                        score = score
-                    )
-                }
             }
             .launchIn(viewModelScope)
 

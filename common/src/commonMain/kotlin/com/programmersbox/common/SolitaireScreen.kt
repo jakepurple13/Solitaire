@@ -45,7 +45,7 @@ private val cardSizeModifier = Modifier.height(150.dp)
 @Composable
 internal fun SolitaireScreen(
     database: SolitaireDatabase = remember { SolitaireDatabase() },
-    info: SolitaireViewModel = viewModel(SolitaireViewModel::class) { SolitaireViewModel(database = database) },
+    info: SolitaireViewModel = viewModel(SolitaireViewModel::class) { SolitaireViewModel() },
     settings: Settings,
 ) {
     val drawAmount by settings.drawAmount.flow.collectAsStateWithLifecycle(DRAW_AMOUNT)
@@ -75,6 +75,16 @@ internal fun SolitaireScreen(
             } else {
                 Modifier
             }
+        }
+    }
+
+    LaunchedEffect(info.hasWon) {
+        if (info.hasWon) {
+            database.addHighScore(
+                timeTaken = info.timeText,
+                moveCount = info.moveCount,
+                score = info.score
+            )
         }
     }
 

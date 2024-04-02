@@ -1,5 +1,6 @@
 package com.programmersbox.common
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,7 +29,7 @@ private val ColorsToUse = listOf(
     listOf(Alizarin, Sunflower, Emerald),
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 internal fun StatsView(
     database: SolitaireDatabase,
@@ -39,9 +40,7 @@ internal fun StatsView(
 
     TopAppBar(
         title = { Text("Stats") },
-        actions = {
-            Text("Wins: $winCount")
-        }
+        actions = { Text("Wins: $winCount") }
     )
 
     LazyColumn(
@@ -51,16 +50,20 @@ internal fun StatsView(
             HighScoreItem(
                 score = item,
                 onDelete = { scope.launch { database.removeHighScore(item) } },
-                modifier = if (index < 3)
-                    Modifier.animatedBorder(
-                        borderColors = ColorsToUse[index],
-                        backgroundColor = Color.Transparent,
-                        shape = CardDefaults.shape,
-                        borderWidth = 4.dp,
-                        animationDurationInMillis = (index + 1) * 1000,
+                modifier = Modifier
+                    .animateItemPlacement()
+                    .then(
+                        if (index < 3)
+                            Modifier.animatedBorder(
+                                borderColors = ColorsToUse[index],
+                                backgroundColor = Color.Transparent,
+                                shape = CardDefaults.shape,
+                                borderWidth = 4.dp,
+                                animationDurationInMillis = (index + 1) * 1000,
+                            )
+                        else
+                            Modifier
                     )
-                else
-                    Modifier
             )
         }
     }
