@@ -70,7 +70,6 @@ class SolitaireDatabase(name: String = Realm.DEFAULT_FILE_NAME) {
 
     fun getSolitaireHighScores() = realm.query<SolitaireScore>()
         .sort("score", Sort.DESCENDING)
-        .find()
         .asFlow()
         .mapNotNull { it.list }
 
