@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.navigation.BackHandler
 import moe.tlaster.precompose.viewmodel.viewModel
 
@@ -48,7 +47,7 @@ internal fun SolitaireScreen(
     info: SolitaireViewModel = viewModel(SolitaireViewModel::class) { SolitaireViewModel() },
     settings: Settings,
 ) {
-    val drawAmount by settings.drawAmount.flow.collectAsStateWithLifecycle(DRAW_AMOUNT)
+    val drawAmount by rememberDrawAmount()
 
     LaunchedEffect(drawAmount) {
         snapshotFlow { drawAmount }

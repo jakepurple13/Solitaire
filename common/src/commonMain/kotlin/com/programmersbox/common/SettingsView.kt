@@ -7,8 +7,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import kotlinx.coroutines.launch
-import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,12 +26,12 @@ internal fun SettingsView(
             contentPadding = padding
         ) {
             item {
-                val drawAmount by settings.drawAmount.flow.collectAsStateWithLifecycle(DRAW_AMOUNT)
+                var drawAmount by rememberDrawAmount()
                 var showDialogChange by remember { mutableStateOf(false) }
                 if (showDialogChange) {
                     NewGameDialog(
                         title = "Change the draw amount?",
-                        onConfirm = { scope.launch { settings.drawAmount.update(if (drawAmount == 1) 3 else 1) } },
+                        onConfirm = { drawAmount = if (drawAmount == 1) 3 else 1 },
                         onDismiss = { showDialogChange = false }
                     )
                 }
