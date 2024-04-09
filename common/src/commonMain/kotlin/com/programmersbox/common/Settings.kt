@@ -2,10 +2,7 @@ package com.programmersbox.common
 
 import androidx.compose.runtime.*
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.*
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.mapNotNull
@@ -25,6 +22,8 @@ class Settings(
 
     companion object {
         const val DATA_STORE_FILE_NAME = "solitaire.preferences_pb"
+
+        val DIFFICULTY_KEY = stringPreferencesKey("mode_difficulty")
     }
 }
 
@@ -33,6 +32,33 @@ fun rememberDrawAmount() = rememberPreference(
     intPreferencesKey("draw_amount"),
     DRAW_AMOUNT
 )
+
+enum class Difficulty { Easy, Normal }
+
+@Composable
+fun rememberModeDifficulty() = rememberPreference(
+    Settings.DIFFICULTY_KEY,
+    mapToType = { runCatching { Difficulty.valueOf(it) }.getOrNull() },
+    mapToKey = { it.name },
+    defaultValue = Difficulty.Normal
+)
+
+fun <T> preferenceFlow(
+    key: Preferences.Key<T>,
+    defaultValue: T,
+) = dataStore
+    .data
+    .mapNotNull { it[key] ?: defaultValue }
+    .distinctUntilChanged()
+
+fun <T, R> preferenceFlow(
+    key: Preferences.Key<T>,
+    mapToType: (T) -> R?,
+    defaultValue: R,
+) = dataStore
+    .data
+    .mapNotNull { it[key]?.let(mapToType) ?: defaultValue }
+    .distinctUntilChanged()
 
 @Composable
 fun <T> rememberPreference(
@@ -63,6 +89,41 @@ fun <T> rememberPreference(
 
             override fun component1() = value
             override fun component2(): (T) -> Unit = { value = it }
+        }
+    }
+}
+
+@Composable
+fun <T, R> rememberPreference(
+    key: Preferences.Key<T>,
+    mapToType: (T) -> R?,
+    mapToKey: (R) -> T,
+    defaultValue: R,
+): MutableState<R> {
+    val coroutineScope = rememberCoroutineScope()
+    val state by remember(::dataStore.isInitialized) {
+        if (::dataStore.isInitialized) {
+            dataStore
+                .data
+                .mapNotNull { it[key]?.let(mapToType) ?: defaultValue }
+                .distinctUntilChanged()
+        } else {
+            emptyFlow()
+        }
+    }.collectAsStateWithLifecycle(initial = defaultValue)
+
+    return remember(state) {
+        object : MutableState<R> {
+            override var value: R
+                get() = state
+                set(value) {
+                    coroutineScope.launch {
+                        dataStore.edit { it[key] = value.let(mapToKey) }
+                    }
+                }
+
+            override fun component1() = value
+            override fun component2(): (R) -> Unit = { value = it }
         }
     }
 }

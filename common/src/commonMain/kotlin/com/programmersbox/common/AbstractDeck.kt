@@ -255,6 +255,8 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
     @Throws(DeckException::class)
     open infix operator fun minus(amount: Int) = draw(amount)
 
+    open infix operator fun minus(card: T) = deckOfCards.remove(card)
+
     /**
      * Sets [index] of the deck with [card]
      */

@@ -24,6 +24,7 @@ import com.programmersbox.common.dragdrop.AnimatedDragDropBox
 import com.programmersbox.common.dragdrop.DragTarget
 import com.programmersbox.common.dragdrop.DragType
 import com.programmersbox.common.dragdrop.DropTarget
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -48,11 +49,14 @@ internal fun SolitaireScreen(
     settings: Settings,
 ) {
     val drawAmount by rememberDrawAmount()
+    val difficulty by rememberModeDifficulty()
 
-    LaunchedEffect(drawAmount) {
-        snapshotFlow { drawAmount }
-            .distinctUntilChanged()
-            .onEach { info.newGame() }
+    LaunchedEffect(drawAmount, difficulty) {
+        combine(
+            snapshotFlow { drawAmount }.distinctUntilChanged(),
+            snapshotFlow { difficulty }.distinctUntilChanged()
+        ) { _, m -> m }
+            .onEach { info.newGame(it) }
             .launchIn(this)
     }
 
@@ -82,7 +86,8 @@ internal fun SolitaireScreen(
             database.addHighScore(
                 timeTaken = info.timeText,
                 moveCount = info.moveCount,
-                score = info.score
+                score = info.score,
+                difficulty = difficulty
             )
         }
     }
@@ -98,7 +103,7 @@ internal fun SolitaireScreen(
             text = { Text("Start a new game?") },
             confirmButton = {
                 TextButton(
-                    onClick = { info.newGame() },
+                    onClick = { info.newGame(difficulty) },
                 ) { Text("Play again!") }
             },
             dismissButton = {
@@ -118,7 +123,7 @@ internal fun SolitaireScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        info.newGame()
+                        info.newGame(difficulty)
                         newGameDialog = false
                     }
                 ) { Text("Yes") }

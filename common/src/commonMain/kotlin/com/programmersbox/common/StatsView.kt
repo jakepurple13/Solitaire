@@ -128,6 +128,7 @@ private fun HighScoreItem(
                 Column {
                     Text("Time Taken: ${score.timeTaken}")
                     Text("Move Count: ${score.moves}")
+                    Text("Difficulty: ${score.difficulty ?: Difficulty.Normal.name}")
                 }
             },
             trailingContent = {

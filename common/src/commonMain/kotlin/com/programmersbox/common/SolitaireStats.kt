@@ -21,7 +21,7 @@ class SolitaireDatabase(name: String = Realm.DEFAULT_FILE_NAME) {
                     SolitaireScore::class
                 )
             )
-                .schemaVersion(2)
+                .schemaVersion(3)
                 .name(name)
                 .migration({ })
                 //.deleteRealmIfMigrationNeeded()
@@ -31,12 +31,18 @@ class SolitaireDatabase(name: String = Realm.DEFAULT_FILE_NAME) {
 
     private val solitaireStats: SolitaireStats = realm.initDbBlocking { SolitaireStats() }
 
-    suspend fun addHighScore(timeTaken: String, moveCount: Int, score: Int) {
+    suspend fun addHighScore(
+        timeTaken: String,
+        moveCount: Int,
+        score: Int,
+        difficulty: Difficulty,
+    ) {
         addHighScore(
             SolitaireScore().apply {
                 this.score = score
                 this.moves = moveCount
                 this.timeTaken = timeTaken
+                this.difficulty = difficulty.name
             }
         )
     }
@@ -94,4 +100,5 @@ class SolitaireScore : RealmObject {
     var score: Int = 0
     var moves: Int = 0
     var timeTaken: String = ""
+    var difficulty: String? = Difficulty.Normal.name
 }

@@ -3,6 +3,8 @@ package com.programmersbox.common
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -14,7 +16,6 @@ internal fun SettingsView(
     settings: Settings,
     onStatsClick: () -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -48,6 +49,48 @@ internal fun SettingsView(
                                 checked = drawAmount == DRAW_AMOUNT,
                                 onCheckedChange = { showDialogChange = true }
                             )
+                        }
+                    )
+                }
+            }
+            item {
+                var difficulty by rememberModeDifficulty()
+                var showDropdown by remember { mutableStateOf(false) }
+                OutlinedCard(
+                    onClick = { showDropdown = true }
+                ) {
+                    ListItem(
+                        headlineContent = { Text("Difficulty: $difficulty") },
+                        trailingContent = {
+                            if (showDropdown) {
+                                DropdownMenu(
+                                    expanded = showDropdown,
+                                    onDismissRequest = { showDropdown = false }
+                                ) {
+                                    Difficulty.entries.forEach {
+                                        var showDialogChange by remember { mutableStateOf(false) }
+                                        if (showDialogChange) {
+                                            NewGameDialog(
+                                                title = "Change difficulty?",
+                                                onConfirm = {
+                                                    difficulty = it
+                                                    showDropdown = false
+                                                },
+                                                onDismiss = {
+                                                    showDialogChange = false
+                                                    showDropdown = false
+                                                }
+                                            )
+                                        }
+
+                                        DropdownMenuItem(
+                                            text = { Text(it.name) },
+                                            onClick = { showDialogChange = true }
+                                        )
+                                    }
+                                }
+                            }
+                            Icon(Icons.Default.ArrowDropDown, null)
                         }
                     )
                 }

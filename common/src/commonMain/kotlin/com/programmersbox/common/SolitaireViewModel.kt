@@ -76,16 +76,38 @@ class SolitaireViewModel(
             stopwatch.start()
     }
 
-    fun newGame() {
+    fun newGame(difficulty: Difficulty) {
         deck.removeAllCards()
         deck.addDeck(Deck.defaultDeck())
         deck.shuffle(SEED)
+        foundations.values.forEach { it.clear() }
         fieldSlots.values.forEach { it.clear() }
+        drawList.clear()
+
+        when (difficulty) {
+            Difficulty.Easy -> {
+                val aceS = Card(1, Suit.Spades)
+                val aceC = Card(1, Suit.Clubs)
+                val aceD = Card(1, Suit.Diamonds)
+                val aceH = Card(1, Suit.Hearts)
+                deck -= aceS
+                deck -= aceC
+                deck -= aceD
+                deck -= aceH
+                foundations[1]?.add(aceS)
+                foundations[2]?.add(aceC)
+                foundations[3]?.add(aceD)
+                foundations[4]?.add(aceH)
+            }
+
+            Difficulty.Normal -> {
+
+            }
+        }
+
         repeat(7) {
             fieldSlots.getOrPut(it) { FieldSlot() }.setup(it, deck)
         }
-        foundations.values.forEach { it.clear() }
-        drawList.clear()
         score = 0
         moveCount = 0
         stopwatch.reset()
