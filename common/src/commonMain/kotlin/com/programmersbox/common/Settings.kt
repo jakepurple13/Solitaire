@@ -178,6 +178,114 @@ enum class CardBack(
         )
     },
 
+    BigBang({ null }) {
+        @Composable
+        override fun toModifier(): Modifier = Modifier.shaderBackground(
+            remember {
+                object : ShaderDelegate() {
+                    override val sksl: String = """
+                        uniform float uTime;
+                        uniform vec3 uResolution;
+                        
+            // https://www.shadertoy.com/view/MdXSzS
+// The Big Bang - just a small explosion somewhere in a massive Galaxy of Universes.
+// Outside of this there's a massive galaxy of 'Galaxy of Universes'... etc etc. :D
+
+// To fake a perspective it takes advantage of the screen being wider than it is tall.
+
+vec4 main( vec2 fragCoord )
+{
+	vec2 uv = (fragCoord.xy / uResolution.xy) - .5;
+	float t = uTime * .1 + ((.25 + .05 * sin(uTime * .1))/(length(uv.xy) + .07)) * 2.2;
+	float si = sin(t);
+	float co = cos(t);
+	mat2 ma = mat2(co, si, -si, co);
+
+	float v1, v2, v3;
+	v1 = v2 = v3 = 0.0;
+	
+	float s = 0.0;
+	for (int i = 0; i < 90; i++)
+	{
+		vec3 p = s * vec3(uv, 0.0);
+		p.xy *= ma;
+		p += vec3(.22, .3, s - 1.5 - sin(uTime * .13) * .1);
+		for (int i = 0; i < 8; i++)	p = abs(p) / dot(p,p) - 0.659;
+		v1 += dot(p,p) * .0015 * (1.8 + sin(length(uv.xy * 13.0) + .5  - uTime * .2));
+		v2 += dot(p,p) * .0013 * (1.5 + sin(length(uv.xy * 14.5) + 1.2 - uTime * .3));
+		v3 += length(p.xy*10.) * .0003;
+		s  += .035;
+	}
+	
+	float len = length(uv);
+	v1 *= smoothstep(.7, .0, len);
+	v2 *= smoothstep(.5, .0, len);
+	v3 *= smoothstep(.9, .0, len);
+	
+	vec3 col = vec3( v3 * (1.5 + sin(uTime * .2) * .4),
+					(v1 + v3) * .3,
+					 v2) + smoothstep(0.2, .0, len) * .85 + smoothstep(.0, .6, v3) * .3;
+
+	return vec4(min(pow(abs(col), vec3(1.2)), 1.0), 1.0);
+}
+        """.trimIndent()
+                }
+            }
+        )
+    },
+
+    RainbowCircle({ null }) {
+        @Composable
+        override fun toModifier(): Modifier = Modifier.shaderBackground(
+            remember {
+                object : ShaderDelegate() {
+                    override val sksl: String = """
+                        uniform float uTime;
+                        uniform vec3 uResolution;
+                        
+            vec4 main( vec2 fragCoord )
+{
+	vec2 p = (2.0*fragCoord.xy-uResolution.xy)/uResolution.y;
+    float tau = 3.1415926535*2.0;
+    float a = atan(p.x,p.y);
+    float r = length(p)*0.75;
+    vec2 uv = vec2(a/tau,r);
+	
+	//get the color
+	float xCol = (uv.x - (uTime / 3.0)) * 3.0;
+	xCol = mod(xCol, 3.0);
+	vec3 horColour = vec3(0.25, 0.25, 0.25);
+	
+	if (xCol < 1.0) {
+		
+		horColour.r += 1.0 - xCol;
+		horColour.g += xCol;
+	}
+	else if (xCol < 2.0) {
+		
+		xCol -= 1.0;
+		horColour.g += 1.0 - xCol;
+		horColour.b += xCol;
+	}
+	else {
+		
+		xCol -= 2.0;
+		horColour.b += 1.0 - xCol;
+		horColour.r += xCol;
+	}
+
+	// draw color beam
+	uv = (2.0 * uv) - 1.0;
+	float beamWidth = (0.7+0.5*cos(uv.x*10.0*tau*0.15*clamp(floor(5.0 + 10.0*cos(uTime)), 0.0, 10.0))) * abs(1.0 / (30.0 * uv.y));
+	vec3 horBeam = vec3(beamWidth);
+	return vec4((( horBeam) * horColour), 1.0);
+}
+        """.trimIndent()
+                }
+            }
+        )
+    },
+
     GlowingCircles({ null }) {
         @Composable
         override fun toModifier(): Modifier = Modifier.shaderBackground(
