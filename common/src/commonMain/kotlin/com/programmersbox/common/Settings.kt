@@ -70,7 +70,36 @@ enum class CardBack(
             )
         )
     }),
-
+    Linear({
+        Brush.linearGradient(
+            listOf(
+                Alizarin,
+                Sunflower,
+                Emerald,
+                Color.Red,
+                Color.Green,
+                Color.Blue,
+                Color.Magenta,
+                Color.Yellow,
+                Color.Cyan
+            )
+        )
+    }),
+    Radial({
+        Brush.radialGradient(
+            listOf(
+                Alizarin,
+                Sunflower,
+                Emerald,
+                Color.Red,
+                Color.Green,
+                Color.Blue,
+                Color.Magenta,
+                Color.Yellow,
+                Color.Cyan
+            )
+        )
+    }),
     @OptIn(ExperimentalResourceApi::class)
     Image({
         ShaderBrush(
