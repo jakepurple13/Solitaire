@@ -1,12 +1,16 @@
 package com.programmersbox.common
 
+import androidx.compose.foundation.background
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageShader
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
+import com.mikepenz.hypnoticcanvas.shaderBackground
+import com.mikepenz.hypnoticcanvas.shaders.*
 import com.programmersbox.common.generated.resources.Res
 import com.programmersbox.common.generated.resources.card_back
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -55,6 +59,7 @@ enum class CardBack(
     val brush: @Composable () -> Brush?,
 ) {
     None({ null }),
+
     Rainbow({
         Brush.sweepGradient(
             listOf(
@@ -70,6 +75,7 @@ enum class CardBack(
             )
         )
     }),
+
     Linear({
         Brush.linearGradient(
             listOf(
@@ -85,6 +91,7 @@ enum class CardBack(
             )
         )
     }),
+
     Radial({
         Brush.radialGradient(
             listOf(
@@ -100,6 +107,52 @@ enum class CardBack(
             )
         )
     }),
+
+    BlackCherry({ null }) {
+        @Composable
+        override fun toModifier(): Modifier = Modifier.shaderBackground(BlackCherryCosmos)
+    },
+
+    GoldenLava({ null }) {
+        @Composable
+        override fun toModifier(): Modifier = Modifier.shaderBackground(GoldenMagma)
+    },
+
+    IceReflect({ null }) {
+        @Composable
+        override fun toModifier(): Modifier = Modifier.shaderBackground(IceReflection)
+    },
+
+    Ink({ null }) {
+        @Composable
+        override fun toModifier(): Modifier = Modifier.shaderBackground(InkFlow)
+    },
+
+    Oil({ null }) {
+        @Composable
+        override fun toModifier(): Modifier = Modifier.shaderBackground(OilFlow)
+    },
+
+    PurpleWater({ null }) {
+        @Composable
+        override fun toModifier(): Modifier = Modifier.shaderBackground(PurpleLiquid)
+    },
+
+    RainbowLiquid({ null }) {
+        @Composable
+        override fun toModifier(): Modifier = Modifier.shaderBackground(RainbowWater)
+    },
+
+    StagePlay({ null }) {
+        @Composable
+        override fun toModifier(): Modifier = Modifier.shaderBackground(Stage)
+    },
+
+    Glossy({ null }) {
+        @Composable
+        override fun toModifier(): Modifier = Modifier.shaderBackground(GlossyGradients)
+    },
+
     @OptIn(ExperimentalResourceApi::class)
     Image({
         ShaderBrush(
@@ -107,7 +160,10 @@ enum class CardBack(
                 imageResource(Res.drawable.card_back)
             )
         )
-    })
+    });
+
+    @Composable
+    open fun toModifier(): Modifier? = brush()?.let { Modifier.background(it) }
 }
 
 @Composable

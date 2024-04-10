@@ -55,6 +55,8 @@ kotlin {
                 api(libs.datastore.preferences)
                 api(libs.library.base)
                 implementation(compose.components.resources)
+                implementation(libs.hypnoticcanvas)
+                implementation(libs.hypnoticcanvas.shaders)
             }
         }
 
@@ -104,4 +106,5 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    namespace = "com.programmersbox.common"
 }

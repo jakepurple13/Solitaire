@@ -128,7 +128,7 @@ internal fun SettingsView(
                                         ) {
                                             EmptyCard(
                                                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                                                cardBack = it.brush(),
+                                                cardBack = it.toModifier(),
                                                 content = {
                                                     Text(
                                                         it.name,

@@ -1,7 +1,6 @@
 package com.programmersbox.common
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextAlign
@@ -161,7 +159,7 @@ fun EmptyCard(
     shadowElevation: Dp = 0.dp,
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    cardBack: Brush? = null,
+    cardBack: Modifier? = null,
     content: @Composable () -> Unit = {},
     onClick: () -> Unit = {},
 ) = Surface(
@@ -177,7 +175,7 @@ fun EmptyCard(
     modifier = modifier//.size(100.dp, 150.dp),
 ) {
     cardBack?.let {
-        Box(modifier = Modifier.background(it)) { content() }
+        Box(modifier = it) { content() }
     } ?: Box { content() }
 }
 
@@ -191,7 +189,7 @@ fun EmptyCard(
     shadowElevation: Dp = 0.dp,
     border: BorderStroke? = null,
     content: @Composable () -> Unit = {},
-    cardBack: Brush? = null,
+    cardBack: Modifier? = null,
 ) = Surface(
     shape = shape,
     tonalElevation = tonalElevation,
@@ -202,6 +200,6 @@ fun EmptyCard(
     modifier = modifier//.size(100.dp, 150.dp),
 ) {
     cardBack?.let {
-        Box(modifier = Modifier.background(it)) { content() }
+        Box(modifier = it) { content() }
     } ?: Box { content() }
 }

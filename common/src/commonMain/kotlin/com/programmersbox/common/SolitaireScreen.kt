@@ -294,7 +294,7 @@ private fun Foundations(
                     }
                     ?: EmptyCard(
                         border = BorderStroke(2.dp, strokeColor),
-                        cardBack = cardBack.brush(),
+                        cardBack = cardBack.toModifier(),
                         modifier = cardSizeModifier
                             .fillMaxSize()
                             .then(winModifier),
@@ -346,7 +346,7 @@ private fun Draws(
                 }
             } ?: EmptyCard(
                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                cardBack = cardBack.brush(),
+                cardBack = cardBack.toModifier(),
                 modifier = cardSizeModifier
                     .width(100.dp)
                     .then(winModifier)
@@ -358,7 +358,7 @@ private fun Draws(
         ) {
             EmptyCard(
                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                cardBack = cardBack.brush(),
+                cardBack = cardBack.toModifier(),
                 content = {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -441,7 +441,7 @@ private fun Field(
                     if (fieldSlot.value.list.isEmpty()) {
                         EmptyCard(
                             border = BorderStroke(2.dp, strokeColor),
-                            cardBack = cardBack.brush(),
+                            cardBack = cardBack.toModifier(),
                             modifier = Modifier
                                 .height(FIELD_HEIGHT.dp)
                                 .border(

@@ -37,6 +37,8 @@ android {
             isDebuggable = false
         }
     }
+
+    namespace = "com.programmersbox.solitaire"
 }
 
 dependencies {

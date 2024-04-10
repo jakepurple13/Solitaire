@@ -1,11 +1,12 @@
 [versions]
+hypnoticcanvas = "0.0.5"
 realm-plugin = "1.11.0"
 kotlin-version = "1.9.23"
-agp-version = "7.3.0"
+agp-version = "8.2.0"
 compose-version = "1.6.1"
 kotlinx-datetime = "0.6.0-RC.2"
-precompose = "1.6.0-rc04"
-datastore-version = "1.1.0-beta02"
+precompose = "1.6.0"
+datastore-version = "1.1.0-rc01"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp-version" }
@@ -16,6 +17,8 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-ve
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version = "1.6.1" }
 androidx-core = { module = "androidx.core:core-ktx", version = "1.12.0" }
 androidx-activity-compose = "androidx.activity:activity-compose:1.8.2"
+hypnoticcanvas = { module = "com.mikepenz.hypnoticcanvas:hypnoticcanvas", version.ref = "hypnoticcanvas" }
+hypnoticcanvas-shaders = { module = "com.mikepenz.hypnoticcanvas:hypnoticcanvas-shaders", version.ref = "hypnoticcanvas" }
 realm-plugin = { module = "io.realm.kotlin:gradle-plugin", version.ref = "realm-plugin" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 precompose = { module = "moe.tlaster:precompose", version.ref = "precompose" }
