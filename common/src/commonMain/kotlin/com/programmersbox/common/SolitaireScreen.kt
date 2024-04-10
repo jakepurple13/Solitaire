@@ -4,11 +4,13 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoMode
 import androidx.compose.material.icons.filled.Settings
@@ -50,6 +52,7 @@ internal fun SolitaireScreen(
 ) {
     val drawAmount by rememberDrawAmount()
     val difficulty by rememberModeDifficulty()
+    val cardBack by rememberCardBack()
 
     LaunchedEffect(drawAmount, difficulty) {
         combine(
@@ -226,18 +229,21 @@ internal fun SolitaireScreen(
                 ) {
                     Foundations(
                         info = info,
-                        winModifier = winModifier
+                        winModifier = winModifier,
+                        cardBack = cardBack
                     )
                     //---------draws---------
                     Draws(
                         winModifier = winModifier,
                         info = info,
                         drawAmount = drawAmount,
+                        cardBack = cardBack
                     )
                     //---------field---------
                     Field(
                         winModifier = winModifier,
-                        info = info
+                        info = info,
+                        cardBack = cardBack
                     )
                 }
             }
@@ -248,6 +254,7 @@ internal fun SolitaireScreen(
 @Composable
 private fun Foundations(
     info: SolitaireViewModel,
+    cardBack: CardBack,
     winModifier: Modifier,
 ) {
     Row(
@@ -287,6 +294,7 @@ private fun Foundations(
                     }
                     ?: EmptyCard(
                         border = BorderStroke(2.dp, strokeColor),
+                        cardBack = cardBack.brush(),
                         modifier = cardSizeModifier
                             .fillMaxSize()
                             .then(winModifier),
@@ -300,6 +308,7 @@ private fun Foundations(
 private fun Draws(
     winModifier: Modifier,
     info: SolitaireViewModel,
+    cardBack: CardBack,
     drawAmount: Int,
 ) {
     Row(
@@ -309,11 +318,14 @@ private fun Draws(
         Row(
             horizontalArrangement = Arrangement.spacedBy((-50).dp)
         ) {
+            //draws
+            //var delay = 100L
             info
                 .drawList
                 .dropLast(1)
                 .takeLast(2)
                 .forEach {
+                    //delay.also { delay += 50 }
                     PlayingCard(
                         card = it,
                         border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
@@ -334,6 +346,7 @@ private fun Draws(
                 }
             } ?: EmptyCard(
                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                cardBack = cardBack.brush(),
                 modifier = cardSizeModifier
                     .width(100.dp)
                     .then(winModifier)
@@ -345,24 +358,36 @@ private fun Draws(
         ) {
             EmptyCard(
                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                cardBack = cardBack.brush(),
+                content = {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .background(
+                                Color.Black.copy(alpha = 0.5f),
+                                shape = RoundedCornerShape(
+                                    topEnd = 4.dp,
+                                    topStart = 4.dp
+                                )
+                            )
+                            .fillMaxWidth()
+                            .align(Alignment.BottomCenter)
+                    ) {
+                        Text(
+                            "Cards left:",
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            animateIntAsState(info.cardsLeft).value.toString(),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                },
                 modifier = cardSizeModifier
                     .width(100.dp)
                     .then(winModifier),
             ) { info.draw(drawAmount) }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.matchParentSize()
-            ) {
-                Text(
-                    "Cards left:",
-                    textAlign = TextAlign.Center
-                )
-                Text(
-                    animateIntAsState(info.cardsLeft).value.toString(),
-                    textAlign = TextAlign.Center
-                )
-            }
         }
     }
 }
@@ -372,6 +397,7 @@ private fun Draws(
 private fun Field(
     winModifier: Modifier,
     info: SolitaireViewModel,
+    cardBack: CardBack,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally),
@@ -415,6 +441,7 @@ private fun Field(
                     if (fieldSlot.value.list.isEmpty()) {
                         EmptyCard(
                             border = BorderStroke(2.dp, strokeColor),
+                            cardBack = cardBack.brush(),
                             modifier = Modifier
                                 .height(FIELD_HEIGHT.dp)
                                 .border(

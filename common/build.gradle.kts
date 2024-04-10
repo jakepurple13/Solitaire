@@ -54,6 +54,7 @@ kotlin {
                 api(libs.datastore.core)
                 api(libs.datastore.preferences)
                 api(libs.library.base)
+                implementation(compose.components.resources)
             }
         }
 

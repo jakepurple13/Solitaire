@@ -1,14 +1,22 @@
 package com.programmersbox.common
 
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageShader
+import androidx.compose.ui.graphics.ShaderBrush
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
+import com.programmersbox.common.generated.resources.Res
+import com.programmersbox.common.generated.resources.card_back
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import okio.Path.Companion.toPath
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.imageResource
 
 private lateinit var dataStore: DataStore<Preferences>
 
@@ -41,6 +49,44 @@ fun rememberModeDifficulty() = rememberPreference(
     mapToType = { runCatching { Difficulty.valueOf(it) }.getOrNull() },
     mapToKey = { it.name },
     defaultValue = Difficulty.Normal
+)
+
+enum class CardBack(
+    val brush: @Composable () -> Brush?,
+) {
+    None({ null }),
+    Rainbow({
+        Brush.sweepGradient(
+            listOf(
+                Alizarin,
+                Sunflower,
+                Emerald,
+                Color.Red,
+                Color.Green,
+                Color.Blue,
+                Color.Magenta,
+                Color.Yellow,
+                Color.Cyan
+            )
+        )
+    }),
+
+    @OptIn(ExperimentalResourceApi::class)
+    Image({
+        ShaderBrush(
+            ImageShader(
+                imageResource(Res.drawable.card_back)
+            )
+        )
+    })
+}
+
+@Composable
+fun rememberCardBack() = rememberPreference(
+    key = intPreferencesKey("card_back"),
+    mapToKey = { it.ordinal },
+    mapToType = { CardBack.entries[it] },
+    defaultValue = CardBack.None
 )
 
 fun <T> preferenceFlow(
