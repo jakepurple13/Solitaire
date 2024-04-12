@@ -23,3 +23,5 @@ public fun UIShow() {
         )
     }
 }
+
+public actual fun hasDisplayGsl(): Boolean = true

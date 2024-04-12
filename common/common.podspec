@@ -39,7 +39,7 @@ Pod::Spec.new do |spec|
                 fi
                 set -ev
                 REPO_ROOT="$PODS_TARGET_SRCROOT"
-                "$REPO_ROOT/../../../../../private/var/folders/rm/y4w6qv5x7bd__dcgq2kyfh8c0000gn/T/wrap17890loc/gradlew" -p "$REPO_ROOT" $KOTLIN_PROJECT_PATH:syncFramework \
+                "$REPO_ROOT/../../../../../private/var/folders/rm/y4w6qv5x7bd__dcgq2kyfh8c0000gn/T/wrap6930loc/gradlew" -p "$REPO_ROOT" $KOTLIN_PROJECT_PATH:syncFramework \
                     -Pkotlin.native.cocoapods.platform=$PLATFORM_NAME \
                     -Pkotlin.native.cocoapods.archs="$ARCHS" \
                     -Pkotlin.native.cocoapods.configuration="$CONFIGURATION"

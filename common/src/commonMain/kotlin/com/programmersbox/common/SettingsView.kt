@@ -121,7 +121,7 @@ internal fun SettingsView(
                                 LazyRow(
                                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
-                                    items(CardBack.entries) {
+                                    items(CardBack.entries.filter { it.includeGsl() }) {
                                         Box(
                                             contentAlignment = Alignment.Center,
                                             modifier = Modifier.wrapContentSize()

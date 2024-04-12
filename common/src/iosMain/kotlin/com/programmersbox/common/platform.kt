@@ -23,6 +23,8 @@ public actual fun getPlatformName(): String {
     return "iOS"
 }
 
+public actual fun hasDisplayGsl(): Boolean = true
+
 @OptIn(ExperimentalForeignApi::class)
 @Composable
 private fun UIShow() {
