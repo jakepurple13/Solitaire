@@ -318,6 +318,52 @@ private fun Draws(
         Row(
             horizontalArrangement = Arrangement.spacedBy((-50).dp)
         ) {
+            /*val transition = updateTransition(info.drawList.takeLast(3))
+            transition.AnimatedContent(
+                transitionSpec = {
+                    if (targetState.isEmpty()) {
+                        fadeIn() togetherWith fadeOut()
+                    } else {
+                        slideInHorizontally { height -> height } + fadeIn() togetherWith
+                                slideOutHorizontally { height -> -height } + fadeOut()
+                    }
+                },
+                contentAlignment = Alignment.CenterEnd
+            ) { target ->
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy((-50).dp)
+                ) {
+                    target
+                        .dropLast(1)
+                        .forEach {
+                            PlayingCard(
+                                card = it,
+                                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                                modifier = cardSizeModifier.width(100.dp)
+                            )
+                        }
+
+                    target.lastOrNull()?.let {
+                        DragTarget(
+                            dataToDrop = CardLocation(DRAW_LOCATION, it, 0),
+                            enable = !info.hasWon,
+                        ) {
+                            PlayingCard(
+                                card = it,
+                                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                                modifier = cardSizeModifier.width(100.dp)
+                            )
+                        }
+                    } ?: EmptyCard(
+                        border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                        cardBack = cardBack.toModifier(),
+                        modifier = cardSizeModifier
+                            .width(100.dp)
+                            .then(winModifier)
+                    )
+                }
+            }*/
+
             //draws
             //var delay = 100L
             info

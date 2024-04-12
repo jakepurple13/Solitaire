@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -150,7 +151,14 @@ internal fun SettingsView(
                                                     .width(100.dp)
                                             ) { cardBack = it }
                                             if (it == cardBack) {
-                                                Icon(Icons.Default.CheckCircle, null)
+                                                Icon(
+                                                    Icons.Default.CheckCircle,
+                                                    null,
+                                                    modifier = Modifier.background(
+                                                        Color.Black.copy(alpha = .5f),
+                                                        CircleShape
+                                                    )
+                                                )
                                             }
                                         }
                                     }
