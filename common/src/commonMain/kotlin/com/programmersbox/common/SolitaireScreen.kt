@@ -26,10 +26,7 @@ import com.programmersbox.common.dragdrop.AnimatedDragDropBox
 import com.programmersbox.common.dragdrop.DragTarget
 import com.programmersbox.common.dragdrop.DragType
 import com.programmersbox.common.dragdrop.DropTarget
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.navigation.BackHandler
 import moe.tlaster.precompose.viewmodel.viewModel
@@ -59,6 +56,7 @@ internal fun SolitaireScreen(
             snapshotFlow { drawAmount }.distinctUntilChanged(),
             snapshotFlow { difficulty }.distinctUntilChanged()
         ) { _, m -> m }
+            .drop(1)
             .onEach { info.newGame(it) }
             .launchIn(this)
     }
@@ -171,6 +169,7 @@ internal fun SolitaireScreen(
     ) {
         ModalNavigationDrawer(
             drawerState = drawerState,
+            gesturesEnabled = drawerState.isOpen,
             drawerContent = {
                 ModalDrawerSheet {
                     SettingsView(

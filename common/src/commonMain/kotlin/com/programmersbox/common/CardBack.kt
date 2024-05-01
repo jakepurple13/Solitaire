@@ -832,6 +832,7 @@ vec4 raymarch(vec3 org, vec3 dir)
 
 vec4 main( vec2 fragCoord ) {
 	vec2 v = -1.0 + 2.0 * fragCoord.xy / uResolution.xy;
+    v.y = -v.y;
 	v.x *= uResolution.x/uResolution.y;
 	
 	vec3 org = vec3(0., -2., 4.);
