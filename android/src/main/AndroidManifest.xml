@@ -4,6 +4,7 @@
     <application
             android:label="Solitaire"
             android:allowBackup="false"
+            android:appCategory="game"
             android:supportsRtl="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".MainActivity" android:exported="true">
