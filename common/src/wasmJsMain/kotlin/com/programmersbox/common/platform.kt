@@ -2,7 +2,10 @@ package com.programmersbox.common
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import kotlinx.browser.localStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -41,14 +44,53 @@ private var drawAmount = mutableStateOf(3)
 @Composable
 actual fun rememberDrawAmount(): MutableState<Int> = drawAmount
 
-private var cardBack = mutableStateOf(CardBack.None)
+private var cardBack = mutableStateOf(
+    localStorage.getItem("cardback").let {
+        runCatching { CardBack.valueOf(it.toString()) }.getOrElse { CardBack.None }
+    }
+)
 
 @Composable
-actual fun rememberCardBack(): MutableState<CardBack> = cardBack
+actual fun rememberCardBack(): MutableState<CardBack> = rememberPreference(
+    cardBack,
+    "cardback",
+    { it.name }
+)
 
-private var difficulty = mutableStateOf(Difficulty.Normal)
+private var difficulty = mutableStateOf(
+    localStorage.getItem("difficulty").let {
+        runCatching { Difficulty.valueOf(it.toString()) }.getOrElse { Difficulty.Normal }
+    }
+)
 
 @Composable
-actual fun rememberModeDifficulty(): MutableState<com.programmersbox.common.Difficulty> = difficulty
+actual fun rememberModeDifficulty(): MutableState<Difficulty> = rememberPreference(
+    difficulty,
+    "difficulty",
+    { it.name }
+)
 
 actual val showCardBacksAlone: Boolean = true
+
+@Composable
+fun <T> rememberPreference(
+    mutableState: MutableState<T>,
+    key: String,
+    valueToString: (T) -> String,
+): MutableState<T> {
+    val state by mutableState
+
+    return remember(state) {
+        object : MutableState<T> {
+            override var value: T
+                get() = state
+                set(value) {
+                    mutableState.value = value
+                    localStorage.setItem(key, valueToString(value))
+                }
+
+            override fun component1() = value
+            override fun component2(): (T) -> Unit = { value = it }
+        }
+    }
+}
