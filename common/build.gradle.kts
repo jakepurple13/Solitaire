@@ -1,9 +1,13 @@
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+
 plugins {
+    alias(libs.plugins.compose.compiler)
     kotlin("multiplatform")
     id("org.jetbrains.compose")
     id("com.android.library")
     kotlin("native.cocoapods")
-    id("io.realm.kotlin")
+    //id("io.realm.kotlin")
 }
 
 group = "com.programmersbox"
@@ -11,6 +15,24 @@ version = "1.0-SNAPSHOT"
 
 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 kotlin {
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        moduleName = "common"
+        browser {
+            val projectDirPath = project.projectDir.path
+            commonWebpackConfig {
+                outputFileName = "composeApp.js"
+                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+                    static = (static ?: mutableListOf()).apply {
+                        // Serve sources to debug inside browser
+                        add(projectDirPath)
+                    }
+                }
+            }
+        }
+        binaries.executable()
+    }
+
     androidTarget {
         compilations.all {
             kotlinOptions.jvmTarget = "11"
@@ -24,10 +46,16 @@ kotlin {
 
     applyDefaultHierarchyTemplate()
 
-    ios()
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "ComposeApp"
+            isStatic = true
+        }
+    }
 
     cocoapods {
         summary = "Some description for the Shared Module"
@@ -51,9 +79,9 @@ kotlin {
                 api(libs.kotlinx.datetime)
                 api(libs.precompose)
                 api(libs.precompose.viewmodel)
-                api(libs.datastore.core)
-                api(libs.datastore.preferences)
-                api(libs.library.base)
+                //api(libs.datastore.core)
+                //api(libs.datastore.preferences)
+                //api(libs.library.base)
                 implementation(compose.components.resources)
                 implementation(libs.hypnoticcanvas)
                 implementation(libs.hypnoticcanvas.shaders)
@@ -70,27 +98,35 @@ kotlin {
             dependencies {
                 api(libs.androidx.appcompat)
                 api(libs.androidx.core)
+                implementation(projects.storage)
             }
         }
 
         val desktopMain by getting {
             dependencies {
                 api(compose.preview)
+                implementation(projects.storage)
             }
         }
 
         val desktopTest by getting
-
 
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
         val iosMain by getting {
             dependencies {
+                implementation(projects.storage)
             }
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
+        }
+
+        val wasmJsMain by getting {
+            dependencies {
+
+            }
         }
     }
 }

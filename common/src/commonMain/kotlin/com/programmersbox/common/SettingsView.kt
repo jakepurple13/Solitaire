@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SettingsView(
-    settings: Settings,
+    settings: Settings?,
     onStatsClick: () -> Unit,
 ) {
     Scaffold(

@@ -71,7 +71,7 @@ internal fun StatsView(
 
 @Composable
 private fun HighScoreItem(
-    score: SolitaireScore,
+    score: SolitaireScoreHold,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
     isUsing24HourTime: Boolean = true,

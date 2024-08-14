@@ -1,6 +1,5 @@
-package com.programmersbox.common
+package com.programmersbox.storage
 
-/*
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
 import io.realm.kotlin.ext.asFlow
@@ -102,4 +101,4 @@ class SolitaireScore : RealmObject {
     var moves: Int = 0
     var timeTaken: String = ""
     var difficulty: String? = Difficulty.Normal.name
-}*/
+}

@@ -45,7 +45,7 @@ private val cardSizeModifier = Modifier.height(150.dp)
 internal fun SolitaireScreen(
     database: SolitaireDatabase = remember { SolitaireDatabase() },
     info: SolitaireViewModel = viewModel(SolitaireViewModel::class) { SolitaireViewModel() },
-    settings: Settings,
+    settings: Settings?,
 ) {
     val drawAmount by rememberDrawAmount()
     val difficulty by rememberModeDifficulty()
@@ -88,7 +88,7 @@ internal fun SolitaireScreen(
                 timeTaken = info.timeText,
                 moveCount = info.moveCount,
                 score = info.score,
-                difficulty = difficulty
+                difficulty = difficulty.ordinal
             )
         }
     }

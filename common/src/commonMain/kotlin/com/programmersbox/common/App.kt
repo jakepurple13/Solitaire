@@ -12,7 +12,7 @@ import moe.tlaster.precompose.navigation.rememberNavigator
 
 @Composable
 internal fun App(
-    settings: Settings,
+    settings: Settings?,
 ) {
     PreComposeApp {
         Surface {
