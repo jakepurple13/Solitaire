@@ -46,7 +46,7 @@ private var cardBack = mutableStateOf(CardBack.None)
 @Composable
 actual fun rememberCardBack(): MutableState<CardBack> = cardBack
 
-private var difficulty = mutableStateOf(Difficulty.Easy)
+private var difficulty = mutableStateOf(Difficulty.Normal)
 
 @Composable
 actual fun rememberModeDifficulty(): MutableState<com.programmersbox.common.Difficulty> = difficulty
