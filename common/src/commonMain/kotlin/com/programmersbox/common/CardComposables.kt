@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +25,13 @@ fun rememberDeck(vararg key: Any) = remember(key) { Deck.defaultDeck() }
 object PlayingCardDefaults {
     val shape = RoundedCornerShape(7.dp)
 }
+
+data class CardShow(
+    val full: (Card) -> String = { it.toSymbolString() },
+    val suit: (Suit) -> String = { it.unicodeSymbol },
+)
+
+val LocalCardShowing = staticCompositionLocalOf<CardShow> { CardShow() }
 
 @Composable
 fun PlayingCard(
@@ -85,13 +93,14 @@ private fun CardDetail(
         CardColor.Black -> colors.black
         CardColor.Red -> colors.red
     }
+    val cardShow = LocalCardShowing.current
     if (showFullDetail) {
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.padding(4.dp)
         ) {
             Text(
-                text = card.toSymbolString(),
+                text = card.let(cardShow.full),
                 color = textColor,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
@@ -102,13 +111,13 @@ private fun CardDetail(
             ) {
                 repeat(card.value) {
                     Text(
-                        text = card.suit.unicodeSymbol, textAlign = TextAlign.Center,
+                        text = card.suit.let(cardShow.suit), textAlign = TextAlign.Center,
                         color = textColor,
                     )
                 }
             }
             Text(
-                text = card.toSymbolString(),
+                text = card.let(cardShow.full),
                 color = textColor,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.End
@@ -119,7 +128,7 @@ private fun CardDetail(
             modifier = Modifier.padding(4.dp)
         ) {
             Text(
-                text = card.toSymbolString(),
+                text = card.let(cardShow.full),
                 color = textColor,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -128,7 +137,7 @@ private fun CardDetail(
             )
 
             Text(
-                text = card.suit.unicodeSymbol,
+                text = card.suit.let(cardShow.suit),
                 color = textColor,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -137,7 +146,7 @@ private fun CardDetail(
             )
 
             Text(
-                text = card.toSymbolString(),
+                text = card.let(cardShow.full),
                 color = textColor,
                 modifier = Modifier
                     .fillMaxWidth()

@@ -1,17 +1,26 @@
-package com.programmersbox.common
+package com.programmersbox.storage
 
-enum class Difficulty { Easy, Normal }
-
-/*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.*
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import okio.Path.Companion.toPath
+import kotlin.isInitialized
+import kotlin.let
+import kotlin.runCatching
 
 private lateinit var dataStore: DataStore<Preferences>
 
@@ -31,27 +40,53 @@ class Settings(
 }
 
 @Composable
-fun rememberDrawAmount() = rememberPreference(
+fun rememberDrawAmount(
+    toState: @Composable Flow<Int>.(Int) -> State<Int>,
+) = rememberPreference(
     intPreferencesKey("draw_amount"),
-    DRAW_AMOUNT
+    3,
+    toState = toState
 )
 
 enum class Difficulty { Easy, Normal }
 
 @Composable
-fun rememberModeDifficulty() = rememberPreference(
+fun rememberModeDifficulty(
+    toState: @Composable Flow<Difficulty>.(Difficulty) -> State<Difficulty>,
+) = rememberPreference(
     Settings.DIFFICULTY_KEY,
     mapToType = { runCatching { Difficulty.valueOf(it) }.getOrNull() },
     mapToKey = { it.name },
-    defaultValue = Difficulty.Normal
+    defaultValue = Difficulty.Normal,
+    toState = toState
 )
 
 @Composable
-fun rememberCardBack() = rememberPreference(
+inline fun <reified T : Enum<T>> rememberModeDifficulty(
+    defaultValue: T,
+    noinline mapToKey: (T) -> String = { it.name },
+    noinline mapToType: (String) -> T = { enumValueOf<T>(it) },
+    noinline toState: @Composable Flow<T>.(T) -> State<T>,
+) = rememberPreference(
+    key = Settings.DIFFICULTY_KEY,
+    mapToKey = mapToKey,
+    mapToType = mapToType,
+    defaultValue = defaultValue,
+    toState = toState
+)
+
+@Composable
+inline fun <reified T : Enum<T>> rememberCardBack(
+    defaultValue: T,
+    noinline mapToKey: (T) -> Int = { it.ordinal },
+    noinline mapToType: (Int) -> T = { enumValues<T>()[it] },
+    noinline toState: @Composable Flow<T>.(T) -> State<T>,
+) = rememberPreference(
     key = intPreferencesKey("card_back"),
-    mapToKey = { it.ordinal },
-    mapToType = { CardBack.entries[it] },
-    defaultValue = CardBack.None
+    mapToKey = mapToKey,
+    mapToType = mapToType,
+    defaultValue = defaultValue,
+    toState = toState
 )
 
 fun <T> preferenceFlow(
@@ -75,6 +110,7 @@ fun <T, R> preferenceFlow(
 fun <T> rememberPreference(
     key: Preferences.Key<T>,
     defaultValue: T,
+    toState: @Composable Flow<T>.(T) -> State<T>,
 ): MutableState<T> {
     val coroutineScope = rememberCoroutineScope()
     val state by remember(::dataStore.isInitialized) {
@@ -86,7 +122,7 @@ fun <T> rememberPreference(
         } else {
             emptyFlow()
         }
-    }.collectAsStateWithLifecycle(initial = defaultValue)
+    }.toState(defaultValue)
 
     return remember(state) {
         object : MutableState<T> {
@@ -110,6 +146,7 @@ fun <T, R> rememberPreference(
     mapToType: (T) -> R?,
     mapToKey: (R) -> T,
     defaultValue: R,
+    toState: @Composable Flow<R>.(R) -> State<R>,
 ): MutableState<R> {
     val coroutineScope = rememberCoroutineScope()
     val state by remember(::dataStore.isInitialized) {
@@ -121,7 +158,7 @@ fun <T, R> rememberPreference(
         } else {
             emptyFlow()
         }
-    }.collectAsStateWithLifecycle(initial = defaultValue)
+    }.toState(defaultValue)
 
     return remember(state) {
         object : MutableState<R> {
@@ -138,4 +175,3 @@ fun <T, R> rememberPreference(
         }
     }
 }
-*/

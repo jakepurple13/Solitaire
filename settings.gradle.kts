@@ -7,8 +7,11 @@ pluginManagement {
     }
 }
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 rootProject.name = "Solitaire"
 
 include(":android")
 include(":desktop")
 include(":common")
+include("storage")
