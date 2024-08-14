@@ -39,10 +39,17 @@ actual class SolitaireDatabase {
     actual fun getWinCount(): Flow<Int> = emptyFlow()
 }
 
-private var drawAmount = mutableStateOf(3)
+private var drawAmount = mutableStateOf(
+    localStorage.getItem("drawAmount").let {
+        runCatching { it?.toIntOrNull() }.getOrNull() ?: 3
+    }
+)
 
 @Composable
-actual fun rememberDrawAmount(): MutableState<Int> = drawAmount
+actual fun rememberDrawAmount(): MutableState<Int> = rememberPreference(
+    drawAmount,
+    "drawAmount"
+) { it.toString() }
 
 private var cardBack = mutableStateOf(
     localStorage.getItem("cardback").let {
@@ -53,9 +60,8 @@ private var cardBack = mutableStateOf(
 @Composable
 actual fun rememberCardBack(): MutableState<CardBack> = rememberPreference(
     cardBack,
-    "cardback",
-    { it.name }
-)
+    "cardback"
+) { it.name }
 
 private var difficulty = mutableStateOf(
     localStorage.getItem("difficulty").let {
@@ -66,9 +72,8 @@ private var difficulty = mutableStateOf(
 @Composable
 actual fun rememberModeDifficulty(): MutableState<Difficulty> = rememberPreference(
     difficulty,
-    "difficulty",
-    { it.name }
-)
+    "difficulty"
+) { it.name }
 
 actual val showCardBacksAlone: Boolean = true
 
