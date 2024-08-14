@@ -91,3 +91,5 @@ actual fun rememberModeDifficulty(): MutableState<com.programmersbox.common.Diff
 ) {
     collectAsStateWithLifecycle(it)
 }
+
+actual val showCardBacksAlone: Boolean = false

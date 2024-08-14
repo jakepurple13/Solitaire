@@ -44,3 +44,5 @@ expect fun rememberCardBack(): MutableState<CardBack>
 
 @Composable
 expect fun rememberModeDifficulty(): MutableState<Difficulty>
+
+expect val showCardBacksAlone: Boolean

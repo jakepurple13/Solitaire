@@ -36,7 +36,8 @@ internal fun SettingsView(
     ) { padding ->
         LazyColumn(
             contentPadding = padding,
-            verticalArrangement = Arrangement.spacedBy(2.dp)
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+            modifier = Modifier.fillMaxSize()
         ) {
             item {
                 var drawAmount by rememberDrawAmount()
@@ -166,6 +167,57 @@ internal fun SettingsView(
                             }
                         }
                     )
+                }
+            }
+
+            if (showCardBacksAlone) {
+                item {
+                    var cardBack by rememberCardBack()
+
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        items(CardBack.entries.filter { it.includeGsl() }) {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.wrapContentSize()
+                            ) {
+                                EmptyCard(
+                                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                                    cardBack = it.toModifier(),
+                                    content = {
+                                        Text(
+                                            it.name,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier
+                                                .align(Alignment.BottomCenter)
+                                                .fillMaxWidth()
+                                                .background(
+                                                    Color.Black.copy(alpha = .5f),
+                                                    shape = RoundedCornerShape(
+                                                        topEnd = 4.dp,
+                                                        topStart = 4.dp
+                                                    )
+                                                )
+                                        )
+                                    },
+                                    modifier = Modifier
+                                        .height(150.dp)
+                                        .width(100.dp)
+                                ) { cardBack = it }
+                                if (it == cardBack) {
+                                    Icon(
+                                        Icons.Default.CheckCircle,
+                                        null,
+                                        modifier = Modifier.background(
+                                            Color.Black.copy(alpha = .5f),
+                                            CircleShape
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
             }
 

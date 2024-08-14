@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.emptyFlow
 
 actual fun getPlatformName(): String = "Web with Kotlin/Wasm"
 
-actual fun hasDisplayGsl(): Boolean = false
+actual fun hasDisplayGsl(): Boolean = true
 
 public actual class Settings actual constructor(
     producePath: () -> String,
@@ -50,3 +50,5 @@ private var difficulty = mutableStateOf(Difficulty.Easy)
 
 @Composable
 actual fun rememberModeDifficulty(): MutableState<com.programmersbox.common.Difficulty> = difficulty
+
+actual val showCardBacksAlone: Boolean = true
