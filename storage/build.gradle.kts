@@ -39,11 +39,11 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(compose.runtime)
-                api(compose.ui)
-                api(compose.foundation)
-                api(compose.materialIconsExtended)
-                api(compose.material3)
+                implementation(compose.runtime)
+                implementation(compose.ui)
+                implementation(compose.foundation)
+                implementation(compose.materialIconsExtended)
+                implementation(compose.material3)
                 api(libs.kotlinx.datetime)
                 api(libs.datastore.core)
                 api(libs.datastore.preferences)
@@ -61,8 +61,8 @@ android {
         targetSdk = 34
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     namespace = "com.programmersbox.storage"
 }
