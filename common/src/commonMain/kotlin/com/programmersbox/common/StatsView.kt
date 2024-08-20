@@ -18,7 +18,6 @@ import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.char
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 
-
 internal val Emerald = Color(0xFF2ecc71)
 internal val Sunflower = Color(0xFFf1c40f)
 internal val Alizarin = Color(0xFFe74c3c)
@@ -51,7 +50,7 @@ internal fun StatsView(
                 score = item,
                 onDelete = { scope.launch { database.removeHighScore(item) } },
                 modifier = Modifier
-                    .animateItemPlacement()
+                    .animateItem()
                     .then(
                         if (index < 3)
                             Modifier.animatedBorder(

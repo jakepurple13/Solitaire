@@ -216,7 +216,7 @@ fun foundationCheck(
 ): Boolean {
     return try {
         card.value == foundation.last().value + 1 && card.suit == foundation.last().suit
-    } catch (e: NoSuchElementException) {
+    } catch (_: NoSuchElementException) {
         card.value == 1
     }
 }

@@ -276,7 +276,7 @@ private fun Foundations(
             ) { d, f ->
                 val canPlace = f?.let { cardLocation ->
                     foundationCheck(cardLocation.card, foundation.value) && d
-                } ?: false
+                } == true
 
                 val strokeColor by animateColorAsState(
                     if (canPlace) Color.Green else MaterialTheme.colorScheme.primary
@@ -481,7 +481,7 @@ private fun Field(
                 ) { d, f ->
                     val canPlace = f?.let { cardLocation ->
                         fieldCheck(cardLocation.card, fieldSlot.value) && d
-                    } ?: false
+                    } == true
 
                     val strokeColor by animateColorAsState(
                         if (canPlace) Color.Green else MaterialTheme.colorScheme.primary
@@ -511,7 +511,7 @@ private fun Field(
                             itemsIndexed(fieldSlot.value.list) { index, card ->
                                 DragTarget(
                                     dataToDrop = CardLocation(fieldSlot.key, card, index),
-                                    modifier = Modifier.animateItemPlacement(),
+                                    modifier = Modifier.animateItem(),
                                     enable = !info.hasWon,
                                     customDragContent = {
                                         Column(

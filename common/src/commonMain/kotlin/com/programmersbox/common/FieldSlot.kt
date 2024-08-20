@@ -23,7 +23,7 @@ class FieldSlot {
                 return true
             }
         } catch (e: Exception) {
-            if (list.size == 0 && c[0].value == 13) {
+            if (list.isEmpty() && c[0].value == 13) {
                 return true
             }
         }
@@ -31,7 +31,7 @@ class FieldSlot {
     }
 
     fun checkToAdd(c: Card): Boolean {
-        return (list.size == 0 && c.value == 13)
+        return (list.isEmpty() && c.value == 13)
                 || runCatching {
             (list.last().color != c.color && list.last().value - 1 == c.value)
         }.getOrElse { false }
@@ -79,7 +79,7 @@ class FieldSlot {
     }
 
     fun flipFaceDownCard(): Int {
-        if (list.size == 0 && faceDownList.size > 0) {
+        if (list.isEmpty() && faceDownList.isNotEmpty()) {
             list.add(faceDownList.removeAt(faceDownList.size - 1))
             return 5
         }
@@ -87,7 +87,7 @@ class FieldSlot {
     }
 
     fun canFlipFaceDownCard(): Boolean {
-        return list.size == 0 && faceDownList.size > 0
+        return list.isEmpty() && faceDownList.isNotEmpty()
     }
 
     fun faceDownSize(): Int {
