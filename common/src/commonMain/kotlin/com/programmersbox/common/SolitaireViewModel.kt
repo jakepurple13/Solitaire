@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
 import kotlin.time.Duration.Companion.milliseconds
@@ -14,6 +15,7 @@ private val SEED: Long? = null
 
 class SolitaireViewModel(
     private val deck: Deck<Card> = Deck.defaultDeck(),
+    initialDifficulty: suspend () -> Difficulty = { Difficulty.Normal },
 ) : ViewModel() {
     var moveCount by mutableIntStateOf(0)
     var score by mutableIntStateOf(0)
@@ -53,6 +55,10 @@ class SolitaireViewModel(
         stopwatch.time
             .onEach { time++ }
             .launchIn(viewModelScope)
+
+        viewModelScope.launch {
+            newGame(initialDifficulty())
+        }
     }
 
     fun draw(drawAmount: Int) {

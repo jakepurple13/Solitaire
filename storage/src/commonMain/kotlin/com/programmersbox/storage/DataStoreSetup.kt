@@ -15,6 +15,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import okio.Path.Companion.toPath
@@ -37,6 +38,11 @@ class Settings(
 
         val DIFFICULTY_KEY = stringPreferencesKey("mode_difficulty")
     }
+
+    suspend fun initialDifficulty() = dataStore.data
+        .mapNotNull { it[DIFFICULTY_KEY] }
+        .mapNotNull { runCatching { Difficulty.valueOf(it) }.getOrNull() ?: Difficulty.Normal }
+        .firstOrNull() ?: Difficulty.Normal
 }
 
 @Composable

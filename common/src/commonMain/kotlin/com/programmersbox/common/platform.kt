@@ -11,7 +11,9 @@ public expect fun hasDisplayGsl(): Boolean
 
 public expect class Settings(
     producePath: () -> String,
-)
+) {
+    suspend fun initialDifficulty(): Difficulty
+}
 
 expect class SolitaireDatabase constructor() {
     suspend fun addHighScore(

@@ -44,8 +44,12 @@ private val cardSizeModifier = Modifier.height(150.dp)
 @Composable
 internal fun SolitaireScreen(
     database: SolitaireDatabase = remember { SolitaireDatabase() },
-    info: SolitaireViewModel = viewModel(SolitaireViewModel::class) { SolitaireViewModel() },
     settings: Settings?,
+    info: SolitaireViewModel = viewModel(SolitaireViewModel::class) {
+        SolitaireViewModel(
+            initialDifficulty = { settings?.initialDifficulty() ?: Difficulty.Normal }
+        )
+    },
 ) {
     val drawAmount by rememberDrawAmount()
     val difficulty by rememberModeDifficulty()

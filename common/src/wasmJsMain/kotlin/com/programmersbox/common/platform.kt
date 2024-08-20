@@ -17,6 +17,7 @@ public actual class Settings actual constructor(
     producePath: () -> String,
 ) {
 
+    actual suspend fun initialDifficulty(): Difficulty = difficulty.value
 }
 
 actual class SolitaireDatabase {

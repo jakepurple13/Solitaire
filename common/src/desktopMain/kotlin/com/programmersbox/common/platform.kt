@@ -37,9 +37,11 @@ public fun UIShow() {
 public actual fun hasDisplayGsl(): Boolean = true
 
 actual class Settings actual constructor(producePath: () -> String) {
-    init {
-        com.programmersbox.storage.Settings(producePath)
-    }
+    val settings: com.programmersbox.storage.Settings = com.programmersbox.storage.Settings(producePath)
+
+    actual suspend fun initialDifficulty(): com.programmersbox.common.Difficulty = runCatching {
+        com.programmersbox.common.Difficulty.valueOf(settings.initialDifficulty().name)
+    }.getOrNull() ?: com.programmersbox.common.Difficulty.Normal
 }
 
 actual class SolitaireDatabase {
