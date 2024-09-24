@@ -6,11 +6,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.ComposeViewport
-import com.programmersbox.common.App
-import com.programmersbox.common.CardShow
-import com.programmersbox.common.ComposeCardColor
-import com.programmersbox.common.LocalCardColor
-import com.programmersbox.common.LocalCardShowing
+import com.programmersbox.common.*
 import kotlinx.browser.document
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -34,7 +30,7 @@ fun main() {
                     red = Color.Red
                 ),
                 LocalCardShowing provides CardShow(
-                    full = { it.toLetterString() },
+                    full = { it.toSymbolString() },
                     suit = { it.symbol }
                 )
             ) {

@@ -1,10 +1,6 @@
 package com.programmersbox.common
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import kotlinx.browser.localStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -16,7 +12,6 @@ actual fun hasDisplayGsl(): Boolean = true
 public actual class Settings actual constructor(
     producePath: () -> String,
 ) {
-
     actual suspend fun initialDifficulty(): Difficulty = difficulty.value
 }
 

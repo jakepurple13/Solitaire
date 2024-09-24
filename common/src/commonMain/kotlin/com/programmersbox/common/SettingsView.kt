@@ -27,6 +27,8 @@ internal fun SettingsView(
     settings: Settings?,
     onStatsClick: () -> Unit,
 ) {
+    var showCardBacksDropdown by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -111,14 +113,14 @@ internal fun SettingsView(
 
             item {
                 var cardBack by rememberCardBack()
-                var showDropdown by remember { mutableStateOf(false) }
+
                 OutlinedCard(
-                    onClick = { showDropdown = !showDropdown }
+                    onClick = { showCardBacksDropdown = !showCardBacksDropdown }
                 ) {
                     ListItem(
                         headlineContent = { Text("Card Back: ${cardBack.name}") },
                         trailingContent = { Icon(Icons.Default.ArrowDropDown, null) },
-                        supportingContent = {
+                        /*supportingContent = {
                             AnimatedVisibility(showDropdown) {
                                 LazyRow(
                                     horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -165,55 +167,57 @@ internal fun SettingsView(
                                     }
                                 }
                             }
-                        }
+                        }*/
                     )
                 }
             }
 
-            if (showCardBacksAlone) {
+            if (true) {
                 item {
                     var cardBack by rememberCardBack()
 
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        items(CardBack.entries.filter { it.includeGsl() }) {
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier.wrapContentSize()
-                            ) {
-                                EmptyCard(
-                                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                                    cardBack = it.toModifier(),
-                                    content = {
-                                        Text(
-                                            it.name,
-                                            textAlign = TextAlign.Center,
-                                            modifier = Modifier
-                                                .align(Alignment.BottomCenter)
-                                                .fillMaxWidth()
-                                                .background(
-                                                    Color.Black.copy(alpha = .5f),
-                                                    shape = RoundedCornerShape(
-                                                        topEnd = 4.dp,
-                                                        topStart = 4.dp
+                    AnimatedVisibility(showCardBacksDropdown) {
+                        LazyRow(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            items(CardBack.entries.filter { it.includeGsl() }) {
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.wrapContentSize()
+                                ) {
+                                    EmptyCard(
+                                        border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                                        cardBack = it.toModifier(),
+                                        content = {
+                                            Text(
+                                                it.name,
+                                                textAlign = TextAlign.Center,
+                                                modifier = Modifier
+                                                    .align(Alignment.BottomCenter)
+                                                    .fillMaxWidth()
+                                                    .background(
+                                                        Color.Black.copy(alpha = .5f),
+                                                        shape = RoundedCornerShape(
+                                                            topEnd = 4.dp,
+                                                            topStart = 4.dp
+                                                        )
                                                     )
-                                                )
+                                            )
+                                        },
+                                        modifier = Modifier
+                                            .height(150.dp)
+                                            .width(100.dp)
+                                    ) { cardBack = it }
+                                    if (it == cardBack) {
+                                        Icon(
+                                            Icons.Default.CheckCircle,
+                                            null,
+                                            modifier = Modifier.background(
+                                                Color.Black.copy(alpha = .5f),
+                                                CircleShape
+                                            )
                                         )
-                                    },
-                                    modifier = Modifier
-                                        .height(150.dp)
-                                        .width(100.dp)
-                                ) { cardBack = it }
-                                if (it == cardBack) {
-                                    Icon(
-                                        Icons.Default.CheckCircle,
-                                        null,
-                                        modifier = Modifier.background(
-                                            Color.Black.copy(alpha = .5f),
-                                            CircleShape
-                                        )
-                                    )
+                                    }
                                 }
                             }
                         }
