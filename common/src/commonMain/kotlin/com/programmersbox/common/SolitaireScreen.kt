@@ -511,7 +511,6 @@ private fun Field(
                             itemsIndexed(fieldSlot.value.list) { index, card ->
                                 DragTarget(
                                     dataToDrop = CardLocation(fieldSlot.key, card, index),
-                                    modifier = Modifier.animateItem(),
                                     enable = !info.hasWon,
                                     customDragContent = {
                                         Column(
