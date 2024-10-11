@@ -55,6 +55,8 @@ internal fun SolitaireScreen(
     val difficulty by rememberModeDifficulty()
     val cardBack by rememberCardBack()
 
+    LaunchedEffect(Unit) { info.newGame(difficulty) }
+
     LaunchedEffect(drawAmount, difficulty) {
         combine(
             snapshotFlow { drawAmount }.distinctUntilChanged(),
