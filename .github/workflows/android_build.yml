@@ -178,7 +178,7 @@ jobs:
           echo "VERSION_TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
 
       - name: Build Artifacts
-        id: buildApks2
+        id: buildApks
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: current
@@ -188,7 +188,7 @@ jobs:
           arguments: android:assembleRelease
 
       - uses: kevin-david/zipalign-sign-android-release@v2.0.1
-        name: Sign app APK2
+        name: Sign app APK
         id: solitairegame_apk_sign
         with:
           releaseDirectory: android/build/outputs/apk/release/
@@ -196,7 +196,6 @@ jobs:
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
-          zipAlign: true
 
       - name: Clean up build artifacts
         run: |
