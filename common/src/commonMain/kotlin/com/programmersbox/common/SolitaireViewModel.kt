@@ -115,6 +115,7 @@ class SolitaireViewModel(
                         drawList.addAll(state.flippedCards)
                         score = state.score
                         moveCount = state.moveCount
+                        time = state.time
                     }
                 } ?: newGame(initialDifficulty())
         }
