@@ -4,6 +4,8 @@ import androidx.compose.runtime.*
 import kotlinx.browser.localStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 actual fun getPlatformName(): String = "Web with Kotlin/Wasm"
 
@@ -13,6 +15,13 @@ public actual class Settings actual constructor(
     producePath: () -> String,
 ) {
     actual suspend fun initialDifficulty(): Difficulty = difficulty.value
+
+    actual suspend fun setGameSave(game: SolitaireUiState) {
+        solitaireUiState.value = game
+        localStorage.setItem("solitaireUiState", Json.encodeToString(game))
+    }
+
+    actual fun getGameSave(): Flow<SolitaireUiState?> = snapshotFlow { solitaireUiState.value }
 }
 
 actual class SolitaireDatabase {
@@ -41,17 +50,27 @@ private var drawAmount = mutableStateOf(
     }
 )
 
+private val solitaireUiState by lazy {
+    mutableStateOf<SolitaireUiState?>(
+        localStorage.getItem("solitaireUiState").let {
+            runCatching { Json.decodeFromString<SolitaireUiState>(it.toString()) }.getOrNull()
+        }
+    )
+}
+
 @Composable
 actual fun rememberDrawAmount(): MutableState<Int> = rememberPreference(
     drawAmount,
     "drawAmount"
 ) { it.toString() }
 
-private var cardBack = mutableStateOf(
-    localStorage.getItem("cardback").let {
-        runCatching { CardBack.valueOf(it.toString()) }.getOrElse { CardBack.None }
-    }
-)
+private val cardBack by lazy {
+    mutableStateOf(
+        localStorage.getItem("cardback").let {
+            runCatching { CardBack.valueOf(it.toString()) }.getOrElse { CardBack.None }
+        }
+    )
+}
 
 @Composable
 actual fun rememberCardBack(): MutableState<CardBack> = rememberPreference(
@@ -59,11 +78,13 @@ actual fun rememberCardBack(): MutableState<CardBack> = rememberPreference(
     "cardback"
 ) { it.name }
 
-private var difficulty = mutableStateOf(
-    localStorage.getItem("difficulty").let {
-        runCatching { Difficulty.valueOf(it.toString()) }.getOrElse { Difficulty.Normal }
-    }
-)
+private val difficulty by lazy {
+    mutableStateOf(
+        localStorage.getItem("difficulty").let {
+            runCatching { Difficulty.valueOf(it.toString()) }.getOrElse { Difficulty.Normal }
+        }
+    )
+}
 
 @Composable
 actual fun rememberModeDifficulty(): MutableState<Difficulty> = rememberPreference(

@@ -1,6 +1,14 @@
 package com.programmersbox.common
 
 import androidx.compose.runtime.mutableStateListOf
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.descriptors.element
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlin.properties.Delegates
 
 @DslMarker
@@ -12,6 +20,21 @@ annotation class CardMarker
 fun <T> Iterable<T>.toDeck(listener: (Deck.DeckListenerBuilder<T>.() -> Unit)? = null) = Deck(this, listener)
 fun <T> Array<T>.toDeck(listener: (Deck.DeckListenerBuilder<T>.() -> Unit)? = null) = Deck(this.toList(), listener)
 
+object DeckSerializer : KSerializer<Deck<Card>> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("Deck") {
+        element<List<Card>>("deck")
+    }
+
+    override fun serialize(encoder: Encoder, value: Deck<Card>) {
+        encoder.encodeSerializableValue(ListSerializer(Card.serializer()), value.deck)
+    }
+
+    override fun deserialize(decoder: Decoder): Deck<Card> {
+        return decoder.decodeSerializableValue(ListSerializer(Card.serializer())).toDeck()
+    }
+}
+
+@Serializable(with = DeckSerializer::class)
 class Deck<T> : AbstractDeck<T> {
 
     constructor(cards: Iterable<T> = emptyList()) : super(cards) {

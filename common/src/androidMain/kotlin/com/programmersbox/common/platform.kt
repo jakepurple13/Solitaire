@@ -12,6 +12,8 @@ import com.programmersbox.storage.Difficulty
 import com.programmersbox.storage.SolitaireDatabase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 public actual fun getPlatformName(): String {
     return "Android"
@@ -34,6 +36,12 @@ actual class Settings actual constructor(producePath: () -> String) {
     actual suspend fun initialDifficulty(): com.programmersbox.common.Difficulty = runCatching {
         com.programmersbox.common.Difficulty.valueOf(settings.initialDifficulty().name)
     }.getOrNull() ?: com.programmersbox.common.Difficulty.Normal
+
+    actual suspend fun setGameSave(game: SolitaireUiState) {
+        settings.setGameSave(Json.encodeToString(game))
+    }
+
+    actual fun getGameSave(): Flow<SolitaireUiState?> = settings.gameSave { Json.decodeFromString(it) }
 }
 
 actual class SolitaireDatabase {

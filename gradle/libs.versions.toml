@@ -1,5 +1,6 @@
 [versions]
 hypnoticcanvas = "0.1.2"
+kotlinx-serialization-json-version = "1.7.1"
 navigation-compose-version = "2.7.0-alpha07"
 lifecycle-viewmodel-compose-version = "2.8.2"
 realm-plugin = "2.0.0"
@@ -22,6 +23,7 @@ androidx-core = { module = "androidx.core:core-ktx", version = "1.13.1" }
 androidx-activity-compose = "androidx.activity:activity-compose:1.9.2"
 hypnoticcanvas = { module = "com.mikepenz.hypnoticcanvas:hypnoticcanvas", version.ref = "hypnoticcanvas" }
 hypnoticcanvas-shaders = { module = "com.mikepenz.hypnoticcanvas:hypnoticcanvas-shaders", version.ref = "hypnoticcanvas" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json-version" }
 lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle-viewmodel-compose-version" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation-compose-version" }
 realm-plugin = { module = "io.realm.kotlin:gradle-plugin", version.ref = "realm-plugin" }

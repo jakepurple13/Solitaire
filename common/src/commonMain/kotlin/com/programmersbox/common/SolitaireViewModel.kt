@@ -4,18 +4,34 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import kotlin.time.Duration.Companion.milliseconds
 
 const val DRAW_LOCATION = -1
 const val FOUNDATION_LOCATION = -2
 private val SEED: Long? = null
 
+@Serializable
+data class SolitaireUiState(
+    val remainingDeck: Deck<Card>,
+    val flippedCards: List<Card>,
+    val foundations: Map<Int, List<Card>>,
+    val table: Map<Int, FieldSlot>,
+    val score: Int,
+    val moveCount: Int,
+    val time: Long,
+)
+
 class SolitaireViewModel(
     private val deck: Deck<Card> = Deck.defaultDeck(),
     initialDifficulty: suspend () -> Difficulty = { Difficulty.Normal },
+    private val settings: Settings?,
 ) : ViewModel() {
     var moveCount by mutableIntStateOf(0)
     var score by mutableIntStateOf(0)
@@ -56,8 +72,67 @@ class SolitaireViewModel(
             .onEach { time++ }
             .launchIn(viewModelScope)
 
-        viewModelScope.launch {
+        /*viewModelScope.launch {
             newGame(initialDifficulty())
+        }*/
+
+        merge(
+            snapshotFlow { moveCount },
+            snapshotFlow { score },
+            snapshotFlow { foundations },
+            snapshotFlow { fieldSlots },
+            snapshotFlow { drawList },
+            snapshotFlow { deck.deck },
+            snapshotFlow { time }.onEach { delay(5000) }
+        )
+            .onEach { saveGame() }
+            .launchIn(viewModelScope)
+
+        viewModelScope.launch {
+            settings
+                ?.getGameSave()
+                ?.firstOrNull()
+                ?.let { state ->
+                    if (
+                        state.foundations.isEmpty()
+                        && state.table.isEmpty()
+                        && state.flippedCards.isEmpty()
+                        && state.remainingDeck == Deck.defaultDeck()
+                    ) {
+                        null
+                    } else {
+                        deck.removeAllCards()
+                        deck.addDeck(state.remainingDeck)
+                        state.foundations.forEach { entry ->
+                            foundations[entry.key]?.clear()
+                            foundations[entry.key] = entry.value.toMutableStateList()
+                        }
+                        state.table.forEach { entry ->
+                            fieldSlots[entry.key]?.clear()
+                            fieldSlots[entry.key] = entry.value
+                        }
+                        drawList.clear()
+                        drawList.addAll(state.flippedCards)
+                        score = state.score
+                        moveCount = state.moveCount
+                    }
+                } ?: newGame(initialDifficulty())
+        }
+    }
+
+    fun saveGame() {
+        viewModelScope.launch {
+            settings?.setGameSave(
+                SolitaireUiState(
+                    remainingDeck = deck,
+                    flippedCards = drawList,
+                    foundations = foundations,
+                    table = fieldSlots,
+                    score = score,
+                    moveCount = moveCount,
+                    time = time
+                )
+            )
         }
     }
 

@@ -6,6 +6,7 @@
             android:allowBackup="false"
             android:appCategory="game"
             android:supportsRtl="true"
+            android:enableOnBackInvokedCallback="true"
             android:icon="@mipmap/ic_launcher"
             android:theme="@style/Theme.Solitaire">
         <activity android:name=".MainActivity" android:exported="true">

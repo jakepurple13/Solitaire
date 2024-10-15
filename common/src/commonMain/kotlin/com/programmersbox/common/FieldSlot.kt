@@ -1,10 +1,59 @@
 package com.programmersbox.common
 
 import androidx.compose.runtime.mutableStateListOf
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.descriptors.element
+import kotlinx.serialization.encoding.*
 
+object FieldSlotSerializer : KSerializer<FieldSlot> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("FieldSlot") {
+        element<List<Card>>("list")
+        element<List<Card>>("faceDownList")
+    }
+
+    override fun serialize(encoder: Encoder, value: FieldSlot) {
+        encoder.encodeStructure(descriptor) {
+            encodeSerializableElement(descriptor, 0, ListSerializer(Card.serializer()), value.list)
+            encodeSerializableElement(descriptor, 1, ListSerializer(Card.serializer()), value.faceDownList)
+        }
+    }
+
+    override fun deserialize(decoder: Decoder): FieldSlot {
+        return decoder.decodeStructure(descriptor) {
+            val fieldSlot = FieldSlot()
+            while (true) {
+                when (val index = decodeElementIndex(descriptor)) {
+                    0 -> {
+                        //List
+                        val list = decodeSerializableElement(descriptor, 0, ListSerializer(Card.serializer()))
+                        fieldSlot.list.addAll(list)
+                    }
+
+                    1 -> {
+                        //FaceDownList
+                        val faceDownList = decodeSerializableElement(descriptor, 1, ListSerializer(Card.serializer()))
+                        fieldSlot.faceDownList.addAll(faceDownList)
+                    }
+
+                    CompositeDecoder.DECODE_DONE -> break
+                    else -> error("Unexpected index: $index")
+                }
+            }
+
+            fieldSlot
+        }
+    }
+}
+
+@Serializable(with = FieldSlotSerializer::class)
 class FieldSlot {
 
-    private val faceDownList = mutableStateListOf<Card>()
+    internal val faceDownList = mutableStateListOf<Card>()
+
     val list = mutableStateListOf<Card>()
 
     fun setup(
@@ -95,12 +144,13 @@ class FieldSlot {
     }
 
     override fun toString(): String {
-        var s = ""
+        return "${list.joinToString(", ")} | ${faceDownList.joinToString(", ")}"
+        /*var s = ""
 
         for (i in list) {
             s += "$i\n"
         }
 
-        return s
+        return s*/
     }
 }

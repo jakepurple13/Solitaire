@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.Solitaire" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="Theme.Solitaire" parent="Theme.Material3.DayNight.NoActionBar">
     </style>
 
 </resources>
