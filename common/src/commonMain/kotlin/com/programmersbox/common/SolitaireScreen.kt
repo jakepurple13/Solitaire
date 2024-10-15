@@ -424,11 +424,13 @@ private fun Draws(
                     ) {
                         Text(
                             "Cards left:",
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
+                            color = Color.White
                         )
                         Text(
                             animateIntAsState(info.cardsLeft).value.toString(),
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
+                            color = Color.White
                         )
                     }
                 },
