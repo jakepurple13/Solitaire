@@ -3,7 +3,6 @@ package com.programmersbox.common
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.isActive
 import kotlinx.datetime.Clock
 
@@ -30,6 +29,7 @@ internal interface Stopwatch {
         override val time: Flow<Long> = actions.flatMapLatest { action ->
             when (action) {
                 Action.Start -> {
+
                     val time = flow {
                         val initial = currentTime() - elapsedTime
                         while (currentCoroutineContext().isActive) {

@@ -22,15 +22,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.programmersbox.common.dragdrop.AnimatedDragDropBox
 import com.programmersbox.common.dragdrop.DragTarget
 import com.programmersbox.common.dragdrop.DragType
 import com.programmersbox.common.dragdrop.DropTarget
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.navigation.BackHandler
-import moe.tlaster.precompose.viewmodel.viewModel
-
 
 data class CardLocation(val location: Int, val card: Card, val place: Int)
 
@@ -45,7 +43,7 @@ private val cardSizeModifier = Modifier.height(150.dp)
 internal fun SolitaireScreen(
     database: SolitaireDatabase = remember { SolitaireDatabase() },
     settings: Settings?,
-    info: SolitaireViewModel = viewModel(SolitaireViewModel::class) {
+    info: SolitaireViewModel = viewModel {
         SolitaireViewModel(
             initialDifficulty = { settings?.initialDifficulty() ?: Difficulty.Normal }
         )
@@ -157,9 +155,9 @@ internal fun SolitaireScreen(
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
-    BackHandler(drawerState.isOpen) {
+    /*BackHandler(drawerState.isOpen) {
         scope.launch { drawerState.close() }
-    }
+    }*/
 
     LaunchedEffect(drawerState) {
         snapshotFlow { drawerState.isOpen }

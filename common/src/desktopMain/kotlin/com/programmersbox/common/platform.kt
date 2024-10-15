@@ -1,20 +1,13 @@
 package com.programmersbox.common
 
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
+import com.programmersbox.storage.*
 import com.programmersbox.storage.Difficulty
 import com.programmersbox.storage.SolitaireDatabase
-import com.programmersbox.storage.SolitaireScore
-import com.programmersbox.storage.rememberCardBack
-import com.programmersbox.storage.rememberDrawAmount
-import com.programmersbox.storage.rememberModeDifficulty
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 
 public actual fun getPlatformName(): String {
     return "Desktop"
@@ -84,19 +77,19 @@ actual class SolitaireDatabase {
 }
 
 @Composable
-actual fun rememberDrawAmount(): MutableState<Int> = rememberDrawAmount { collectAsStateWithLifecycle(it) }
+actual fun rememberDrawAmount(): MutableState<Int> = rememberDrawAmount { collectAsState(it) }
 
 @Composable
 actual fun rememberCardBack(): MutableState<CardBack> = rememberCardBack(
     CardBack.None,
-    toState = { collectAsStateWithLifecycle(it) }
+    toState = { collectAsState(it) }
 )
 
 @Composable
 actual fun rememberModeDifficulty(): MutableState<com.programmersbox.common.Difficulty> = rememberModeDifficulty(
     com.programmersbox.common.Difficulty.Easy
 ) {
-    collectAsStateWithLifecycle(it)
+    collectAsState(it)
 }
 
 actual val showCardBacksAlone: Boolean = false

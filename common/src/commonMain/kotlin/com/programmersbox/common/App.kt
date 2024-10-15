@@ -6,30 +6,28 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import moe.tlaster.precompose.PreComposeApp
-import moe.tlaster.precompose.navigation.NavHost
-import moe.tlaster.precompose.navigation.rememberNavigator
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
 @Composable
 internal fun App(
     settings: Settings?,
 ) {
-    PreComposeApp {
-        Surface {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+    Surface {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            val navigator = rememberNavController()
+            NavHost(
+                navController = navigator,
+                startDestination = Screen.Solitaire.route
             ) {
-                val navigator = rememberNavigator()
-                NavHost(
-                    navigator = navigator,
-                    initialRoute = Screen.Solitaire.route
-                ) {
-                    scene(Screen.Solitaire.route) {
-                        SolitaireScreen(
-                            settings = settings
-                        )
-                    }
+                composable(Screen.Solitaire.route) {
+                    SolitaireScreen(
+                        settings = settings
+                    )
                 }
             }
         }
