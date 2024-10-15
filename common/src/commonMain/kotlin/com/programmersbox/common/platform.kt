@@ -13,6 +13,9 @@ public expect class Settings(
     producePath: () -> String,
 ) {
     suspend fun initialDifficulty(): Difficulty
+
+    suspend fun setGameSave(game: SolitaireUiState)
+    fun getGameSave(): Flow<SolitaireUiState?>
 }
 
 expect class SolitaireDatabase constructor() {

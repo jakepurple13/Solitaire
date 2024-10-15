@@ -1,27 +1,11 @@
 package com.programmersbox.storage
 
 import androidx.compose.runtime.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.mapNotNull
+import androidx.datastore.preferences.core.*
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import okio.Path.Companion.toPath
-import kotlin.isInitialized
-import kotlin.let
-import kotlin.runCatching
 
 private lateinit var dataStore: DataStore<Preferences>
 
@@ -37,12 +21,22 @@ class Settings(
         const val DATA_STORE_FILE_NAME = "solitaire.preferences_pb"
 
         val DIFFICULTY_KEY = stringPreferencesKey("mode_difficulty")
+        val GAME_SAVE_KEY = stringPreferencesKey("game_save")
     }
 
     suspend fun initialDifficulty() = dataStore.data
-        .mapNotNull { it[DIFFICULTY_KEY] }
-        .mapNotNull { runCatching { Difficulty.valueOf(it) }.getOrNull() ?: Difficulty.Normal }
+        .map { it[DIFFICULTY_KEY] }
+        .map { it?.runCatching { Difficulty.valueOf(it) }?.getOrNull() ?: Difficulty.Normal }
         .firstOrNull() ?: Difficulty.Normal
+
+    fun <T> gameSave(game: (String) -> T): Flow<T?> = dataStore.data
+        .map { it[GAME_SAVE_KEY] }
+        .map { value -> value?.let(game) }
+
+    suspend fun setGameSave(game: String) {
+        dataStore.edit { it[GAME_SAVE_KEY] = game }
+    }
+
 }
 
 @Composable

@@ -9,6 +9,7 @@ plugins {
     id("org.jetbrains.compose")
     id("com.android.library")
     kotlin("native.cocoapods")
+    kotlin("plugin.serialization")
     //id("io.realm.kotlin")
 }
 
@@ -88,6 +89,7 @@ kotlin {
                 //api(libs.datastore.core)
                 //api(libs.datastore.preferences)
                 //api(libs.library.base)
+                api(libs.kotlinx.serialization.json)
                 implementation(compose.components.resources)
                 implementation(libs.hypnoticcanvas)
                 implementation(libs.hypnoticcanvas.shaders)

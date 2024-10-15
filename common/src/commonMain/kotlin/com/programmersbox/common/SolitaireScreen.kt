@@ -45,15 +45,14 @@ internal fun SolitaireScreen(
     settings: Settings?,
     info: SolitaireViewModel = viewModel {
         SolitaireViewModel(
-            initialDifficulty = { settings?.initialDifficulty() ?: Difficulty.Normal }
+            initialDifficulty = { settings?.initialDifficulty() ?: Difficulty.Normal },
+            settings = settings
         )
     },
 ) {
     val drawAmount by rememberDrawAmount()
     val difficulty by rememberModeDifficulty()
     val cardBack by rememberCardBack()
-
-    LaunchedEffect(Unit) { info.newGame(difficulty) }
 
     LaunchedEffect(drawAmount, difficulty) {
         combine(

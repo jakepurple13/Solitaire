@@ -1,7 +1,10 @@
 package com.programmersbox.common
 
+import kotlinx.serialization.Serializable
+
 enum class CardColor { Black, Red }
 
+@Serializable
 data class Card(val value: Int, val suit: Suit) {
     val color: CardColor get() = suit.color
     val symbol: String

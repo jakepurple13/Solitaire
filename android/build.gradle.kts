@@ -41,6 +41,7 @@ android {
 dependencies {
     implementation(project(":common"))
     implementation(libs.androidx.activity.compose)
+    implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.compose.ui:ui-test-junit4-android:1.7.0-beta05")
 }
 
