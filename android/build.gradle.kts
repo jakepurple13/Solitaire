@@ -8,10 +8,6 @@ plugins {
 group = "com.programmersbox"
 version = "1.0-SNAPSHOT"
 
-repositories {
-    mavenCentral()
-}
-
 android {
     compileSdk = 34
     defaultConfig {

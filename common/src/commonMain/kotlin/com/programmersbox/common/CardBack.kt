@@ -4,14 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageShader
-import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.*
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.*
+import com.mikepenz.hypnoticcanvas.shaders.Shader
 import com.programmersbox.common.generated.resources.Res
 import com.programmersbox.common.generated.resources.card_back
+import com.programmersbox.common.generated.resources.card_background_two
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.imageResource
 
@@ -20,6 +19,19 @@ enum class CardBack(
     val isGsl: Boolean = true,
 ) {
     None({ null }, false),
+
+    DefaultBack(
+        {
+            ShaderBrush(
+                ImageShader(
+                    imageResource(Res.drawable.card_background_two),
+                    tileModeX = TileMode.Mirror,
+                    tileModeY = TileMode.Mirror
+                )
+            )
+        },
+        false
+    ),
 
     Rainbow({
         Brush.sweepGradient(

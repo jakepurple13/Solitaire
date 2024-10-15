@@ -1,10 +1,12 @@
 [versions]
 hypnoticcanvas = "0.1.2"
+navigation-compose-version = "2.7.0-alpha07"
+lifecycle-viewmodel-compose-version = "2.8.2"
 realm-plugin = "2.0.0"
 kotlin-version = "2.0.10"
 agp-version = "8.2.2"
-compose-version = "1.7.0-alpha03"
-kotlinx-datetime = "0.6.0"
+compose-version = "1.7.0-rc01"
+kotlinx-datetime = "0.6.1"
 precompose = "1.6.0"
 datastore-version = "1.1.1"
 
@@ -17,13 +19,13 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version = "1.7.0" }
 androidx-core = { module = "androidx.core:core-ktx", version = "1.13.1" }
-androidx-activity-compose = "androidx.activity:activity-compose:1.9.1"
+androidx-activity-compose = "androidx.activity:activity-compose:1.9.2"
 hypnoticcanvas = { module = "com.mikepenz.hypnoticcanvas:hypnoticcanvas", version.ref = "hypnoticcanvas" }
 hypnoticcanvas-shaders = { module = "com.mikepenz.hypnoticcanvas:hypnoticcanvas-shaders", version.ref = "hypnoticcanvas" }
+lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle-viewmodel-compose-version" }
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation-compose-version" }
 realm-plugin = { module = "io.realm.kotlin:gradle-plugin", version.ref = "realm-plugin" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
-precompose = { module = "moe.tlaster:precompose", version.ref = "precompose" }
-precompose-viewmodel = { module = "moe.tlaster:precompose-viewmodel", version.ref = "precompose" }
 datastore-core = { module = "androidx.datastore:datastore-core", version.ref = "datastore-version" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore-version" }
 library-base = { module = "io.realm.kotlin:library-base", version.ref = "realm-plugin" }

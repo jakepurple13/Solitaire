@@ -1,0 +1,292 @@
+<svg width="121" height="184" viewBox="0 0 121 184" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clip-path="url(#clip0_30_675)">
+        <rect width="121" height="184" fill="#3159F7"/>
+        <rect width="121" height="184" fill="white"/>
+        <rect x="5" y="5" width="111" height="174" rx="8" fill="#3159F7"/>
+        <rect x="14.5" y="14.5" width="92" height="155" rx="5.5" stroke="white" stroke-width="3"/>
+        <g clip-path="url(#clip1_30_675)">
+            <path d="M110.5 17.4999C106.91 17.4999 104 14.5898 104 10.9999" stroke="white" stroke-linecap="round"/>
+            <path d="M95 10.9999C95 14.5898 97.9101 17.4999 101.5 17.4999C105.09 17.4999 108 14.5898 108 10.9999"
+                  stroke="white" stroke-linecap="round"/>
+            <path d="M86 10.9999C86 14.5898 88.9101 17.4999 92.5 17.4999C96.0899 17.4999 99 14.5898 99 10.9999"
+                  stroke="white" stroke-linecap="round"/>
+            <path d="M77 10.9999C77 14.5898 79.9101 17.4999 83.5 17.4999C87.0899 17.4999 90 14.5898 90 10.9999"
+                  stroke="white" stroke-linecap="round"/>
+            <path d="M68 10.9999C68 14.5898 70.9101 17.4999 74.5 17.4999C78.0899 17.4999 81 14.5898 81 10.9999"
+                  stroke="white" stroke-linecap="round"/>
+            <path d="M59 10.9999C59 14.5898 61.9101 17.4999 65.5 17.4999C69.0899 17.4999 72 14.5898 72 10.9999"
+                  stroke="white" stroke-linecap="round"/>
+            <path d="M50 10.9999C50 14.5898 52.9101 17.4999 56.5 17.4999C60.0899 17.4999 63 14.5898 63 10.9999"
+                  stroke="white" stroke-linecap="round"/>
+            <path d="M41 10.9999C41 14.5898 43.9101 17.4999 47.5 17.4999C51.0899 17.4999 54 14.5898 54 10.9999"
+                  stroke="white" stroke-linecap="round"/>
+            <path d="M32 10.9999C32 14.5898 34.9101 17.4999 38.5 17.4999C42.0899 17.4999 45 14.5898 45 10.9999"
+                  stroke="white" stroke-linecap="round"/>
+            <path d="M23 10.9999C23 14.5898 25.9101 17.4999 29.5 17.4999C33.0899 17.4999 36 14.5898 36 10.9999"
+                  stroke="white" stroke-linecap="round"/>
+            <path d="M14 10.9999C14 14.5898 16.9101 17.4999 20.5 17.4999C24.0899 17.4999 27 14.5898 27 10.9999"
+                  stroke="white" stroke-linecap="round"/>
+            <path d="M18 10.9999C18 14.5898 15.0899 17.4999 11.5 17.4999" stroke="white" stroke-linecap="round"/>
+            <path d="M110.5 26.5C106.91 26.5 104 23.5898 104 20C104 16.4101 106.91 13.5 110.5 13.5" stroke="white"
+                  stroke-linecap="round"/>
+            <circle cx="101.5" cy="20" r="6" transform="rotate(-180 101.5 20)" stroke="white"/>
+            <circle cx="92.5" cy="20" r="6" transform="rotate(-180 92.5 20)" stroke="white"/>
+            <circle cx="83.5" cy="20" r="6" transform="rotate(-180 83.5 20)" stroke="white"/>
+            <circle cx="74.5" cy="20" r="6" transform="rotate(-180 74.5 20)" stroke="white"/>
+            <circle cx="65.5" cy="20" r="6" transform="rotate(-180 65.5 20)" stroke="white"/>
+            <circle cx="56.5" cy="19.9999" r="6" transform="rotate(-180 56.5 19.9999)" stroke="white"/>
+            <circle cx="47.5" cy="19.9999" r="6" transform="rotate(-180 47.5 19.9999)" stroke="white"/>
+            <circle cx="38.5" cy="19.9999" r="6" transform="rotate(-180 38.5 19.9999)" stroke="white"/>
+            <circle cx="29.5" cy="19.9999" r="6" transform="rotate(-180 29.5 19.9999)" stroke="white"/>
+            <circle cx="20.5" cy="19.9999" r="6" transform="rotate(-180 20.5 19.9999)" stroke="white"/>
+            <path d="M11.5 13.4999C15.0899 13.4999 18 16.4101 18 19.9999C18 23.5898 15.0899 26.4999 11.5 26.4999"
+                  stroke="white" stroke-linecap="round"/>
+            <path d="M110.5 35.5C106.91 35.5 104 32.5898 104 29C104 25.4101 106.91 22.5 110.5 22.5" stroke="white"
+                  stroke-linecap="round"/>
+            <circle cx="101.5" cy="29" r="6" transform="rotate(-180 101.5 29)" stroke="white"/>
+            <circle cx="92.5" cy="29" r="6" transform="rotate(-180 92.5 29)" stroke="white"/>
+            <circle cx="83.5" cy="29" r="6" transform="rotate(-180 83.5 29)" stroke="white"/>
+            <circle cx="74.5" cy="29" r="6" transform="rotate(-180 74.5 29)" stroke="white"/>
+            <circle cx="65.5" cy="29" r="6" transform="rotate(-180 65.5 29)" stroke="white"/>
+            <circle cx="56.5" cy="29" r="6" transform="rotate(-180 56.5 29)" stroke="white"/>
+            <circle cx="47.5" cy="29" r="6" transform="rotate(-180 47.5 29)" stroke="white"/>
+            <circle cx="38.5" cy="29" r="6" transform="rotate(-180 38.5 29)" stroke="white"/>
+            <circle cx="29.5" cy="29" r="6" transform="rotate(-180 29.5 29)" stroke="white"/>
+            <circle cx="20.5" cy="29" r="6" transform="rotate(-180 20.5 29)" stroke="white"/>
+            <path d="M11.5 22.5C15.0899 22.5 18 25.4101 18 29C18 32.5898 15.0899 35.5 11.5 35.5" stroke="white"
+                  stroke-linecap="round"/>
+            <path d="M110.5 44.5C106.91 44.5 104 41.5898 104 38C104 34.4101 106.91 31.5 110.5 31.5" stroke="white"
+                  stroke-linecap="round"/>
+            <circle cx="101.5" cy="38" r="6" transform="rotate(-180 101.5 38)" stroke="white"/>
+            <circle cx="92.5" cy="38" r="6" transform="rotate(-180 92.5 38)" stroke="white"/>
+            <circle cx="83.5" cy="38" r="6" transform="rotate(-180 83.5 38)" stroke="white"/>
+            <circle cx="74.5" cy="38" r="6" transform="rotate(-180 74.5 38)" stroke="white"/>
+            <circle cx="65.5" cy="38" r="6" transform="rotate(-180 65.5 38)" stroke="white"/>
+            <circle cx="56.5" cy="38" r="6" transform="rotate(-180 56.5 38)" stroke="white"/>
+            <circle cx="47.5" cy="38" r="6" transform="rotate(-180 47.5 38)" stroke="white"/>
+            <circle cx="38.5" cy="38" r="6" transform="rotate(-180 38.5 38)" stroke="white"/>
+            <circle cx="29.5" cy="38" r="6" transform="rotate(-180 29.5 38)" stroke="white"/>
+            <circle cx="20.5" cy="38" r="6" transform="rotate(-180 20.5 38)" stroke="white"/>
+            <path d="M11.5 31.5C15.0899 31.5 18 34.4101 18 38C18 41.5898 15.0899 44.5 11.5 44.5" stroke="white"
+                  stroke-linecap="round"/>
+            <path d="M110.5 53.5C106.91 53.5 104 50.5898 104 47C104 43.4101 106.91 40.5 110.5 40.5" stroke="white"
+                  stroke-linecap="round"/>
+            <circle cx="101.5" cy="47" r="6" transform="rotate(-180 101.5 47)" stroke="white"/>
+            <circle cx="92.5" cy="47" r="6" transform="rotate(-180 92.5 47)" stroke="white"/>
+            <circle cx="83.5" cy="47" r="6" transform="rotate(-180 83.5 47)" stroke="white"/>
+            <circle cx="74.5" cy="47" r="6" transform="rotate(-180 74.5 47)" stroke="white"/>
+            <circle cx="65.5" cy="47" r="6" transform="rotate(-180 65.5 47)" stroke="white"/>
+            <circle cx="56.5" cy="47" r="6" transform="rotate(-180 56.5 47)" stroke="white"/>
+            <circle cx="47.5" cy="47" r="6" transform="rotate(-180 47.5 47)" stroke="white"/>
+            <circle cx="38.5" cy="47" r="6" transform="rotate(-180 38.5 47)" stroke="white"/>
+            <circle cx="29.5" cy="47" r="6" transform="rotate(-180 29.5 47)" stroke="white"/>
+            <circle cx="20.5" cy="47" r="6" transform="rotate(-180 20.5 47)" stroke="white"/>
+            <path d="M11.5 40.5C15.0899 40.5 18 43.4101 18 47C18 50.5898 15.0899 53.5 11.5 53.5" stroke="white"
+                  stroke-linecap="round"/>
+            <path d="M110.5 62.5C106.91 62.5 104 59.5898 104 56C104 52.4101 106.91 49.5 110.5 49.5" stroke="white"
+                  stroke-linecap="round"/>
+            <circle cx="101.5" cy="56" r="6" transform="rotate(-180 101.5 56)" stroke="white"/>
+            <circle cx="92.5" cy="56" r="6" transform="rotate(-180 92.5 56)" stroke="white"/>
+            <circle cx="83.5" cy="56" r="6" transform="rotate(-180 83.5 56)" stroke="white"/>
+            <circle cx="74.5" cy="56" r="6" transform="rotate(-180 74.5 56)" stroke="white"/>
+            <circle cx="65.5" cy="56" r="6" transform="rotate(-180 65.5 56)" stroke="white"/>
+            <circle cx="56.5" cy="56" r="6" transform="rotate(-180 56.5 56)" stroke="white"/>
+            <circle cx="47.5" cy="56" r="6" transform="rotate(-180 47.5 56)" stroke="white"/>
+            <circle cx="38.5" cy="56" r="6" transform="rotate(-180 38.5 56)" stroke="white"/>
+            <circle cx="29.5" cy="56" r="6" transform="rotate(-180 29.5 56)" stroke="white"/>
+            <circle cx="20.5" cy="56" r="6" transform="rotate(-180 20.5 56)" stroke="white"/>
+            <path d="M11.5 49.5C15.0899 49.5 18 52.4101 18 56C18 59.5898 15.0899 62.5 11.5 62.5" stroke="white"
+                  stroke-linecap="round"/>
+            <path d="M110.5 71.5C106.91 71.5 104 68.5899 104 65C104 61.4101 106.91 58.5 110.5 58.5" stroke="white"
+                  stroke-linecap="round"/>
+            <circle cx="101.5" cy="65" r="6" transform="rotate(-180 101.5 65)" stroke="white"/>
+            <circle cx="92.5" cy="65" r="6" transform="rotate(-180 92.5 65)" stroke="white"/>
+            <circle cx="83.5" cy="65" r="6" transform="rotate(-180 83.5 65)" stroke="white"/>
+            <circle cx="74.5" cy="65" r="6" transform="rotate(-180 74.5 65)" stroke="white"/>
+            <circle cx="65.5" cy="65" r="6" transform="rotate(-180 65.5 65)" stroke="white"/>
+            <circle cx="56.5" cy="65" r="6" transform="rotate(-180 56.5 65)" stroke="white"/>
+            <circle cx="47.5" cy="65" r="6" transform="rotate(-180 47.5 65)" stroke="white"/>
+            <circle cx="38.5" cy="65" r="6" transform="rotate(-180 38.5 65)" stroke="white"/>
+            <circle cx="29.5" cy="65" r="6" transform="rotate(-180 29.5 65)" stroke="white"/>
+            <circle cx="20.5" cy="65" r="6" transform="rotate(-180 20.5 65)" stroke="white"/>
+            <path d="M11.5 58.5C15.0899 58.5 18 61.4101 18 65C18 68.5898 15.0899 71.5 11.5 71.5" stroke="white"
+                  stroke-linecap="round"/>
+            <path d="M110.5 80.5C106.91 80.5 104 77.5899 104 74C104 70.4102 106.91 67.5 110.5 67.5" stroke="white"
+                  stroke-linecap="round"/>
+            <circle cx="101.5" cy="74" r="6" transform="rotate(-180 101.5 74)" stroke="white"/>
+            <circle cx="92.5" cy="74" r="6" transform="rotate(-180 92.5 74)" stroke="white"/>
+            <circle cx="83.5" cy="74" r="6" transform="rotate(-180 83.5 74)" stroke="white"/>
+            <circle cx="74.5" cy="74" r="6" transform="rotate(-180 74.5 74)" stroke="white"/>
+            <circle cx="65.5" cy="74" r="6" transform="rotate(-180 65.5 74)" stroke="white"/>
+            <circle cx="56.5" cy="74" r="6" transform="rotate(-180 56.5 74)" stroke="white"/>
+            <circle cx="47.5" cy="74" r="6" transform="rotate(-180 47.5 74)" stroke="white"/>
+            <circle cx="38.5" cy="74" r="6" transform="rotate(-180 38.5 74)" stroke="white"/>
+            <circle cx="29.5" cy="74" r="6" transform="rotate(-180 29.5 74)" stroke="white"/>
+            <circle cx="20.5" cy="74" r="6" transform="rotate(-180 20.5 74)" stroke="white"/>
+            <path d="M11.5 67.5C15.0899 67.5 18 70.4102 18 74C18 77.5899 15.0899 80.5 11.5 80.5" stroke="white"
+                  stroke-linecap="round"/>
+            <path d="M110.5 89.5C106.91 89.5 104 86.5899 104 83C104 79.4102 106.91 76.5 110.5 76.5" stroke="white"
+                  stroke-linecap="round"/>
+            <circle cx="101.5" cy="83" r="6" transform="rotate(-180 101.5 83)" stroke="white"/>
+            <circle cx="92.5" cy="83" r="6" transform="rotate(-180 92.5 83)" stroke="white"/>
+            <circle cx="83.5" cy="83" r="6" transform="rotate(-180 83.5 83)" stroke="white"/>
+            <circle cx="74.5" cy="83" r="6" transform="rotate(-180 74.5 83)" stroke="white"/>
+            <circle cx="65.5" cy="83" r="6" transform="rotate(-180 65.5 83)" stroke="white"/>
+            <circle cx="56.5" cy="83" r="6" transform="rotate(-180 56.5 83)" stroke="white"/>
+            <circle cx="47.5" cy="83" r="6" transform="rotate(-180 47.5 83)" stroke="white"/>
+            <circle cx="38.5" cy="83" r="6" transform="rotate(-180 38.5 83)" stroke="white"/>
+            <circle cx="29.5" cy="83" r="6" transform="rotate(-180 29.5 83)" stroke="white"/>
+            <circle cx="20.5" cy="83" r="6" transform="rotate(-180 20.5 83)" stroke="white"/>
+            <path d="M11.5 76.5C15.0899 76.5 18 79.4102 18 83C18 86.5899 15.0899 89.5 11.5 89.5" stroke="white"
+                  stroke-linecap="round"/>
+            <path d="M110.5 98.5C106.91 98.5 104 95.5899 104 92C104 88.4102 106.91 85.5 110.5 85.5" stroke="white"
+                  stroke-linecap="round"/>
+            <circle cx="101.5" cy="92" r="6" transform="rotate(-180 101.5 92)" stroke="white"/>
+            <circle cx="92.5" cy="92" r="6" transform="rotate(-180 92.5 92)" stroke="white"/>
+            <circle cx="83.5" cy="92" r="6" transform="rotate(-180 83.5 92)" stroke="white"/>
+            <circle cx="74.5" cy="92" r="6" transform="rotate(-180 74.5 92)" stroke="white"/>
+            <circle cx="65.5" cy="92" r="6" transform="rotate(-180 65.5 92)" stroke="white"/>
+            <circle cx="56.5" cy="92" r="6" transform="rotate(-180 56.5 92)" stroke="white"/>
+            <circle cx="47.5" cy="92" r="6" transform="rotate(-180 47.5 92)" stroke="white"/>
+            <circle cx="38.5" cy="92" r="6" transform="rotate(-180 38.5 92)" stroke="white"/>
+            <circle cx="29.5" cy="92" r="6" transform="rotate(-180 29.5 92)" stroke="white"/>
+            <circle cx="20.5" cy="92" r="6" transform="rotate(-180 20.5 92)" stroke="white"/>
+            <path d="M11.5 85.5C15.0899 85.5 18 88.4102 18 92C18 95.5899 15.0899 98.5 11.5 98.5" stroke="white"
+                  stroke-linecap="round"/>
+            <path d="M110.5 107.5C106.91 107.5 104 104.59 104 101C104 97.4102 106.91 94.5 110.5 94.5" stroke="white"
+                  stroke-linecap="round"/>
+            <circle cx="101.5" cy="101" r="6" transform="rotate(-180 101.5 101)" stroke="white"/>
+            <circle cx="92.5" cy="101" r="6" transform="rotate(-180 92.5 101)" stroke="white"/>
+            <circle cx="83.5" cy="101" r="6" transform="rotate(-180 83.5 101)" stroke="white"/>
+            <circle cx="74.5" cy="101" r="6" transform="rotate(-180 74.5 101)" stroke="white"/>
+            <circle cx="65.5" cy="101" r="6" transform="rotate(-180 65.5 101)" stroke="white"/>
+            <circle cx="56.5" cy="101" r="6" transform="rotate(-180 56.5 101)" stroke="white"/>
+            <circle cx="47.5" cy="101" r="6" transform="rotate(-180 47.5 101)" stroke="white"/>
+            <circle cx="38.5" cy="101" r="6" transform="rotate(-180 38.5 101)" stroke="white"/>
+            <circle cx="29.5" cy="101" r="6" transform="rotate(-180 29.5 101)" stroke="white"/>
+            <circle cx="20.5" cy="101" r="6" transform="rotate(-180 20.5 101)" stroke="white"/>
+            <path d="M11.5 94.5C15.0899 94.5 18 97.4102 18 101C18 104.59 15.0899 107.5 11.5 107.5" stroke="white"
+                  stroke-linecap="round"/>
+            <path d="M110.5 116.5C106.91 116.5 104 113.59 104 110C104 106.41 106.91 103.5 110.5 103.5" stroke="white"
+                  stroke-linecap="round"/>
+            <circle cx="101.5" cy="110" r="6" transform="rotate(-180 101.5 110)" stroke="white"/>
+            <circle cx="92.5" cy="110" r="6" transform="rotate(-180 92.5 110)" stroke="white"/>
+            <circle cx="83.5" cy="110" r="6" transform="rotate(-180 83.5 110)" stroke="white"/>
+            <circle cx="74.5" cy="110" r="6" transform="rotate(-180 74.5 110)" stroke="white"/>
+            <circle cx="65.5" cy="110" r="6" transform="rotate(-180 65.5 110)" stroke="white"/>
+            <circle cx="56.5" cy="110" r="6" transform="rotate(-180 56.5 110)" stroke="white"/>
+            <circle cx="47.5" cy="110" r="6" transform="rotate(-180 47.5 110)" stroke="white"/>
+            <circle cx="38.5" cy="110" r="6" transform="rotate(-180 38.5 110)" stroke="white"/>
+            <circle cx="29.5" cy="110" r="6" transform="rotate(-180 29.5 110)" stroke="white"/>
+            <circle cx="20.5" cy="110" r="6" transform="rotate(-180 20.5 110)" stroke="white"/>
+            <path d="M11.5 103.5C15.0899 103.5 18 106.41 18 110C18 113.59 15.0899 116.5 11.5 116.5" stroke="white"
+                  stroke-linecap="round"/>
+            <path d="M110.5 125.5C106.91 125.5 104 122.59 104 119C104 115.41 106.91 112.5 110.5 112.5" stroke="white"
+                  stroke-linecap="round"/>
+            <circle cx="101.5" cy="119" r="6" transform="rotate(-180 101.5 119)" stroke="white"/>
+            <circle cx="92.5" cy="119" r="6" transform="rotate(-180 92.5 119)" stroke="white"/>
+            <circle cx="83.5" cy="119" r="6" transform="rotate(-180 83.5 119)" stroke="white"/>
+            <circle cx="74.5" cy="119" r="6" transform="rotate(-180 74.5 119)" stroke="white"/>
+            <circle cx="65.5" cy="119" r="6" transform="rotate(-180 65.5 119)" stroke="white"/>
+            <circle cx="56.5" cy="119" r="6" transform="rotate(-180 56.5 119)" stroke="white"/>
+            <circle cx="47.5" cy="119" r="6" transform="rotate(-180 47.5 119)" stroke="white"/>
+            <circle cx="38.5" cy="119" r="6" transform="rotate(-180 38.5 119)" stroke="white"/>
+            <circle cx="29.5" cy="119" r="6" transform="rotate(-180 29.5 119)" stroke="white"/>
+            <circle cx="20.5" cy="119" r="6" transform="rotate(-180 20.5 119)" stroke="white"/>
+            <path d="M11.5 112.5C15.0899 112.5 18 115.41 18 119C18 122.59 15.0899 125.5 11.5 125.5" stroke="white"
+                  stroke-linecap="round"/>
+            <path d="M110.5 134.5C106.91 134.5 104 131.59 104 128C104 124.41 106.91 121.5 110.5 121.5" stroke="white"
+                  stroke-linecap="round"/>
+            <circle cx="101.5" cy="128" r="6" transform="rotate(-180 101.5 128)" stroke="white"/>
+            <circle cx="92.5" cy="128" r="6" transform="rotate(-180 92.5 128)" stroke="white"/>
+            <circle cx="83.5" cy="128" r="6" transform="rotate(-180 83.5 128)" stroke="white"/>
+            <circle cx="74.5" cy="128" r="6" transform="rotate(-180 74.5 128)" stroke="white"/>
+            <circle cx="65.5" cy="128" r="6" transform="rotate(-180 65.5 128)" stroke="white"/>
+            <circle cx="56.5" cy="128" r="6" transform="rotate(-180 56.5 128)" stroke="white"/>
+            <circle cx="47.5" cy="128" r="6" transform="rotate(-180 47.5 128)" stroke="white"/>
+            <circle cx="38.5" cy="128" r="6" transform="rotate(-180 38.5 128)" stroke="white"/>
+            <circle cx="29.5" cy="128" r="6" transform="rotate(-180 29.5 128)" stroke="white"/>
+            <circle cx="20.5" cy="128" r="6" transform="rotate(-180 20.5 128)" stroke="white"/>
+            <path d="M11.5 121.5C15.0899 121.5 18 124.41 18 128C18 131.59 15.0899 134.5 11.5 134.5" stroke="white"
+                  stroke-linecap="round"/>
+            <path d="M110.5 143.5C106.91 143.5 104 140.59 104 137C104 133.41 106.91 130.5 110.5 130.5" stroke="white"
+                  stroke-linecap="round"/>
+            <circle cx="101.5" cy="137" r="6" transform="rotate(-180 101.5 137)" stroke="white"/>
+            <circle cx="92.5" cy="137" r="6" transform="rotate(-180 92.5 137)" stroke="white"/>
+            <circle cx="83.5" cy="137" r="6" transform="rotate(-180 83.5 137)" stroke="white"/>
+            <circle cx="74.5" cy="137" r="6" transform="rotate(-180 74.5 137)" stroke="white"/>
+            <circle cx="65.5" cy="137" r="6" transform="rotate(-180 65.5 137)" stroke="white"/>
+            <circle cx="56.5" cy="137" r="6" transform="rotate(-180 56.5 137)" stroke="white"/>
+            <circle cx="47.5" cy="137" r="6" transform="rotate(-180 47.5 137)" stroke="white"/>
+            <circle cx="38.5" cy="137" r="6" transform="rotate(-180 38.5 137)" stroke="white"/>
+            <circle cx="29.5" cy="137" r="6" transform="rotate(-180 29.5 137)" stroke="white"/>
+            <circle cx="20.5" cy="137" r="6" transform="rotate(-180 20.5 137)" stroke="white"/>
+            <path d="M11.5 130.5C15.0899 130.5 18 133.41 18 137C18 140.59 15.0899 143.5 11.5 143.5" stroke="white"
+                  stroke-linecap="round"/>
+            <path d="M110.5 152.5C106.91 152.5 104 149.59 104 146C104 142.41 106.91 139.5 110.5 139.5" stroke="white"
+                  stroke-linecap="round"/>
+            <circle cx="101.5" cy="146" r="6" transform="rotate(-180 101.5 146)" stroke="white"/>
+            <circle cx="92.5" cy="146" r="6" transform="rotate(-180 92.5 146)" stroke="white"/>
+            <circle cx="83.5" cy="146" r="6" transform="rotate(-180 83.5 146)" stroke="white"/>
+            <circle cx="74.5" cy="146" r="6" transform="rotate(-180 74.5 146)" stroke="white"/>
+            <circle cx="65.5" cy="146" r="6" transform="rotate(-180 65.5 146)" stroke="white"/>
+            <circle cx="56.5" cy="146" r="6" transform="rotate(-180 56.5 146)" stroke="white"/>
+            <circle cx="47.5" cy="146" r="6" transform="rotate(-180 47.5 146)" stroke="white"/>
+            <circle cx="38.5" cy="146" r="6" transform="rotate(-180 38.5 146)" stroke="white"/>
+            <circle cx="29.5" cy="146" r="6" transform="rotate(-180 29.5 146)" stroke="white"/>
+            <circle cx="20.5" cy="146" r="6" transform="rotate(-180 20.5 146)" stroke="white"/>
+            <path d="M11.5 139.5C15.0899 139.5 18 142.41 18 146C18 149.59 15.0899 152.5 11.5 152.5" stroke="white"
+                  stroke-linecap="round"/>
+            <path d="M110.5 161.5C106.91 161.5 104 158.59 104 155C104 151.41 106.91 148.5 110.5 148.5" stroke="white"
+                  stroke-linecap="round"/>
+            <circle cx="101.5" cy="155" r="6" transform="rotate(-180 101.5 155)" stroke="white"/>
+            <circle cx="92.5" cy="155" r="6" transform="rotate(-180 92.5 155)" stroke="white"/>
+            <circle cx="83.5" cy="155" r="6" transform="rotate(-180 83.5 155)" stroke="white"/>
+            <circle cx="74.5" cy="155" r="6" transform="rotate(-180 74.5 155)" stroke="white"/>
+            <circle cx="65.5" cy="155" r="6" transform="rotate(-180 65.5 155)" stroke="white"/>
+            <circle cx="56.5" cy="155" r="6" transform="rotate(-180 56.5 155)" stroke="white"/>
+            <circle cx="47.5" cy="155" r="6" transform="rotate(-180 47.5 155)" stroke="white"/>
+            <circle cx="38.5" cy="155" r="6" transform="rotate(-180 38.5 155)" stroke="white"/>
+            <circle cx="29.5" cy="155" r="6" transform="rotate(-180 29.5 155)" stroke="white"/>
+            <circle cx="20.5" cy="155" r="6" transform="rotate(-180 20.5 155)" stroke="white"/>
+            <path d="M11.5 148.5C15.0899 148.5 18 151.41 18 155C18 158.59 15.0899 161.5 11.5 161.5" stroke="white"
+                  stroke-linecap="round"/>
+            <path d="M110.5 170.5C106.91 170.5 104 167.59 104 164C104 160.41 106.91 157.5 110.5 157.5" stroke="white"
+                  stroke-linecap="round"/>
+            <circle cx="101.5" cy="164" r="6" transform="rotate(-180 101.5 164)" stroke="white"/>
+            <circle cx="92.5" cy="164" r="6" transform="rotate(-180 92.5 164)" stroke="white"/>
+            <circle cx="83.5" cy="164" r="6" transform="rotate(-180 83.5 164)" stroke="white"/>
+            <circle cx="74.5" cy="164" r="6" transform="rotate(-180 74.5 164)" stroke="white"/>
+            <circle cx="65.5" cy="164" r="6" transform="rotate(-180 65.5 164)" stroke="white"/>
+            <circle cx="56.5" cy="164" r="6" transform="rotate(-180 56.5 164)" stroke="white"/>
+            <circle cx="47.5" cy="164" r="6" transform="rotate(-180 47.5 164)" stroke="white"/>
+            <circle cx="38.5" cy="164" r="6" transform="rotate(-180 38.5 164)" stroke="white"/>
+            <circle cx="29.5" cy="164" r="6" transform="rotate(-180 29.5 164)" stroke="white"/>
+            <circle cx="20.5" cy="164" r="6" transform="rotate(-180 20.5 164)" stroke="white"/>
+            <path d="M11.5 157.5C15.0899 157.5 18 160.41 18 164C18 167.59 15.0899 170.5 11.5 170.5" stroke="white"
+                  stroke-linecap="round"/>
+            <path d="M110.5 179.5C106.91 179.5 104 176.59 104 173C104 169.41 106.91 166.5 110.5 166.5" stroke="white"
+                  stroke-linecap="round"/>
+            <circle cx="101.5" cy="173" r="6" transform="rotate(-180 101.5 173)" stroke="white"/>
+            <circle cx="92.5" cy="173" r="6" transform="rotate(-180 92.5 173)" stroke="white"/>
+            <circle cx="83.5" cy="173" r="6" transform="rotate(-180 83.5 173)" stroke="white"/>
+            <circle cx="74.5" cy="173" r="6" transform="rotate(-180 74.5 173)" stroke="white"/>
+            <circle cx="65.5" cy="173" r="6" transform="rotate(-180 65.5 173)" stroke="white"/>
+            <circle cx="56.5" cy="173" r="6" transform="rotate(-180 56.5 173)" stroke="white"/>
+            <circle cx="47.5" cy="173" r="6" transform="rotate(-180 47.5 173)" stroke="white"/>
+            <circle cx="38.5" cy="173" r="6" transform="rotate(-180 38.5 173)" stroke="white"/>
+            <circle cx="29.5" cy="173" r="6" transform="rotate(-180 29.5 173)" stroke="white"/>
+            <circle cx="20.5" cy="173" r="6" transform="rotate(-180 20.5 173)" stroke="white"/>
+            <path d="M11.5 166.5C15.0899 166.5 18 169.41 18 173C18 176.59 15.0899 179.5 11.5 179.5" stroke="white"
+                  stroke-linecap="round"/>
+        </g>
+    </g>
+    <defs>
+        <clipPath id="clip0_30_675">
+            <rect width="121" height="184" fill="white"/>
+        </clipPath>
+        <clipPath id="clip1_30_675">
+            <rect x="108" y="13" width="158" height="94" rx="8" transform="rotate(90 108 13)" fill="white"/>
+        </clipPath>
+    </defs>
+</svg>

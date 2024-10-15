@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.*
 import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.char
-import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 
 internal val Emerald = Color(0xFF2ecc71)
 internal val Sunflower = Color(0xFFf1c40f)
@@ -33,8 +32,8 @@ private val ColorsToUse = listOf(
 internal fun StatsView(
     database: SolitaireDatabase,
 ) {
-    val highScores by database.getSolitaireHighScores().collectAsStateWithLifecycle(emptyList())
-    val winCount by database.getWinCount().collectAsStateWithLifecycle(0)
+    val highScores by database.getSolitaireHighScores().collectAsState(emptyList())
+    val winCount by database.getWinCount().collectAsState(0)
     val scope = rememberCoroutineScope()
 
     TopAppBar(

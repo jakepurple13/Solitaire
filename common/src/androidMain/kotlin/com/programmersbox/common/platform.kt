@@ -6,15 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.programmersbox.storage.*
 import com.programmersbox.storage.Difficulty
 import com.programmersbox.storage.SolitaireDatabase
-import com.programmersbox.storage.SolitaireScore
-import com.programmersbox.storage.rememberCardBack
-import com.programmersbox.storage.rememberDrawAmount
-import com.programmersbox.storage.rememberModeDifficulty
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 
 public actual fun getPlatformName(): String {
     return "Android"
@@ -83,7 +80,7 @@ actual fun rememberDrawAmount(): MutableState<Int> = rememberDrawAmount { collec
 
 @Composable
 actual fun rememberCardBack(): MutableState<CardBack> = rememberCardBack(
-    CardBack.None,
+    CardBack.DefaultBack,
     toState = { collectAsStateWithLifecycle(it) }
 )
 
