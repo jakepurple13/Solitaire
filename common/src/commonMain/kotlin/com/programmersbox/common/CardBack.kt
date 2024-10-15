@@ -4,13 +4,15 @@ import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageShader
+import androidx.compose.ui.graphics.ShaderBrush
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.*
-import com.mikepenz.hypnoticcanvas.shaders.Shader
 import com.programmersbox.common.generated.resources.Res
 import com.programmersbox.common.generated.resources.card_back
-import com.programmersbox.common.generated.resources.card_background_two
+import com.programmersbox.common.generated.resources.card_back_tile
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.imageResource
 
@@ -24,9 +26,7 @@ enum class CardBack(
         {
             ShaderBrush(
                 ImageShader(
-                    imageResource(Res.drawable.card_background_two),
-                    tileModeX = TileMode.Mirror,
-                    tileModeY = TileMode.Mirror
+                    imageResource(Res.drawable.card_back_tile)
                 )
             )
         },
@@ -876,6 +876,11 @@ vec4 main( vec2 fragCoord ) {
 
     @Composable
     open fun toModifier(): Modifier? = brush()?.let { Modifier.background(it) }
+
+    /*@Composable
+    open fun CustomBackground(content: @Composable () -> Unit) {
+
+    }*/
 }
 
 private abstract class ShaderDelegate : Shader {
