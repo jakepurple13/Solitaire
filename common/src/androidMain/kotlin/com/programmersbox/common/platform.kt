@@ -1,5 +1,6 @@
 package com.programmersbox.common
 
+import android.content.Context
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.compose.material3.*
@@ -9,9 +10,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.programmersbox.storage.*
 import com.programmersbox.storage.Difficulty
-import com.programmersbox.storage.SolitaireDatabase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
@@ -25,7 +27,56 @@ public actual fun getPlatformName(): String {
 public fun UIShow() {
     val context = LocalContext.current
     App(
-        settings = remember { Settings { context.filesDir.resolve(com.programmersbox.storage.Settings.DATA_STORE_FILE_NAME).absolutePath } }
+        settings = remember { Settings { context.filesDir.resolve(com.programmersbox.storage.Settings.DATA_STORE_FILE_NAME).absolutePath } },
+        solitaireDatabase = remember {
+            SolitaireDatabase(
+                databaseStuff = object : DatabaseStuff {
+                    private val database = getDatabaseBuilder(context).build().getDao()
+
+                    override suspend fun addHighScore(
+                        timeTaken: String,
+                        moveCount: Int,
+                        score: Int,
+                        difficulty: Int,
+                    ) = database.addHighScore(timeTaken, moveCount, score, Difficulty.entries[difficulty])
+
+                    override suspend fun removeHighScore(scoreItem: SolitaireScoreHold) = database.removeHighScore(
+                        scoreItem.run {
+                            SolitaireScore(
+                                score = score,
+                                difficulty = difficulty,
+                                timeTaken = timeTaken,
+                                time = time,
+                                moves = moves,
+                            )
+                        }
+                    )
+
+                    override fun getSolitaireHighScores(): Flow<List<SolitaireScoreHold>> =
+                        database.getSolitaireHighScores()
+                            .map {
+                                it.map {
+                                    SolitaireScoreHold(
+                                        time = it.time,
+                                        score = it.score,
+                                        moves = it.moves,
+                                        timeTaken = it.timeTaken,
+                                        difficulty = it.difficulty
+                                    )
+                                }
+                            }
+                }
+            )
+        }
+    )
+}
+
+fun getDatabaseBuilder(ctx: Context): RoomDatabase.Builder<AppDatabase> {
+    val appContext = ctx.applicationContext
+    val dbFile = appContext.getDatabasePath("my_room.db")
+    return Room.databaseBuilder<AppDatabase>(
+        context = appContext,
+        name = dbFile.absolutePath
     )
 }
 
@@ -46,28 +97,18 @@ actual class Settings actual constructor(producePath: () -> String) {
     actual fun getGameSave(): Flow<SolitaireUiState?> = settings.gameSave { Json.decodeFromString(it) }
 }
 
-actual class SolitaireDatabase {
+actual class SolitaireDatabase actual constructor(databaseStuff: DatabaseStuff) {
 
-    private val database = SolitaireDatabase()
+    private val database = databaseStuff
 
     actual suspend fun addHighScore(
         timeTaken: String,
         moveCount: Int,
         score: Int,
         difficulty: Int,
-    ) = database.addHighScore(timeTaken, moveCount, score, Difficulty.entries[difficulty])
+    ) = database.addHighScore(timeTaken, moveCount, score, difficulty)
 
-    actual suspend fun removeHighScore(scoreItem: SolitaireScoreHold) = database.removeHighScore(
-        scoreItem.run {
-            SolitaireScore().also {
-                it.score = score
-                it.difficulty = difficulty
-                it.timeTaken = timeTaken
-                it.time = time
-                it.moves = moves
-            }
-        }
-    )
+    actual suspend fun removeHighScore(scoreItem: SolitaireScoreHold) = database.removeHighScore(scoreItem)
 
     actual fun getSolitaireHighScores(): Flow<List<SolitaireScoreHold>> = database.getSolitaireHighScores()
         .map {
@@ -82,7 +123,7 @@ actual class SolitaireDatabase {
             }
         }
 
-    actual fun getWinCount(): Flow<Int> = database.getWinCount()
+    actual fun getWinCount(): Flow<Int> = winCountFlow()
 }
 
 @Composable

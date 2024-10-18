@@ -41,7 +41,7 @@ private val cardSizeModifier = Modifier.height(150.dp)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SolitaireScreen(
-    database: SolitaireDatabase = remember { SolitaireDatabase() },
+    database: SolitaireDatabase,
     settings: Settings?,
     info: SolitaireViewModel = viewModel {
         SolitaireViewModel(

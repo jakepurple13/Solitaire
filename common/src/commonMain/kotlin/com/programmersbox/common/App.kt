@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 @Composable
 internal fun App(
     settings: Settings?,
+    solitaireDatabase: SolitaireDatabase,
 ) {
     MaterialTheme(buildColorScheme(isSystemInDarkTheme(), true)) {
         Surface {
@@ -29,7 +30,8 @@ internal fun App(
                 ) {
                     composable(Screen.Solitaire.route) {
                         SolitaireScreen(
-                            settings = settings
+                            settings = settings,
+                            database = solitaireDatabase
                         )
                     }
                 }

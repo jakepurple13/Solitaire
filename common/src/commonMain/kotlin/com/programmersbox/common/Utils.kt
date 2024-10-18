@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.materialkolor.rememberDynamicColorScheme
+import kotlinx.coroutines.flow.Flow
 
 data class ComposeCardColor(
     val black: Color = Color.Unspecified,
@@ -157,4 +158,17 @@ fun buildColorScheme(
 @Composable
 private fun Color.animate(animationSpec: AnimationSpec<Color>): Color {
     return animateColorAsState(this, animationSpec).value
+}
+
+interface DatabaseStuff {
+    suspend fun addHighScore(
+        timeTaken: String,
+        moveCount: Int,
+        score: Int,
+        difficulty: Int,
+    )
+
+    suspend fun removeHighScore(scoreItem: SolitaireScoreHold)
+
+    fun getSolitaireHighScores(): Flow<List<SolitaireScoreHold>>
 }

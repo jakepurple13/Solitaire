@@ -28,7 +28,7 @@ public actual class Settings actual constructor(
     actual fun getGameSave(): Flow<SolitaireUiState?> = snapshotFlow { solitaireUiState.value }
 }
 
-actual class SolitaireDatabase {
+actual class SolitaireDatabase actual constructor(databaseStuff: DatabaseStuff) {
 
     actual suspend fun addHighScore(
         timeTaken: String,

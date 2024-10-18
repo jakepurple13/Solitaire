@@ -1,104 +1,89 @@
 package com.programmersbox.storage
 
-import io.realm.kotlin.Realm
-import io.realm.kotlin.RealmConfiguration
-import io.realm.kotlin.ext.asFlow
-import io.realm.kotlin.ext.query
-import io.realm.kotlin.query.Sort
-import io.realm.kotlin.types.RealmObject
-import io.realm.kotlin.types.annotations.PrimaryKey
-import kotlinx.coroutines.flow.mapNotNull
+import androidx.room.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Clock
 
 internal const val HIGHSCORE_LIMIT = 15
 
-class SolitaireDatabase(name: String = Realm.DEFAULT_FILE_NAME) {
-    private val realm by lazy {
-        Realm.open(
-            RealmConfiguration.Builder(
-                setOf(
-                    SolitaireStats::class,
-                    SolitaireScore::class
-                )
-            )
-                .schemaVersion(3)
-                .name(name)
-                .migration({ })
-                //.deleteRealmIfMigrationNeeded()
-                .build()
-        )
-    }
+@Database(
+    entities = [SolitaireScore::class],
+    version = 1,
+)
+@ConstructedBy(AppDatabaseConstructor::class)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun getDao(): SolitaireDao
+}
 
-    private val solitaireStats: SolitaireStats = realm.initDbBlocking { SolitaireStats() }
+@Suppress("NO_ACTUAL_FOR_EXPECT", "KotlinNoActualForExpect")
+expect object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
+    override fun initialize(): AppDatabase
+}
 
+fun getRoomDatabase(
+    builder: RoomDatabase.Builder<AppDatabase>,
+): AppDatabase {
+    return builder
+        //.addMigrations(MIGRATIONS)
+        //.setDriver(BundledSQLiteDriver())
+        .setQueryCoroutineContext(Dispatchers.IO)
+        .build()
+}
+
+@Dao
+interface SolitaireDao {
+    @Insert
+    suspend fun insert(item: SolitaireScore)
+
+    @Delete
+    suspend fun removeHighScore(item: SolitaireScore)
+
+    @Query("SELECT * FROM SolitaireScore ORDER BY score DESC LIMIT $HIGHSCORE_LIMIT")
+    fun getHighScores(): List<SolitaireScore>
+
+    @Query("SELECT * FROM SolitaireScore ORDER BY score DESC LIMIT $HIGHSCORE_LIMIT")
+    fun getSolitaireHighScores(): Flow<List<SolitaireScore>>
+
+    @Ignore
     suspend fun addHighScore(
         timeTaken: String,
         moveCount: Int,
         score: Int,
         difficulty: Difficulty,
     ) {
-        addHighScore(
-            SolitaireScore().apply {
-                this.score = score
-                this.moves = moveCount
-                this.timeTaken = timeTaken
-                this.difficulty = difficulty.name
-            }
+        addHighScore(timeTaken, moveCount, score, difficulty)
+    }
+
+    @Ignore
+    suspend fun addHighScore(
+        timeTaken: String,
+        moveCount: Int,
+        score: Int,
+        difficulty: Difficulty,
+        time: Long = Clock.System.now().toEpochMilliseconds(),
+    ) {
+        insert(
+            SolitaireScore(
+                score = score,
+                moves = moveCount,
+                timeTaken = timeTaken,
+                difficulty = difficulty.name,
+                time = time
+            )
         )
+        if (getHighScores().size > HIGHSCORE_LIMIT) removeHighScore(getHighScores().last())
+        incrementWinCount()
     }
-
-    private suspend fun addHighScore(scoreItem: SolitaireScore) {
-        realm.write {
-            copyToRealm(scoreItem)
-
-            val scores = query<SolitaireScore>()
-                .sort("score", Sort.DESCENDING)
-                .find()
-
-            if (scores.size > HIGHSCORE_LIMIT) {
-                scores.chunked(HIGHSCORE_LIMIT)
-                    .drop(1)
-                    .flatten()
-                    .mapNotNull { findLatest(it) }
-                    .forEach { delete(it) }
-            }
-
-            query<SolitaireStats>()
-                .find()
-                .firstOrNull()
-                ?.let { stats -> stats.wins++ }
-        }
-    }
-
-    suspend fun removeHighScore(scoreItem: SolitaireScore) {
-        realm.write { findLatest(scoreItem)?.let { delete(it) } }
-    }
-
-    fun getSolitaireHighScores() = realm.query<SolitaireScore>()
-        .sort("score", Sort.DESCENDING)
-        .asFlow()
-        .mapNotNull { it.list }
-
-    fun getWinCount() = solitaireStats
-        .asFlow()
-        .mapNotNull { it.obj }
-        .mapNotNull { it.wins }
 }
 
-private inline fun <reified T : RealmObject> Realm.initDbBlocking(crossinline default: () -> T): T {
-    val f = query(T::class).first().find()
-    return f ?: writeBlocking { copyToRealm(default()) }
-}
-
-class SolitaireStats : RealmObject {
-    var wins = 0
-}
-
-class SolitaireScore : RealmObject {
+@Entity(tableName = "SolitaireScore")
+data class SolitaireScore(
     @PrimaryKey
-    var time: Long = Clock.System.now().toEpochMilliseconds()
-    var score: Int = 0
-    var moves: Int = 0
-    var timeTaken: String = ""
-    var difficulty: String? = Difficulty.Normal.name
-}
+    val time: Long = Clock.System.now().toEpochMilliseconds(),
+    val score: Int = 0,
+    val moves: Int = 0,
+    val timeTaken: String = "",
+    val difficulty: String? = Difficulty.Normal.name,
+)

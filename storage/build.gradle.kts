@@ -4,7 +4,8 @@ plugins {
     id("org.jetbrains.compose")
     id("com.android.library")
     kotlin("native.cocoapods")
-    id("io.realm.kotlin")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 group = "com.programmersbox"
@@ -33,6 +34,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            linkerOpts.add("-lsqlite3")
         }
     }
 
@@ -47,10 +49,18 @@ kotlin {
                 api(libs.kotlinx.datetime)
                 api(libs.datastore.core)
                 api(libs.datastore.preferences)
-                api(libs.library.base)
+                api(libs.androidx.room.runtime)
             }
         }
     }
+}
+
+dependencies {
+    add("ksp", libs.androidx.room.compiler)
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 android {

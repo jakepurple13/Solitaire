@@ -20,7 +20,7 @@ public expect class Settings(
     fun getGameSave(): Flow<SolitaireUiState?>
 }
 
-expect class SolitaireDatabase constructor() {
+expect class SolitaireDatabase constructor(databaseStuff: DatabaseStuff) {
     suspend fun addHighScore(
         timeTaken: String,
         moveCount: Int,

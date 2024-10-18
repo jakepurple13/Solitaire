@@ -83,6 +83,29 @@ val CUSTOM_COLOR = intPreferencesKey("custom_color")
 
 val IS_AMOLED = booleanPreferencesKey("is_amoled")
 
+val WIN_COUNT = intPreferencesKey("win_count")
+
+fun winCountFlow() = if (::dataStore.isInitialized) {
+    dataStore
+        .data
+        .mapNotNull { it[WIN_COUNT] ?: 0 }
+        .distinctUntilChanged()
+} else {
+    flowOf(0)
+}
+
+suspend fun incrementWinCount() {
+    if (::dataStore.isInitialized) {
+        dataStore.edit { it[WIN_COUNT] = it[WIN_COUNT]?.inc() ?: 1 }
+    }
+}
+
+suspend fun setWinCount(count: Int) {
+    if (::dataStore.isInitialized) {
+        dataStore.edit { it[WIN_COUNT] = count }
+    }
+}
+
 @Composable
 fun <T> rememberThemeColorDatastore(
     mapToKey: (T) -> String,
