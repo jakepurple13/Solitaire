@@ -93,6 +93,8 @@ kotlin {
                 implementation(compose.components.resources)
                 implementation(libs.hypnoticcanvas)
                 implementation(libs.hypnoticcanvas.shaders)
+                api(libs.material.kolor)
+                implementation(libs.colorpicker.compose)
             }
         }
 

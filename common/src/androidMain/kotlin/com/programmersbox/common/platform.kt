@@ -2,9 +2,11 @@ package com.programmersbox.common
 
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.programmersbox.storage.*
@@ -91,6 +93,31 @@ actual fun rememberCardBack(): MutableState<CardBack> = rememberCardBack(
     CardBack.DefaultBack,
     toState = { collectAsStateWithLifecycle(it) }
 )
+
+@Composable
+actual fun rememberThemeColor(): MutableState<ThemeColor> = rememberThemeColorDatastore(
+    mapToKey = { it.name },
+    mapToType = { runCatching { ThemeColor.valueOf(it) }.getOrDefault(ThemeColor.Dynamic) },
+    defaultValue = ThemeColor.Dynamic
+) { collectAsStateWithLifecycle(it) }
+
+@Composable
+actual fun rememberIsAmoled(): MutableState<Boolean> = rememberIsAmoled { collectAsStateWithLifecycle(it) }
+
+@Composable
+actual fun rememberCustomColor(): MutableState<Color> =
+    rememberCustomColor { collectAsStateWithLifecycle(Color.LightGray) }
+
+@Composable
+actual fun colorSchemeSetup(isDarkMode: Boolean, dynamicColor: Boolean): ColorScheme = when {
+    dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        val context = LocalContext.current
+        if (isDarkMode) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+    }
+
+    isDarkMode -> darkColorScheme()
+    else -> lightColorScheme()
+}
 
 @Composable
 actual fun rememberModeDifficulty(): MutableState<com.programmersbox.common.Difficulty> = rememberModeDifficulty(

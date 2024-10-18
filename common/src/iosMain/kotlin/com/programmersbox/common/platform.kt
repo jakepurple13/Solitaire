@@ -3,17 +3,18 @@ package com.programmersbox.common
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.ComposeUIViewController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.materialkolor.rememberDynamicMaterialThemeState
 import com.programmersbox.storage.*
 import com.programmersbox.storage.Difficulty
 import com.programmersbox.storage.SolitaireDatabase
@@ -110,16 +111,7 @@ actual class SolitaireDatabase {
 
 public fun MainViewController(): UIViewController = ComposeUIViewController {
     MaterialTheme(
-        colorScheme = if (isSystemInDarkTheme())
-            darkColorScheme(
-                primary = Color(0xff90CAF9),
-                secondary = Color(0xff90CAF9),
-            )
-        else
-            lightColorScheme(
-                primary = Color(0xff2196F3),
-                secondary = Color(0xff90CAF9),
-            )
+        colorScheme = buildColorScheme(isSystemInDarkTheme())
     ) {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -150,3 +142,21 @@ actual fun rememberModeDifficulty(): MutableState<com.programmersbox.common.Diff
 }
 
 actual val showCardBacksAlone: Boolean = false
+
+@Composable
+actual fun rememberThemeColor(): MutableState<ThemeColor> = rememberThemeColorDatastore(
+    mapToKey = { it.name },
+    mapToType = { runCatching { ThemeColor.valueOf(it) }.getOrDefault(ThemeColor.Dynamic) },
+    defaultValue = ThemeColor.Dynamic
+) { collectAsState(it) }
+
+@Composable
+actual fun rememberIsAmoled(): MutableState<Boolean> = rememberIsAmoled { collectAsState(it) }
+
+@Composable
+actual fun rememberCustomColor(): MutableState<Color> =
+    rememberCustomColor { collectAsState(Color.LightGray) }
+
+@Composable
+actual fun colorSchemeSetup(isDarkMode: Boolean, dynamicColor: Boolean): ColorScheme =
+    rememberDynamicMaterialThemeState(Color(0xFF009DFF), isDarkMode).colorScheme

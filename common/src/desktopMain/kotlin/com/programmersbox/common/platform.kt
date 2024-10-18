@@ -1,8 +1,10 @@
 package com.programmersbox.common
 
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
+import com.materialkolor.rememberDynamicMaterialThemeState
 import com.programmersbox.storage.*
 import com.programmersbox.storage.Difficulty
 import com.programmersbox.storage.SolitaireDatabase
@@ -101,3 +103,21 @@ actual fun rememberModeDifficulty(): MutableState<com.programmersbox.common.Diff
 }
 
 actual val showCardBacksAlone: Boolean = false
+
+@Composable
+actual fun rememberThemeColor(): MutableState<ThemeColor> = rememberThemeColorDatastore(
+    mapToKey = { it.name },
+    mapToType = { runCatching { ThemeColor.valueOf(it) }.getOrDefault(ThemeColor.Dynamic) },
+    defaultValue = ThemeColor.Dynamic
+) { collectAsState(it) }
+
+@Composable
+actual fun rememberIsAmoled(): MutableState<Boolean> = rememberIsAmoled { collectAsState(it) }
+
+@Composable
+actual fun rememberCustomColor(): MutableState<Color> =
+    rememberCustomColor { collectAsState(Color.LightGray) }
+
+@Composable
+actual fun colorSchemeSetup(isDarkMode: Boolean, dynamicColor: Boolean): ColorScheme =
+    rememberDynamicMaterialThemeState(Color(0xFF009DFF), isDarkMode).colorScheme

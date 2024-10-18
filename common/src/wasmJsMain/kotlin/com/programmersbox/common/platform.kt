@@ -1,6 +1,10 @@
 package com.programmersbox.common
 
+import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import com.materialkolor.rememberDynamicMaterialThemeState
 import kotlinx.browser.localStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -93,6 +97,48 @@ actual fun rememberModeDifficulty(): MutableState<Difficulty> = rememberPreferen
 ) { it.name }
 
 actual val showCardBacksAlone: Boolean = true
+
+private val themeColor by lazy {
+    mutableStateOf(
+        runCatching { ThemeColor.valueOf(localStorage.getItem("themeColor").toString()) }.getOrDefault(
+            ThemeColor.Dynamic
+        )
+    )
+}
+
+@Composable
+actual fun rememberThemeColor(): MutableState<ThemeColor> = rememberPreference(
+    themeColor,
+    "themeColor"
+) { it.name }
+
+private val isAmoled by lazy {
+    mutableStateOf(
+        runCatching { localStorage.getItem("isAmoled").toBoolean() }.getOrDefault(false)
+    )
+}
+
+@Composable
+actual fun rememberIsAmoled(): MutableState<Boolean> = rememberPreference(
+    isAmoled,
+    "isAmoled"
+) { it.toString() }
+
+private val customColor by lazy {
+    mutableStateOf(
+        runCatching { Color(localStorage.getItem("customColor")!!.toLong()) }.getOrDefault(Color.LightGray)
+    )
+}
+
+@Composable
+actual fun rememberCustomColor(): MutableState<Color> = rememberPreference(
+    customColor,
+    "customColor"
+) { it.toArgb().toString() }
+
+@Composable
+actual fun colorSchemeSetup(isDarkMode: Boolean, dynamicColor: Boolean): ColorScheme =
+    rememberDynamicMaterialThemeState(Color(0xFF009DFF), isDarkMode).colorScheme
 
 @Composable
 fun <T> rememberPreference(

@@ -1,7 +1,5 @@
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.graphics.Color
@@ -13,16 +11,7 @@ import kotlinx.browser.document
 fun main() {
     ComposeViewport(document.body!!) {
         MaterialTheme(
-            colorScheme = if (isSystemInDarkTheme())
-                darkColorScheme(
-                    primary = Color(0xff90CAF9),
-                    secondary = Color(0xff90CAF9),
-                )
-            else
-                lightColorScheme(
-                    primary = Color(0xff2196F3),
-                    secondary = Color(0xff90CAF9),
-                )
+            colorScheme = buildColorScheme(isSystemInDarkTheme())
         ) {
             CompositionLocalProvider(
                 LocalCardColor provides ComposeCardColor(

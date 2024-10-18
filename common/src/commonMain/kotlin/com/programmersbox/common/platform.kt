@@ -1,7 +1,9 @@
 package com.programmersbox.common
 
+import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Clock
 
@@ -49,5 +51,17 @@ expect fun rememberCardBack(): MutableState<CardBack>
 
 @Composable
 expect fun rememberModeDifficulty(): MutableState<Difficulty>
+
+@Composable
+expect fun rememberThemeColor(): MutableState<ThemeColor>
+
+@Composable
+expect fun rememberIsAmoled(): MutableState<Boolean>
+
+@Composable
+expect fun colorSchemeSetup(isDarkMode: Boolean, dynamicColor: Boolean): ColorScheme
+
+@Composable
+expect fun rememberCustomColor(): MutableState<Color>
 
 expect val showCardBacksAlone: Boolean

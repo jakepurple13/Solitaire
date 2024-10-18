@@ -1,7 +1,9 @@
 package com.programmersbox.common
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,20 +16,22 @@ import androidx.navigation.compose.rememberNavController
 internal fun App(
     settings: Settings?,
 ) {
-    Surface {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            val navigator = rememberNavController()
-            NavHost(
-                navController = navigator,
-                startDestination = Screen.Solitaire.route
+    MaterialTheme(buildColorScheme(isSystemInDarkTheme(), true)) {
+        Surface {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                composable(Screen.Solitaire.route) {
-                    SolitaireScreen(
-                        settings = settings
-                    )
+                val navigator = rememberNavController()
+                NavHost(
+                    navController = navigator,
+                    startDestination = Screen.Solitaire.route
+                ) {
+                    composable(Screen.Solitaire.route) {
+                        SolitaireScreen(
+                            settings = settings
+                        )
+                    }
                 }
             }
         }

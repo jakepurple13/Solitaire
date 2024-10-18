@@ -10,6 +10,8 @@ compose-version = "1.7.0-rc01"
 kotlinx-datetime = "0.6.1"
 precompose = "1.6.0"
 datastore-version = "1.1.1"
+materialKolor = "2.0.0"
+colorpickerCompose = "1.1.2"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp-version" }
@@ -20,7 +22,7 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version = "1.7.0" }
 androidx-core = { module = "androidx.core:core-ktx", version = "1.13.1" }
-androidx-activity-compose = "androidx.activity:activity-compose:1.9.2"
+androidx-activity-compose = "androidx.activity:activity-compose:1.9.3"
 hypnoticcanvas = { module = "com.mikepenz.hypnoticcanvas:hypnoticcanvas", version.ref = "hypnoticcanvas" }
 hypnoticcanvas-shaders = { module = "com.mikepenz.hypnoticcanvas:hypnoticcanvas-shaders", version.ref = "hypnoticcanvas" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json-version" }
@@ -31,3 +33,5 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 datastore-core = { module = "androidx.datastore:datastore-core", version.ref = "datastore-version" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore-version" }
 library-base = { module = "io.realm.kotlin:library-base", version.ref = "realm-plugin" }
+material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
+colorpicker-compose = { module = "com.github.skydoves:colorpicker-compose", version.ref = "colorpickerCompose" }

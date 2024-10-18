@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
+import com.programmersbox.common.buildColorScheme
 import org.jetbrains.skiko.OS
 import org.jetbrains.skiko.hostOs
 
@@ -46,16 +47,7 @@ internal fun WindowWithBar(
         visible = visible,
     ) {
         MaterialTheme(
-            colorScheme = if (isSystemInDarkTheme())
-                darkColorScheme(
-                    primary = Color(0xff90CAF9),
-                    secondary = Color(0xff90CAF9),
-                )
-            else
-                lightColorScheme(
-                    primary = Color(0xff2196F3),
-                    secondary = Color(0xff90CAF9),
-                )
+            colorScheme = buildColorScheme(isSystemInDarkTheme())
         ) {
             frameWindowScope()
             val hasFocus = LocalWindowInfo.current.isWindowFocused

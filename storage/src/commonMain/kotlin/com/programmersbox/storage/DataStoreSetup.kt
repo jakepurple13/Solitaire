@@ -1,6 +1,8 @@
 package com.programmersbox.storage
 
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import kotlinx.coroutines.flow.*
@@ -72,6 +74,46 @@ inline fun <reified T : Enum<T>> rememberModeDifficulty(
     mapToKey = mapToKey,
     mapToType = mapToType,
     defaultValue = defaultValue,
+    toState = toState
+)
+
+val THEME_COLOR = stringPreferencesKey("theme_color")
+
+val CUSTOM_COLOR = intPreferencesKey("custom_color")
+
+val IS_AMOLED = booleanPreferencesKey("is_amoled")
+
+@Composable
+fun <T> rememberThemeColorDatastore(
+    mapToKey: (T) -> String,
+    mapToType: (String) -> T,
+    defaultValue: T,
+    toState: @Composable Flow<T>.(T) -> State<T>,
+) = rememberPreference(
+    key = THEME_COLOR,
+    mapToKey = mapToKey,
+    mapToType = mapToType,
+    defaultValue = defaultValue,
+    toState = toState
+)
+
+@Composable
+fun rememberCustomColor(
+    toState: @Composable Flow<Color>.(Color) -> State<Color>,
+) = rememberPreference(
+    key = CUSTOM_COLOR,
+    mapToType = { Color(it) },
+    mapToKey = { it.toArgb() },
+    defaultValue = Color.LightGray,
+    toState = toState
+)
+
+@Composable
+fun rememberIsAmoled(
+    toState: @Composable Flow<Boolean>.(Boolean) -> State<Boolean>,
+) = rememberPreference(
+    key = IS_AMOLED,
+    defaultValue = false,
     toState = toState
 )
 
@@ -156,7 +198,7 @@ fun <T, R> rememberPreference(
                 .mapNotNull { it[key]?.let(mapToType) ?: defaultValue }
                 .distinctUntilChanged()
         } else {
-            emptyFlow()
+            flowOf(defaultValue)
         }
     }.toState(defaultValue)
 
@@ -165,6 +207,7 @@ fun <T, R> rememberPreference(
             override var value: R
                 get() = state
                 set(value) {
+                    println(value)
                     coroutineScope.launch {
                         dataStore.edit { it[key] = value.let(mapToKey) }
                     }
