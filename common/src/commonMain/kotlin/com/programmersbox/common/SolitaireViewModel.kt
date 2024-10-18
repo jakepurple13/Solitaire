@@ -121,20 +121,18 @@ class SolitaireViewModel(
         }
     }
 
-    fun saveGame() {
-        viewModelScope.launch {
-            settings?.setGameSave(
-                SolitaireUiState(
-                    remainingDeck = deck,
-                    flippedCards = drawList,
-                    foundations = foundations,
-                    table = fieldSlots,
-                    score = score,
-                    moveCount = moveCount,
-                    time = time
-                )
+    suspend fun saveGame() {
+        settings?.setGameSave(
+            SolitaireUiState(
+                remainingDeck = deck,
+                flippedCards = drawList,
+                foundations = foundations,
+                table = fieldSlots,
+                score = score,
+                moveCount = moveCount,
+                time = time
             )
-        }
+        )
     }
 
     fun draw(drawAmount: Int) {
