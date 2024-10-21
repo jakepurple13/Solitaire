@@ -36,7 +36,7 @@ fun getRoomDatabase(
 @Dao
 interface SolitaireDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(item: SolitaireScore)
 
     @Delete
