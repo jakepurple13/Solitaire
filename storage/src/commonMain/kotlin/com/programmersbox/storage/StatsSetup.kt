@@ -28,6 +28,7 @@ fun getRoomDatabase(
     return builder
         //.addMigrations(MIGRATIONS)
         //.setDriver(BundledSQLiteDriver())
+        .fallbackToDestructiveMigration(true)
         .setQueryCoroutineContext(Dispatchers.IO)
         .build()
 }
