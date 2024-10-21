@@ -96,7 +96,7 @@ fun winCountFlow() = if (::dataStore.isInitialized) {
 
 suspend fun incrementWinCount() {
     if (::dataStore.isInitialized) {
-        dataStore.edit { it[WIN_COUNT] = it[WIN_COUNT]?.inc() ?: 1 }
+        dataStore.edit { it[WIN_COUNT] = (it[WIN_COUNT]?.plus(1)) ?: 1 }
     }
 }
 

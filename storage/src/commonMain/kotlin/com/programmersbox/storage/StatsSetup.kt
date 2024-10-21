@@ -53,7 +53,13 @@ interface SolitaireDao {
         score: Int,
         difficulty: Difficulty,
     ) {
-        addHighScore(timeTaken, moveCount, score, difficulty)
+        addHighScore(
+            timeTaken = timeTaken,
+            moveCount = moveCount,
+            score = score,
+            difficulty = difficulty,
+            time = Clock.System.now().toEpochMilliseconds()
+        )
     }
 
     @Ignore

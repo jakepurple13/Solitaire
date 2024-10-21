@@ -14,7 +14,7 @@ plugins {
 }
 
 group = "com.programmersbox"
-version = "1.0-SNAPSHOT"
+version = "2.0.0"
 
 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 kotlin {
