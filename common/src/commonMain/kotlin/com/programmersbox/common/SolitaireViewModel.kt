@@ -195,6 +195,17 @@ class SolitaireViewModel(
         time = 0
     }
 
+    fun winGame() {
+        val aceS = Card(13, Suit.Spades)
+        val aceC = Card(13, Suit.Clubs)
+        val aceD = Card(13, Suit.Diamonds)
+        val aceH = Card(13, Suit.Hearts)
+        foundations[1]?.add(aceS)
+        foundations[2]?.add(aceC)
+        foundations[3]?.add(aceD)
+        foundations[4]?.add(aceH)
+    }
+
     fun autoMove() {
         drawList.lastOrNull()?.let { card ->
             for (i in foundations) {

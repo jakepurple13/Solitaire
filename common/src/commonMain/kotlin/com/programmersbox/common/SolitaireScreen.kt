@@ -27,6 +27,7 @@ import com.programmersbox.common.dragdrop.AnimatedDragDropBox
 import com.programmersbox.common.dragdrop.DragTarget
 import com.programmersbox.common.dragdrop.DragType
 import com.programmersbox.common.dragdrop.DropTarget
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -87,12 +88,14 @@ internal fun SolitaireScreen(
 
     LaunchedEffect(info.hasWon) {
         if (info.hasWon) {
-            database.addHighScore(
-                timeTaken = info.timeText,
-                moveCount = info.moveCount,
-                score = info.score,
-                difficulty = difficulty.ordinal
-            )
+            GlobalScope.launch {
+                database.addHighScore(
+                    timeTaken = info.timeText,
+                    moveCount = info.moveCount,
+                    score = info.score,
+                    difficulty = difficulty.ordinal
+                )
+            }
         }
     }
 
@@ -179,6 +182,10 @@ internal fun SolitaireScreen(
                         settings = settings,
                         onStatsClick = { showStats = true }
                     )
+
+                    /*Button(
+                        onClick = { info.winGame() }
+                    ) { Text("Win Game") }*/
                 }
             }
         ) {

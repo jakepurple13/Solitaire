@@ -34,7 +34,8 @@ fun getRoomDatabase(
 
 @Dao
 interface SolitaireDao {
-    @Insert
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(item: SolitaireScore)
 
     @Delete
@@ -79,17 +80,18 @@ interface SolitaireDao {
                 time = time
             )
         )
-        if (getHighScores().size > HIGHSCORE_LIMIT) removeHighScore(getHighScores().last())
+        if (getHighScores().size > HIGHSCORE_LIMIT) getHighScores().lastOrNull()?.let { removeHighScore(it) }
         incrementWinCount()
     }
 }
 
 @Entity(tableName = "SolitaireScore")
 data class SolitaireScore(
-    @PrimaryKey
     val time: Long = Clock.System.now().toEpochMilliseconds(),
     val score: Int = 0,
     val moves: Int = 0,
     val timeTaken: String = "",
     val difficulty: String? = Difficulty.Normal.name,
+    @PrimaryKey
+    val id: String = "${score}_${moves}_${timeTaken}_$difficulty",
 )
