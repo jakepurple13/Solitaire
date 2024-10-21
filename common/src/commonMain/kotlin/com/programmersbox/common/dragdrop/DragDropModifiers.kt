@@ -2,6 +2,7 @@ package com.programmersbox.common.dragdrop
 
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -40,6 +41,7 @@ fun <T> Modifier.dragTarget(
     draggableContent: @Composable () -> Unit,
     enable: Boolean = true,
     uniqueKey: (() -> Any)? = null,
+    onDoubleTap: ((T?) -> Unit)? = null,
     dragType: DragType = LocalDragDrop.current.dragType,
 ) = composed {
     if (!enable) {
@@ -80,6 +82,7 @@ fun <T> Modifier.dragTarget(
                 val onDragCancel = {
                     currentState.onDragCancel()
                 }
+
                 when (dragTargetState.value.dragType) {
                     DragType.LongPress -> {
                         detectDragGesturesAfterLongPress(
@@ -99,6 +102,12 @@ fun <T> Modifier.dragTarget(
                         )
                     }
                 }
+            }
+            .pointerInput(currentState, dragTargetState, currentSizePx) {
+                //TODO: Try it
+                detectTapGestures(
+                    onDoubleTap = { dragTargetState.value.dataToDrop?.let { onDoubleTap?.invoke(it) } }
+                )
             }
     }
 }

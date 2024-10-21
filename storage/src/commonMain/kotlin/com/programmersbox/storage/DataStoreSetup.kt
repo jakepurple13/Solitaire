@@ -85,6 +85,8 @@ val IS_AMOLED = booleanPreferencesKey("is_amoled")
 
 val WIN_COUNT = intPreferencesKey("win_count")
 
+val USE_NEW_DESIGN = booleanPreferencesKey("use_new_design")
+
 fun winCountFlow() = if (::dataStore.isInitialized) {
     dataStore
         .data
@@ -136,6 +138,15 @@ fun rememberIsAmoled(
     toState: @Composable Flow<Boolean>.(Boolean) -> State<Boolean>,
 ) = rememberPreference(
     key = IS_AMOLED,
+    defaultValue = false,
+    toState = toState
+)
+
+@Composable
+fun rememberUseNewDesign(
+    toState: @Composable Flow<Boolean>.(Boolean) -> State<Boolean>,
+) = rememberPreference(
+    key = USE_NEW_DESIGN,
     defaultValue = false,
     toState = toState
 )

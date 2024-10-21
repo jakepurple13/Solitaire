@@ -20,6 +20,7 @@ fun <T> DragTarget(
     dragType: DragType = LocalDragDrop.current.dragType,
     hiddenOnDragging: Boolean = false,
     customDragContent: (@Composable () -> Unit)? = null,
+    onDoubleTap: ((T?) -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
     Box(
@@ -30,6 +31,7 @@ fun <T> DragTarget(
                 enable = enable,
                 uniqueKey = uniqueKey,
                 dragType = dragType,
+                onDoubleTap = onDoubleTap,
             )
     ) {
         val state = LocalDragDrop.current

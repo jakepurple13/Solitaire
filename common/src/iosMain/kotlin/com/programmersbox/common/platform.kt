@@ -213,3 +213,6 @@ actual fun rememberCustomColor(): MutableState<Color> =
 @Composable
 actual fun colorSchemeSetup(isDarkMode: Boolean, dynamicColor: Boolean): ColorScheme =
     rememberDynamicMaterialThemeState(Color(0xFF009DFF), isDarkMode).colorScheme
+
+@Composable
+actual fun rememberUseNewDesign(): MutableState<Boolean> = rememberUseNewDesign { collectAsState(true) }

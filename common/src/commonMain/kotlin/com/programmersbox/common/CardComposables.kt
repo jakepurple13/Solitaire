@@ -2,6 +2,7 @@ package com.programmersbox.common
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -15,9 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.programmersbox.common.generated.resources.Res
+import com.programmersbox.common.generated.resources.font_awesome_stuff
+import org.jetbrains.compose.resources.Font
 
 @Composable
 fun rememberDeck(vararg key: Any) = remember(key) { Deck.defaultDeck() }
@@ -63,6 +68,7 @@ fun PlayingCard(
 @Composable
 fun PlayingCard(
     card: Card,
+    useNewDesign: Boolean,
     modifier: Modifier = Modifier,
     tonalElevation: Dp = 4.dp,
     shape: Shape = PlayingCardDefaults.shape,
@@ -79,7 +85,8 @@ fun PlayingCard(
     border = border,
     modifier = modifier//.size(100.dp, 150.dp),
 ) {
-    CardDetail(card, showFullDetail)
+    if (useNewDesign) CardDetailNew(card, showFullDetail)
+    else CardDetail(card, showFullDetail)
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -153,6 +160,125 @@ private fun CardDetail(
                     .align(Alignment.BottomEnd),
                 textAlign = TextAlign.End
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun CardDetailNew(
+    card: Card,
+    showFullDetail: Boolean = true,
+) {
+    val cardShow = LocalCardShowing.current
+    val ff = FontFamily(Font(resource = Res.font.font_awesome_stuff))
+    val textColor = when (card.color) {
+        CardColor.Black -> if (isSystemInDarkTheme()) Color.White else Color.Black
+        CardColor.Red -> Color.Red
+    }
+    if (showFullDetail && card.value <= 10) {
+        Column(
+            verticalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.padding(4.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    text = card.symbol + " ",
+                    color = textColor,
+                    textAlign = TextAlign.Start
+                )
+                Text(
+                    text = card.suit.unicodeSymbol,
+                    color = textColor,
+                    fontFamily = ff,
+                    textAlign = TextAlign.Start
+                )
+            }
+
+            FlowRow(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                repeat(card.value) {
+                    Text(
+                        text = card.suit.let(cardShow.suit),
+                        textAlign = TextAlign.Center,
+                        fontFamily = ff,
+                        color = textColor,
+                    )
+                }
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    text = card.symbol + " ",
+                    color = textColor,
+                    textAlign = TextAlign.Start
+                )
+                Text(
+                    text = card.suit.unicodeSymbol,
+                    color = textColor,
+                    fontFamily = ff,
+                    textAlign = TextAlign.Start
+                )
+            }
+        }
+    } else {
+        Box(
+            modifier = Modifier.padding(4.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopStart),
+            ) {
+                Text(
+                    text = card.symbol + " ",
+                    color = textColor,
+                    textAlign = TextAlign.Start
+                )
+                Text(
+                    text = card.suit.unicodeSymbol,
+                    color = textColor,
+                    fontFamily = ff,
+                    textAlign = TextAlign.Start
+                )
+            }
+
+            if (showFullDetail)
+                Text(
+                    text = if (card.value == 13) "♚" else card.suit.let(cardShow.suit),
+                    color = textColor,
+                    fontFamily = ff,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center),
+                    textAlign = TextAlign.Center
+                )
+
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomEnd),
+            ) {
+                Text(
+                    text = card.symbol + " ",
+                    color = textColor,
+                    textAlign = TextAlign.End
+                )
+                Text(
+                    text = card.suit.unicodeSymbol,
+                    color = textColor,
+                    fontFamily = ff,
+                    textAlign = TextAlign.End
+                )
+            }
         }
     }
 }

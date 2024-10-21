@@ -206,6 +206,17 @@ class SolitaireViewModel(
         foundations[4]?.add(aceH)
     }
 
+    fun autoMoveCard(
+        cardLocation: CardLocation,
+    ) {
+        for (i in fieldSlots) {
+            if (fieldPlace(cardLocation, i.value)) break
+        }
+        for (i in foundations) {
+            if (foundationPlace(cardLocation, i.value)) return
+        }
+    }
+
     fun autoMove() {
         drawList.lastOrNull()?.let { card ->
             for (i in foundations) {

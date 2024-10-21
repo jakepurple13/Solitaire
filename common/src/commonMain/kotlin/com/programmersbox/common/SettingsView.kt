@@ -237,9 +237,51 @@ internal fun SettingsView(
             }
 
             item {
+                var useNewDesign by rememberUseNewDesign()
+
+                OutlinedCard(
+                    modifier = Modifier.toggleable(
+                        value = useNewDesign,
+                        onValueChange = { useNewDesign = it }
+                    )
+                ) {
+                    ListItem(
+                        headlineContent = { Text("Use New Card Design") },
+                        trailingContent = {
+                            Switch(
+                                checked = useNewDesign,
+                                onCheckedChange = { useNewDesign = it }
+                            )
+                        }
+                    )
+                }
+            }
+
+            item {
+                var isAmoled by rememberIsAmoled()
+
+                OutlinedCard(
+                    modifier = Modifier.toggleable(
+                        value = isAmoled,
+                        onValueChange = { isAmoled = it }
+                    )
+                ) {
+                    ListItem(
+                        headlineContent = { Text("Is Amoled") },
+                        trailingContent = {
+                            Switch(
+                                checked = isAmoled,
+                                onCheckedChange = { isAmoled = it }
+                            )
+                        }
+                    )
+                }
+            }
+
+            item {
                 var showThemes by remember { mutableStateOf(false) }
                 var themeColor by rememberThemeColor()
-                var isAmoled by rememberIsAmoled()
+                val isAmoled by rememberIsAmoled()
 
                 var customColor by rememberCustomColor()
 

@@ -149,6 +149,9 @@ actual fun rememberThemeColor(): MutableState<ThemeColor> = rememberThemeColorDa
 actual fun rememberIsAmoled(): MutableState<Boolean> = rememberIsAmoled { collectAsStateWithLifecycle(it) }
 
 @Composable
+actual fun rememberUseNewDesign(): MutableState<Boolean> = rememberUseNewDesign { collectAsStateWithLifecycle(true) }
+
+@Composable
 actual fun rememberCustomColor(): MutableState<Color> =
     rememberCustomColor { collectAsStateWithLifecycle(Color.LightGray) }
 

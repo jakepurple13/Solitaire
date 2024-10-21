@@ -37,7 +37,7 @@ const val DRAW_AMOUNT = 3 //default 3
 const val WIN_CARD_VALUE = 13 //default 13
 const val FIELD_HEIGHT = 100
 
-private val cardSizeModifier = Modifier.height(150.dp)
+private val cardSizeModifier = Modifier.height(125.dp)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -171,7 +171,8 @@ internal fun SolitaireScreen(
     }
 
     AnimatedDragDropBox(
-        defaultDragType = DragType.Immediate
+        defaultDragType = DragType.Immediate,
+        scale = 1f
     ) {
         ModalNavigationDrawer(
             drawerState = drawerState,
@@ -266,48 +267,72 @@ private fun Foundations(
     cardBack: CardBack,
     winModifier: Modifier,
 ) {
+    val useNewDesign by rememberUseNewDesign()
+
     Row(
         horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateContentSize()
     ) {
         info.foundations.forEach { foundation ->
-            DropTarget<CardLocation>(
-                onDrop = {
-                    it?.let { cardLocation ->
-                        info.foundationPlace(cardLocation, foundation.value)
+            Column(
+                verticalArrangement = Arrangement.spacedBy((-120).dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .animateContentSize()
+            ) {
+                foundation.value
+                    .dropLast(1)
+                    .takeLast(5)
+                    .forEach {
+                        EmptyCard(
+                            cardBack = cardBack.toModifier(),
+                            border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
+                            modifier = cardSizeModifier
+                                .fillMaxSize()
+                                .then(winModifier),
+                        )
                     }
-                },
-                enabled = !info.hasWon,
-                modifier = Modifier.weight(1f)
-            ) { d, f ->
-                val canPlace = f?.let { cardLocation ->
-                    foundationCheck(cardLocation.card, foundation.value) && d
-                } == true
 
-                val strokeColor by animateColorAsState(
-                    if (canPlace) Color.Green else MaterialTheme.colorScheme.primary
-                )
-
-                foundation.value.lastOrNull()
-                    ?.let {
-                        DragTarget(
-                            dataToDrop = CardLocation(FOUNDATION_LOCATION, it, foundation.key),
-                            enable = !info.hasWon,
-                        ) {
-                            PlayingCard(
-                                card = it,
-                                border = BorderStroke(2.dp, strokeColor),
-                                modifier = cardSizeModifier.then(winModifier)
-                            )
+                DropTarget<CardLocation>(
+                    onDrop = {
+                        it?.let { cardLocation ->
+                            info.foundationPlace(cardLocation, foundation.value)
                         }
-                    }
-                    ?: EmptyCard(
-                        border = BorderStroke(2.dp, strokeColor),
+                    },
+                    enabled = !info.hasWon,
+                    //modifier = Modifier.weight(1f)
+                ) { d, f ->
+                    val canPlace = f?.let { cardLocation ->
+                        foundationCheck(cardLocation.card, foundation.value) && d
+                    } == true
+
+                    val strokeColor by animateColorAsState(
+                        if (canPlace) Color.Green else MaterialTheme.colorScheme.primary
+                    )
+
+                    foundation.value.lastOrNull()
+                        ?.let {
+                            DragTarget(
+                                dataToDrop = CardLocation(FOUNDATION_LOCATION, it, foundation.key),
+                                enable = !info.hasWon,
+                            ) {
+                                PlayingCard(
+                                    card = it,
+                                    border = BorderStroke(2.dp, strokeColor),
+                                    useNewDesign = useNewDesign,
+                                    modifier = cardSizeModifier.then(winModifier)
+                                )
+                            }
+                        } ?: EmptyCard(
+                        border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
                         cardBack = cardBack.toModifier(),
                         modifier = cardSizeModifier
                             .fillMaxSize()
                             .then(winModifier),
                     )
+                }
             }
         }
     }
@@ -320,6 +345,8 @@ private fun Draws(
     cardBack: CardBack,
     drawAmount: Int,
 ) {
+    val useNewDesign by rememberUseNewDesign()
+
     Row(
         horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.End),
         modifier = Modifier.fillMaxWidth()
@@ -374,16 +401,15 @@ private fun Draws(
             }*/
 
             //draws
-            //var delay = 100L
             info
                 .drawList
                 .dropLast(1)
                 .takeLast(2)
                 .forEach {
-                    //delay.also { delay += 50 }
                     PlayingCard(
                         card = it,
                         border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                        useNewDesign = useNewDesign,
                         modifier = cardSizeModifier.width(100.dp)
                     )
                 }
@@ -392,9 +418,11 @@ private fun Draws(
                 DragTarget(
                     dataToDrop = CardLocation(DRAW_LOCATION, it, 0),
                     enable = !info.hasWon,
+                    onDoubleTap = { it?.let { cardLocation -> info.autoMoveCard(cardLocation) } },
                 ) {
                     PlayingCard(
                         card = it,
+                        useNewDesign = useNewDesign,
                         border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
                         modifier = cardSizeModifier.width(100.dp)
                     )
@@ -456,6 +484,8 @@ private fun Field(
     info: SolitaireViewModel,
     cardBack: CardBack,
 ) {
+    val useNewDesign by rememberUseNewDesign()
+
     Row(
         horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally),
         modifier = Modifier
@@ -520,6 +550,7 @@ private fun Field(
                                 DragTarget(
                                     dataToDrop = CardLocation(fieldSlot.key, card, index),
                                     enable = !info.hasWon,
+                                    onDoubleTap = { it?.let { cardLocation -> info.autoMoveCard(cardLocation) } },
                                     customDragContent = {
                                         Column(
                                             verticalArrangement = Arrangement.spacedBy(-(FIELD_HEIGHT * .75).dp),
@@ -529,7 +560,8 @@ private fun Field(
                                                     card = it,
                                                     border = BorderStroke(2.dp, strokeColor),
                                                     modifier = Modifier.height(FIELD_HEIGHT.dp),
-                                                    showFullDetail = false
+                                                    showFullDetail = false,
+                                                    useNewDesign = useNewDesign
                                                 )
                                             }
                                         }
@@ -552,7 +584,8 @@ private fun Field(
                                         else
                                             PlayingCardDefaults.shape,
                                         modifier = Modifier.height(FIELD_HEIGHT.dp),
-                                        showFullDetail = false
+                                        showFullDetail = false,
+                                        useNewDesign = useNewDesign
                                     )
                                 }
                             }
