@@ -31,7 +31,10 @@ public fun UIShow() {
         solitaireDatabase = remember {
             SolitaireDatabase(
                 databaseStuff = object : DatabaseStuff {
-                    private val database = getDatabaseBuilder(context).build().getDao()
+                    private val database = getDatabaseBuilder(context)
+                        .fallbackToDestructiveMigration(true)
+                        .build()
+                        .getDao()
 
                     override suspend fun addHighScore(
                         timeTaken: String,
