@@ -17,7 +17,9 @@ internal fun App(
     settings: Settings?,
     solitaireDatabase: SolitaireDatabase,
 ) {
-    MaterialTheme(buildColorScheme(isSystemInDarkTheme(), true)) {
+    MaterialTheme(
+        colorScheme = buildColorScheme(isSystemInDarkTheme(), true)
+    ) {
         Surface {
             Box(
                 modifier = Modifier.fillMaxSize(),

@@ -81,9 +81,7 @@ class FieldSlot {
 
     fun checkToAdd(c: Card): Boolean {
         return (list.isEmpty() && c.value == 13)
-                || runCatching {
-            (list.last().color != c.color && list.last().value - 1 == c.value)
-        }.getOrElse { false }
+                || runCatching { list.last().color != c.color && list.last().value - 1 == c.value }.getOrElse { false }
     }
 
     fun addCards(c: List<Card>) {

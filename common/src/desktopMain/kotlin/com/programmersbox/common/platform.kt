@@ -144,6 +144,9 @@ actual fun rememberModeDifficulty(): MutableState<com.programmersbox.common.Diff
     collectAsState(it)
 }
 
+@Composable
+actual fun rememberUseNewDesign(): MutableState<Boolean> = rememberUseNewDesign { collectAsState(true) }
+
 actual val showCardBacksAlone: Boolean = false
 
 @Composable

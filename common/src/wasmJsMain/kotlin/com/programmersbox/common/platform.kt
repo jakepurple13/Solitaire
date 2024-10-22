@@ -137,6 +137,9 @@ actual fun rememberCustomColor(): MutableState<Color> = rememberPreference(
 ) { it.toArgb().toString() }
 
 @Composable
+actual fun rememberUseNewDesign(): MutableState<Boolean> = remember { mutableStateOf(true) }
+
+@Composable
 actual fun colorSchemeSetup(isDarkMode: Boolean, dynamicColor: Boolean): ColorScheme =
     rememberDynamicMaterialThemeState(Color(0xFF009DFF), isDarkMode).colorScheme
 
