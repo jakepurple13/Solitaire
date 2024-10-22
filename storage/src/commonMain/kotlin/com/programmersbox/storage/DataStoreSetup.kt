@@ -147,7 +147,7 @@ fun rememberUseNewDesign(
     toState: @Composable Flow<Boolean>.(Boolean) -> State<Boolean>,
 ) = rememberPreference(
     key = USE_NEW_DESIGN,
-    defaultValue = false,
+    defaultValue = true,
     toState = toState
 )
 
