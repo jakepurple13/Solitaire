@@ -209,11 +209,11 @@ class SolitaireViewModel(
     fun autoMoveCard(
         cardLocation: CardLocation,
     ) {
-        for (i in fieldSlots) {
-            if (fieldPlace(cardLocation, i.value)) return
-        }
         for (i in foundations) {
             if (foundationPlace(cardLocation, i.value)) return
+        }
+        for (i in fieldSlots) {
+            if (fieldPlace(cardLocation, i.value)) return
         }
     }
 

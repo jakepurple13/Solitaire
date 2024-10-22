@@ -252,7 +252,12 @@ private fun CardDetailNew(
 
             if (showFullDetail)
                 Text(
-                    text = if (card.value == 13) "♚" else card.suit.let(cardShow.suit),
+                    text = when (card.value) {
+                        13 -> "♚"
+                        12 -> "♛"
+                        11 -> "⚔"
+                        else -> card.suit.let(cardShow.suit)
+                    },
                     color = textColor,
                     fontFamily = ff,
                     modifier = Modifier
