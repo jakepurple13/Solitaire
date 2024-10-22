@@ -45,10 +45,10 @@ fun main() {
                     black = MaterialTheme.colorScheme.onBackground,
                     red = Color.Red
                 ),
-                LocalCardShowing provides CardShow(
+                /*LocalCardShowing provides CardShow(
                     full = { it.toSymbolString() },
                     suit = { it.symbol }
-                )
+                )*/
             ) {
                 App(
                     settings = null,

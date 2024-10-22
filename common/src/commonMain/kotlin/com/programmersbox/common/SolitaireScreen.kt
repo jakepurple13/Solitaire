@@ -23,6 +23,9 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.materialkolor.ktx.fixIfDisliked
+import com.materialkolor.ktx.harmonize
+import com.materialkolor.ktx.harmonizeWithPrimary
 import com.programmersbox.common.dragdrop.AnimatedDragDropBox
 import com.programmersbox.common.dragdrop.DragTarget
 import com.programmersbox.common.dragdrop.DragType
@@ -71,11 +74,17 @@ internal fun SolitaireScreen(
         else info.pauseTimer()
     }
 
+    val colorScheme = MaterialTheme.colorScheme
+
     val winModifier by remember {
         derivedStateOf {
             if (info.hasWon) {
                 Modifier.animatedBorder(
-                    borderColors = listOf(Color.Red, Color.Green, Color.Blue),
+                    borderColors = listOf(
+                        colorScheme.harmonizeWithPrimary(Color.Red),
+                        colorScheme.harmonizeWithPrimary(Color.Green),
+                        colorScheme.harmonizeWithPrimary(Color.Blue)
+                    ),
                     backgroundColor = Color.Transparent,
                     shape = PlayingCardDefaults.shape,
                     borderWidth = 4.dp
@@ -309,7 +318,12 @@ private fun Foundations(
                     } == true
 
                     val strokeColor by animateColorAsState(
-                        if (canPlace) Color.Green else MaterialTheme.colorScheme.primary
+                        if (canPlace)
+                            Color.Green
+                                .harmonize(MaterialTheme.colorScheme.primary)
+                                .fixIfDisliked()
+                        else
+                            MaterialTheme.colorScheme.primary
                     )
 
                     foundation.value.lastOrNull()
@@ -330,7 +344,7 @@ private fun Foundations(
                         cardBack = cardBack.toModifier(),
                         modifier = cardSizeModifier
                             .fillMaxSize()
-                            .then(winModifier),
+                            .then(winModifier)
                     )
                 }
             }
@@ -522,24 +536,26 @@ private fun Field(
                     } == true
 
                     val strokeColor by animateColorAsState(
-                        if (canPlace) Color.Green else MaterialTheme.colorScheme.primary
+                        if (canPlace)
+                            Color.Green
+                                .harmonize(MaterialTheme.colorScheme.primary)
+                                .fixIfDisliked()
+                        else
+                            MaterialTheme.colorScheme.primary
                     )
 
                     if (fieldSlot.value.list.isEmpty()) {
                         EmptyCard(
                             border = BorderStroke(2.dp, strokeColor),
+                            shape = MaterialTheme.shapes.medium.copy(
+                                topEnd = CornerSize(0.dp),
+                                topStart = CornerSize(0.dp)
+                            ),
                             cardBack = cardBack.toModifier(),
                             modifier = Modifier
                                 .height(FIELD_HEIGHT.dp)
-                                .border(
-                                    BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                                    shape = MaterialTheme.shapes.medium.copy(
-                                        topEnd = CornerSize(0.dp),
-                                        topStart = CornerSize(0.dp)
-                                    )
-                                )
                                 .fillMaxSize()
-                                .then(winModifier),
+                                .then(winModifier)
                         )
                     } else {
                         LazyColumn(
@@ -559,18 +575,12 @@ private fun Field(
                                                 PlayingCard(
                                                     card = it,
                                                     border = BorderStroke(2.dp, strokeColor),
-                                                    modifier = Modifier.height(FIELD_HEIGHT.dp),
                                                     showFullDetail = false,
-                                                    useNewDesign = useNewDesign
+                                                    useNewDesign = useNewDesign,
+                                                    modifier = Modifier.height(FIELD_HEIGHT.dp)
                                                 )
                                             }
                                         }
-                                        /*PlayingCard(
-                                            card = card,
-                                            border = BorderStroke(2.dp, strokeColor),
-                                            modifier = Modifier.height(FIELD_HEIGHT.dp),
-                                            showFullDetail = false
-                                        )*/
                                     }
                                 ) {
                                     PlayingCard(
@@ -583,9 +593,9 @@ private fun Field(
                                             )
                                         else
                                             PlayingCardDefaults.shape,
-                                        modifier = Modifier.height(FIELD_HEIGHT.dp),
                                         showFullDetail = false,
-                                        useNewDesign = useNewDesign
+                                        useNewDesign = useNewDesign,
+                                        modifier = Modifier.height(FIELD_HEIGHT.dp)
                                     )
                                 }
                             }

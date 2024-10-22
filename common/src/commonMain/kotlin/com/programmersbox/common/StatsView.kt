@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.materialkolor.ktx.harmonizeWithPrimary
 import kotlinx.coroutines.launch
 import kotlinx.datetime.*
 import kotlinx.datetime.format.MonthNames
@@ -41,6 +42,8 @@ internal fun StatsView(
         actions = { Text("Wins: $winCount") }
     )
 
+    val colorScheme = MaterialTheme.colorScheme
+
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
@@ -53,7 +56,9 @@ internal fun StatsView(
                     .then(
                         if (index < 3)
                             Modifier.animatedBorder(
-                                borderColors = ColorsToUse[index],
+                                borderColors = ColorsToUse[index].map { color ->
+                                    colorScheme.harmonizeWithPrimary(color)
+                                },
                                 backgroundColor = Color.Transparent,
                                 shape = CardDefaults.shape,
                                 borderWidth = 4.dp,
