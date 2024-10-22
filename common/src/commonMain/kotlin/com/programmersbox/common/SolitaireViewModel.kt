@@ -28,6 +28,21 @@ data class SolitaireUiState(
     val time: Long,
 )
 
+data class SolitaireUiLastMove(
+    val remainingDeck: Deck<Card>,
+    val flippedCards: List<Card>,
+    val foundations: Map<Int, List<Card>>,
+    val table: Map<Int, FieldCards>,
+    val score: Int,
+    val moveCount: Int,
+    val time: Long,
+)
+
+data class FieldCards(
+    val faceUp: List<Card>,
+    val faceDown: List<Card>,
+)
+
 class SolitaireViewModel(
     private val deck: Deck<Card> = Deck.defaultDeck(),
     initialDifficulty: suspend () -> Difficulty = { Difficulty.Normal },
@@ -60,6 +75,8 @@ class SolitaireViewModel(
     val timeText by derivedStateOf {
         "${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}"
     }
+
+    val lastFewMoves = mutableStateListOf<SolitaireUiLastMove>()
 
     init {
         snapshotFlow { hasWon }
@@ -136,6 +153,7 @@ class SolitaireViewModel(
     }
 
     fun draw(drawAmount: Int) {
+        saveLastMove()
         if (deck.size > 0) {
             repeat(drawAmount) {
                 runCatching { drawList.add(deck.draw()) }
@@ -154,6 +172,50 @@ class SolitaireViewModel(
     fun resumeTimer() {
         if (!hasWon)
             stopwatch.start()
+    }
+
+    private fun saveLastMove() {
+        lastFewMoves.add(
+            SolitaireUiLastMove(
+                remainingDeck = deck.deck.toDeck(),
+                flippedCards = drawList.toList(),
+                foundations = foundations.map { entry ->
+                    entry.key to listOf(*entry.value.toTypedArray())
+                }.toMap(),
+                table = fieldSlots.map { entry ->
+                    entry.key to FieldCards(
+                        faceUp = entry.value.list.toList(),
+                        faceDown = entry.value.faceDownList.toList()
+                    )
+                }.toMap(),
+                score = score,
+                moveCount = 0,
+                time = 0
+            )
+        )
+    }
+
+    fun undo() {
+        runCatching { lastFewMoves.removeLastOrNull() }
+            .getOrNull()
+            ?.let { state ->
+                deck.removeAllCards()
+                deck.addDeck(state.remainingDeck)
+                state.foundations.forEach { entry ->
+                    foundations[entry.key]?.clear()
+                    foundations[entry.key] = entry.value.toMutableStateList()
+                }
+                state.table.forEach { entry ->
+                    fieldSlots[entry.key]?.clear()
+                    fieldSlots[entry.key] = FieldSlot().apply {
+                        list.addAll(entry.value.faceUp)
+                        faceDownList.addAll(entry.value.faceDown)
+                    }
+                }
+                drawList.clear()
+                drawList.addAll(state.flippedCards)
+                score = state.score
+            }
     }
 
     fun newGame(difficulty: Difficulty) {
@@ -193,6 +255,8 @@ class SolitaireViewModel(
         stopwatch.reset()
         stopwatch.start()
         time = 0
+
+        lastFewMoves.clear()
     }
 
     fun winGame() {
@@ -245,6 +309,7 @@ class SolitaireViewModel(
         foundation: SnapshotStateList<Card>,
     ): Boolean {
         return if (foundationCheck(cardLocation.card, foundation)) {
+            saveLastMove()
             foundation.add(cardLocation.card)
             when (cardLocation.location) {
                 FOUNDATION_LOCATION -> {
@@ -276,6 +341,7 @@ class SolitaireViewModel(
         fieldSlot: FieldSlot,
     ): Boolean {
         return if (fieldCheck(cardLocation.card, fieldSlot)) {
+            saveLastMove()
             when (cardLocation.location) {
                 FOUNDATION_LOCATION -> {
                     foundations[cardLocation.place]

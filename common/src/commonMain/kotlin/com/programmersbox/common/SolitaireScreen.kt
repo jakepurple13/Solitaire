@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.AutoMode
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
@@ -187,10 +188,13 @@ internal fun SolitaireScreen(
             drawerState = drawerState,
             gesturesEnabled = drawerState.isOpen,
             drawerContent = {
-                ModalDrawerSheet {
+                ModalDrawerSheet(
+                    drawerContainerColor = MaterialTheme.colorScheme.background,
+                ) {
                     SettingsView(
                         settings = settings,
-                        onStatsClick = { showStats = true }
+                        onStatsClick = { showStats = true },
+                        onNewGamePress = { newGameDialog = true }
                     )
 
                     /*Button(
@@ -209,9 +213,11 @@ internal fun SolitaireScreen(
                                 IconButton(
                                     onClick = { scope.launch { drawerState.open() } }
                                 ) { Icon(Icons.Default.Settings, null) }
-                                TextButton(
-                                    onClick = { newGameDialog = true }
-                                ) { Text("New Game") }
+
+                                IconButton(
+                                    onClick = { info.undo() },
+                                    enabled = info.lastFewMoves.isNotEmpty()
+                                ) { Icon(Icons.AutoMirrored.Filled.Undo, null) }
                             }
                         },
                         title = { Text(info.timeText) },
@@ -293,7 +299,7 @@ private fun Foundations(
             ) {
                 foundation.value
                     .dropLast(1)
-                    .takeLast(5)
+                    .takeLast(3)
                     .forEach {
                         EmptyCard(
                             cardBack = cardBack.toModifier(),

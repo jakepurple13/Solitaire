@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.skydoves.colorpicker.compose.ColorEnvelope
@@ -37,6 +38,7 @@ import com.materialkolor.rememberDynamicColorScheme
 internal fun SettingsView(
     settings: Settings?,
     onStatsClick: () -> Unit,
+    onNewGamePress: () -> Unit,
 ) {
     var showCardBacksDropdown by remember { mutableStateOf(false) }
 
@@ -52,6 +54,20 @@ internal fun SettingsView(
             verticalArrangement = Arrangement.spacedBy(2.dp),
             modifier = Modifier.fillMaxSize()
         ) {
+
+            item {
+                OutlinedCard(
+                    onClick = onNewGamePress,
+                    border = CardDefaults.outlinedCardBorder(true).copy(
+                        brush = SolidColor(MaterialTheme.colorScheme.primary)
+                    )
+                ) {
+                    ListItem(
+                        headlineContent = { Text("New Game") },
+                    )
+                }
+            }
+
             item {
                 var drawAmount by rememberDrawAmount()
                 var showDialogChange by remember { mutableStateOf(false) }
