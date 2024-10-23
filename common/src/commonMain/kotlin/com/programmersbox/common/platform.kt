@@ -4,6 +4,8 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import com.attafitamim.krop.core.images.ImageSrc
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Clock
 
@@ -33,6 +35,14 @@ expect class SolitaireDatabase constructor(databaseStuff: DatabaseStuff) {
     fun getSolitaireHighScores(): Flow<List<SolitaireScoreHold>>
 
     fun getWinCount(): Flow<Int>
+
+    fun customCardBacks(): Flow<List<CustomCardBackHolder>>
+
+    suspend fun saveCardBack(image: ImageBitmap)
+
+    suspend fun removeCardBack(image: ImageBitmap)
+
+    fun getCustomCardBack(uuid: String): Flow<CustomCardBackHolder?>
 }
 
 class SolitaireScoreHold(
@@ -68,3 +78,9 @@ expect fun colorSchemeSetup(isDarkMode: Boolean, dynamicColor: Boolean): ColorSc
 expect fun rememberCustomColor(): MutableState<Color>
 
 expect val showCardBacksAlone: Boolean
+
+@Composable
+expect fun rememberImagePicker(onImage: (uri: ImageSrc) -> Unit): ImagePicker
+
+@Composable
+expect fun rememberCustomBackChoice(): MutableState<String>

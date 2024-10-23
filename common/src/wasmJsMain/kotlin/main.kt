@@ -5,6 +5,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.window.ComposeViewport
 import com.programmersbox.common.*
@@ -64,6 +65,13 @@ fun main() {
 
                                 override suspend fun removeHighScore(scoreItem: SolitaireScoreHold) = Unit
                                 override fun getSolitaireHighScores(): Flow<List<SolitaireScoreHold>> = emptyFlow()
+                                override fun customCardBacks(): Flow<List<CustomCardBackHolder>> = emptyFlow()
+
+                                override suspend fun saveCardBack(image: ImageBitmap) {}
+
+                                override suspend fun removeCardBack(image: ImageBitmap) {}
+
+                                override fun getCustomCardBack(uuid: String): Flow<CustomCardBackHolder?> = emptyFlow()
                             }
                         )
                     }

@@ -4,21 +4,34 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asSkiaBitmap
+import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.attafitamim.krop.core.images.ImageBitmapSrc
+import com.attafitamim.krop.core.images.ImageSrc
 import com.materialkolor.rememberDynamicMaterialThemeState
 import com.programmersbox.storage.*
 import com.programmersbox.storage.Difficulty
+import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
+import io.github.vinceglb.filekit.core.PickerType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.decodeToImageBitmap
+import org.jetbrains.skia.EncodedImageFormat
+import org.jetbrains.skia.Image
 import java.io.File
 
 public actual fun getPlatformName(): String {
     return "Desktop"
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 public fun UIShow() {
     CompositionLocalProvider(
@@ -69,11 +82,47 @@ public fun UIShow() {
                                         )
                                     }
                                 }
+
+                        override fun customCardBacks(): Flow<List<CustomCardBackHolder>> = database
+                            .getCustomCardBacks()
+                            .map { value ->
+                                value.map {
+                                    CustomCardBackHolder(
+                                        image = it.cardBack.decodeToImageBitmap(),
+                                        uuid = it.uuid
+                                    )
+                                }
+                            }
+
+                        override suspend fun saveCardBack(image: ImageBitmap) = database
+                            .insert(CustomCardBack(image.toByteArray()))
+
+                        override suspend fun removeCardBack(image: ImageBitmap) = database.removeCustomCardBack(
+                            CustomCardBack(image.toByteArray())
+                        )
+
+                        override fun getCustomCardBack(uuid: String): Flow<CustomCardBackHolder?> =
+                            database.getCustomCardBack(uuid)
+                                .map {
+                                    it?.let {
+                                        CustomCardBackHolder(
+                                            image = it.cardBack.decodeToImageBitmap(),
+                                            uuid = it.uuid
+                                        )
+                                    }
+                                }
                     }
                 )
             }
         )
     }
+}
+
+private fun ImageBitmap.toByteArray(): ByteArray {
+    return Image.makeFromBitmap(this.asSkiaBitmap())
+        .encodeToData(EncodedImageFormat.PNG, 100)
+        ?.bytes
+        ?: byteArrayOf()
 }
 
 fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
@@ -126,6 +175,14 @@ actual class SolitaireDatabase actual constructor(databaseStuff: DatabaseStuff) 
         }
 
     actual fun getWinCount(): Flow<Int> = winCountFlow()
+
+    actual fun customCardBacks(): Flow<List<CustomCardBackHolder>> = database.customCardBacks()
+
+    actual suspend fun saveCardBack(image: ImageBitmap) = database.saveCardBack(image)
+
+    actual suspend fun removeCardBack(image: ImageBitmap) = database.removeCardBack(image)
+
+    actual fun getCustomCardBack(uuid: String): Flow<CustomCardBackHolder?> = database.getCustomCardBack(uuid)
 }
 
 @Composable
@@ -166,3 +223,27 @@ actual fun rememberCustomColor(): MutableState<Color> =
 @Composable
 actual fun colorSchemeSetup(isDarkMode: Boolean, dynamicColor: Boolean): ColorScheme =
     rememberDynamicMaterialThemeState(Color(0xFF009DFF), isDarkMode).colorScheme
+
+@Composable
+actual fun rememberImagePicker(
+    onImage: (uri: ImageSrc) -> Unit,
+): ImagePicker {
+    val scope = rememberCoroutineScope()
+    val filePicker = rememberFilePickerLauncher(PickerType.Image) {
+        scope.launch {
+            it?.readBytes()
+                ?.let { bytes -> Image.makeFromEncoded(bytes).toComposeImageBitmap() }
+                ?.let { onImage(ImageBitmapSrc(it)) }
+        }
+    }
+
+    return remember {
+        object : ImagePicker {
+            override fun pick(mimetype: String) = filePicker.launch()
+        }
+    }
+}
+
+@Composable
+actual fun rememberCustomBackChoice(): MutableState<String> =
+    rememberCustomBackChoice { collectAsState(it) }

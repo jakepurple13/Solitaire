@@ -12,7 +12,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.AutoMode
+import androidx.compose.material.icons.filled.Gamepad
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -95,6 +97,8 @@ internal fun SolitaireScreen(
         }
     }
 
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+
     LaunchedEffect(info.hasWon) {
         if (info.hasWon) {
             GlobalScope.launch {
@@ -141,6 +145,7 @@ internal fun SolitaireScreen(
                     onClick = {
                         info.newGame(difficulty)
                         newGameDialog = false
+                        scope.launch { drawerState.close() }
                     }
                 ) { Text("Yes") }
             },
@@ -151,20 +156,6 @@ internal fun SolitaireScreen(
             }
         )
     }
-
-    var showStats by remember { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState()
-
-    if (showStats) {
-        ModalBottomSheet(
-            onDismissRequest = { showStats = false },
-            sheetState = sheetState
-        ) {
-            StatsView(database)
-        }
-    }
-
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
 
     /*BackHandler(drawerState.isOpen) {
         scope.launch { drawerState.close() }
@@ -179,66 +170,101 @@ internal fun SolitaireScreen(
             .launchIn(this)
     }
 
-    AnimatedDragDropBox(
-        defaultDragType = DragType.Immediate,
-        scale = 1f
-    ) {
-        ModalNavigationDrawer(
-            drawerState = drawerState,
-            gesturesEnabled = drawerState.isOpen,
-            drawerContent = {
-                ModalDrawerSheet {
-                    SettingsView(
-                        settings = settings,
-                        onStatsClick = { showStats = true }
-                    )
 
-                    /*Button(
-                        onClick = { info.winGame() }
-                    ) { Text("Win Game") }*/
-                }
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        gesturesEnabled = drawerState.isOpen,
+        drawerContent = {
+            ModalDrawerSheet(
+                drawerContainerColor = MaterialTheme.colorScheme.background,
+            ) {
+                SettingsView(
+                    settings = settings,
+                    database = database,
+                    onNewGamePress = { newGameDialog = true }
+                )
+
+                /*Button(
+                    onClick = { info.winGame() }
+                ) { Text("Win Game") }*/
             }
-        ) {
-            Scaffold(
-                topBar = {
-                    CenterAlignedTopAppBar(
-                        navigationIcon = {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
+        }
+    ) {
+        Scaffold(
+            topBar = {
+                CenterAlignedTopAppBar(
+                    navigationIcon = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            ToolTipWrapper(
+                                title = { Text("Settings") },
+                                text = { Text("Open Settings Drawer") }
                             ) {
                                 IconButton(
                                     onClick = { scope.launch { drawerState.open() } }
                                 ) { Icon(Icons.Default.Settings, null) }
-                                TextButton(
-                                    onClick = { newGameDialog = true }
-                                ) { Text("New Game") }
                             }
-                        },
-                        title = { Text(info.timeText) },
-                        actions = {
+
+                            ToolTipWrapper(
+                                title = { Text("New Game") },
+                                text = { Text("Start a New Game") }
+                            ) {
+                                IconButton(
+                                    onClick = { newGameDialog = true }
+                                ) { Icon(Icons.Default.Gamepad, null) }
+                            }
+
+                            ToolTipWrapper(
+                                title = { Text("Undo") },
+                                text = { Text("Undo last move if possible") }
+                            ) {
+                                IconButton(
+                                    onClick = { info.undo() },
+                                    enabled = info.lastFewMoves.isNotEmpty()
+                                ) { Icon(Icons.AutoMirrored.Filled.Undo, null) }
+                            }
+                        }
+                    },
+                    title = { Text(info.timeText) },
+                    actions = {
+                        ToolTipWrapper(
+                            title = { Text("Auto Move") },
+                            text = { Text("Will Auto Move Cards to the Foundations if possible") }
+                        ) {
                             IconButton(
                                 onClick = { info.autoMove() }
                             ) { Icon(Icons.Default.AutoMode, null) }
+                        }
 
+                        ToolTipWrapper(
+                            title = { Text("Info") },
+                            text = { Text("Move Count: ${info.moveCount}") }
+                        ) {
                             Text("Score: " + animateIntAsState(info.score).value.toString())
                         }
-                    )
-                },
-                bottomBar = {
-                    AnimatedVisibility(
-                        info.hasWon,
-                        enter = slideInVertically() + fadeIn(),
-                        exit = slideOutVertically() + fadeOut()
-                    ) {
-                        BottomAppBar {
-                            Button(
-                                onClick = { showWinDialog = true },
-                                modifier = Modifier.fillMaxWidth()
-                            ) { Text("You won! Start New Game!") }
-                        }
+                    }
+                )
+            },
+            bottomBar = {
+                AnimatedVisibility(
+                    info.hasWon,
+                    enter = slideInVertically() + fadeIn(),
+                    exit = slideOutVertically() + fadeOut()
+                ) {
+                    BottomAppBar {
+                        Button(
+                            onClick = { showWinDialog = true },
+                            modifier = Modifier.fillMaxWidth()
+                        ) { Text("You won! Start New Game!") }
                     }
                 }
-            ) { padding ->
+            }
+        ) { padding ->
+            AnimatedDragDropBox(
+                defaultDragType = DragType.Immediate,
+                scale = 1f
+            ) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     modifier = Modifier
@@ -249,20 +275,23 @@ internal fun SolitaireScreen(
                     Foundations(
                         info = info,
                         winModifier = winModifier,
-                        cardBack = cardBack
+                        cardBack = cardBack,
+                        database = database
                     )
                     //---------draws---------
                     Draws(
                         winModifier = winModifier,
                         info = info,
                         drawAmount = drawAmount,
-                        cardBack = cardBack
+                        cardBack = cardBack,
+                        database = database,
                     )
                     //---------field---------
                     Field(
                         winModifier = winModifier,
                         info = info,
-                        cardBack = cardBack
+                        cardBack = cardBack,
+                        database = database,
                     )
                 }
             }
@@ -270,9 +299,29 @@ internal fun SolitaireScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ToolTipWrapper(
+    title: (@Composable () -> Unit)? = null,
+    text: @Composable () -> Unit,
+    content: @Composable () -> Unit,
+) {
+    TooltipBox(
+        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+        tooltip = {
+            RichTooltip(
+                title = title,
+                text = text
+            )
+        },
+        state = rememberTooltipState()
+    ) { content() }
+}
+
 @Composable
 private fun Foundations(
     info: SolitaireViewModel,
+    database: SolitaireDatabase,
     cardBack: CardBack,
     winModifier: Modifier,
 ) {
@@ -293,11 +342,12 @@ private fun Foundations(
             ) {
                 foundation.value
                     .dropLast(1)
-                    .takeLast(5)
+                    .takeLast(3)
                     .forEach {
-                        EmptyCard(
-                            cardBack = cardBack.toModifier(),
+                        PlayingCard(
+                            card = it,
                             border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
+                            useNewDesign = useNewDesign,
                             modifier = cardSizeModifier
                                 .fillMaxSize()
                                 .then(winModifier),
@@ -339,12 +389,12 @@ private fun Foundations(
                                     modifier = cardSizeModifier.then(winModifier)
                                 )
                             }
-                        } ?: EmptyCard(
+                        } ?: cardBack.CustomCardBackground(
+                        database = database,
                         border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
-                        cardBack = cardBack.toModifier(),
                         modifier = cardSizeModifier
                             .fillMaxSize()
-                            .then(winModifier)
+                            .then(winModifier),
                     )
                 }
             }
@@ -358,6 +408,7 @@ private fun Draws(
     info: SolitaireViewModel,
     cardBack: CardBack,
     drawAmount: Int,
+    database: SolitaireDatabase,
 ) {
     val useNewDesign by rememberUseNewDesign()
 
@@ -441,21 +492,21 @@ private fun Draws(
                         modifier = cardSizeModifier.width(100.dp)
                     )
                 }
-            } ?: EmptyCard(
-                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                cardBack = cardBack.toModifier(),
+            } ?: cardBack.CustomCardBackground(
+                database = database,
+                border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
                 modifier = cardSizeModifier
                     .width(100.dp)
-                    .then(winModifier)
+                    .then(winModifier),
             )
         }
 
         Box(
             contentAlignment = Alignment.Center
         ) {
-            EmptyCard(
+            cardBack.CustomCardBackground(
                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                cardBack = cardBack.toModifier(),
+                database = database,
                 content = {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -483,10 +534,11 @@ private fun Draws(
                         )
                     }
                 },
+                onClick = { info.draw(drawAmount) },
                 modifier = cardSizeModifier
                     .width(100.dp)
                     .then(winModifier),
-            ) { info.draw(drawAmount) }
+            )
         }
     }
 }
@@ -497,6 +549,7 @@ private fun Field(
     winModifier: Modifier,
     info: SolitaireViewModel,
     cardBack: CardBack,
+    database: SolitaireDatabase,
 ) {
     val useNewDesign by rememberUseNewDesign()
 
@@ -545,13 +598,13 @@ private fun Field(
                     )
 
                     if (fieldSlot.value.list.isEmpty()) {
-                        EmptyCard(
+                        cardBack.CustomCardBackground(
+                            database = database,
                             border = BorderStroke(2.dp, strokeColor),
                             shape = MaterialTheme.shapes.medium.copy(
                                 topEnd = CornerSize(0.dp),
                                 topStart = CornerSize(0.dp)
                             ),
-                            cardBack = cardBack.toModifier(),
                             modifier = Modifier
                                 .height(FIELD_HEIGHT.dp)
                                 .fillMaxSize()

@@ -6,9 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ColorScheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
@@ -171,4 +169,30 @@ interface DatabaseStuff {
     suspend fun removeHighScore(scoreItem: SolitaireScoreHold)
 
     fun getSolitaireHighScores(): Flow<List<SolitaireScoreHold>>
+
+    fun customCardBacks(): Flow<List<CustomCardBackHolder>>
+
+    suspend fun saveCardBack(image: ImageBitmap)
+
+    suspend fun removeCardBack(image: ImageBitmap)
+
+    fun getCustomCardBack(uuid: String): Flow<CustomCardBackHolder?>
+}
+
+interface ImagePicker {
+    /** Pick an image with [mimetype] */
+    fun pick(mimetype: String = "image/*")
+}
+
+class CustomCardBackHolder(
+    val image: ImageBitmap,
+    val uuid: String,
+)
+
+@Composable
+fun rememberCardBackHolder(database: SolitaireDatabase): State<CustomCardBackHolder?> {
+    val item by rememberCustomBackChoice()
+    return database
+        .getCustomCardBack(item)
+        .collectAsState(null)
 }

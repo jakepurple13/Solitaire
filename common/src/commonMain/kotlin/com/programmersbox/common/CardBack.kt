@@ -1,18 +1,29 @@
 package com.programmersbox.common
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageShader
-import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.*
+import com.mikepenz.hypnoticcanvas.shaders.Shader
 import com.programmersbox.common.generated.resources.Res
 import com.programmersbox.common.generated.resources.card_back
 import com.programmersbox.common.generated.resources.card_back_tile
+import com.programmersbox.common.generated.resources.card_background
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.imageResource
 
@@ -870,17 +881,156 @@ vec4 main( vec2 fragCoord ) {
                 imageResource(Res.drawable.card_back)
             )
         )
-    }, false);
+    }, false),
+
+    @OptIn(ExperimentalResourceApi::class)
+    Custom({ null }, false) {
+        /*
+        Image(
+            bitmap = it.image,
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier.fillMaxSize()
+        )
+         */
+    };
 
     fun includeGsl() = !isGsl || (isGsl && hasDisplayGsl())
 
     @Composable
     open fun toModifier(): Modifier? = brush()?.let { Modifier.background(it) }
 
-    /*@Composable
-    open fun CustomBackground(content: @Composable () -> Unit) {
+    @Composable
+    fun CustomCardBackground(
+        database: SolitaireDatabase,
+        modifier: Modifier = Modifier,
+        onClick: (() -> Unit)? = null,
+        tonalElevation: Dp = 4.dp,
+        shape: Shape = PlayingCardDefaults.shape,
+        color: Color = MaterialTheme.colorScheme.surface,
+        contentColor: Color = contentColorFor(color),
+        shadowElevation: Dp = 0.dp,
+        border: BorderStroke? = null,
+        content: @Composable () -> Unit = {},
+    ) {
+        val contentComposable = when (this) {
+            Custom -> {
+                val item by rememberCardBackHolder(database = database)
+                val con: @Composable () -> Unit = {
+                    item?.let {
+                        Image(
+                            bitmap = it.image,
+                            contentDescription = null,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                    content()
+                }
+                con
+            }
 
-    }*/
+            Image, DefaultBack -> {
+                val con: @Composable () -> Unit = {
+                    Image(
+                        bitmap = imageResource(
+                            when (this) {
+                                Image -> Res.drawable.card_back
+                                DefaultBack -> Res.drawable.card_back_tile
+                                else -> Res.drawable.card_background
+                            }
+                        ),
+                        contentDescription = null,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    content()
+                }
+                con
+            }
+
+            else -> content
+        }
+
+        if (onClick != null) {
+            EmptyCard(
+                modifier = modifier,
+                onClick = onClick,
+                tonalElevation = tonalElevation,
+                shape = shape,
+                color = color,
+                contentColor = contentColor,
+                shadowElevation = shadowElevation,
+                border = border,
+                content = contentComposable,
+            )
+        } else {
+            EmptyCardBack(
+                modifier = modifier,
+                tonalElevation = tonalElevation,
+                shape = shape,
+                color = color,
+                contentColor = contentColor,
+                shadowElevation = shadowElevation,
+                border = border,
+                content = contentComposable,
+            )
+        }
+    }
+
+    @Composable
+    fun EmptyCardBack(
+        modifier: Modifier = Modifier,
+        tonalElevation: Dp = 4.dp,
+        shape: Shape = PlayingCardDefaults.shape,
+        color: Color = MaterialTheme.colorScheme.surface,
+        contentColor: Color = contentColorFor(color),
+        shadowElevation: Dp = 0.dp,
+        border: BorderStroke? = null,
+        content: @Composable () -> Unit = {},
+    ) = Surface(
+        shape = shape,
+        tonalElevation = tonalElevation,
+        contentColor = contentColor,
+        color = color,
+        shadowElevation = shadowElevation,
+        border = border,
+        modifier = modifier
+    ) {
+        toModifier()?.let {
+            Box(modifier = it) { content() }
+        } ?: Box { content() }
+    }
+
+    @Composable
+    fun EmptyCard(
+        modifier: Modifier = Modifier,
+        tonalElevation: Dp = 4.dp,
+        shape: Shape = PlayingCardDefaults.shape,
+        enabled: Boolean = true,
+        color: Color = MaterialTheme.colorScheme.surface,
+        contentColor: Color = contentColorFor(color),
+        shadowElevation: Dp = 0.dp,
+        border: BorderStroke? = null,
+        interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+        content: @Composable () -> Unit = {},
+        onClick: () -> Unit = {},
+    ) = Surface(
+        onClick = onClick,
+        shape = shape,
+        tonalElevation = tonalElevation,
+        enabled = enabled,
+        color = color,
+        contentColor = contentColor,
+        shadowElevation = shadowElevation,
+        border = border,
+        interactionSource = interactionSource,
+        modifier = modifier
+    ) {
+        toModifier()?.let {
+            Box(modifier = it) { content() }
+        } ?: Box { content() }
+    }
 }
 
 private abstract class ShaderDelegate : Shader {

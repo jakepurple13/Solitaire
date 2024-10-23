@@ -104,7 +104,6 @@ fun <T> Modifier.dragTarget(
                 }
             }
             .pointerInput(currentState, dragTargetState, currentSizePx) {
-                //TODO: Try it
                 detectTapGestures(
                     onDoubleTap = { dragTargetState.value.dataToDrop?.let { onDoubleTap?.invoke(it) } }
                 )
