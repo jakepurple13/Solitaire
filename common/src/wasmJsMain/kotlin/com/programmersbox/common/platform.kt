@@ -19,6 +19,8 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.jetbrains.skia.Image
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 actual fun getPlatformName(): String = "Web with Kotlin/Wasm"
 
@@ -56,13 +58,21 @@ actual class SolitaireDatabase actual constructor(databaseStuff: DatabaseStuff) 
 
     actual fun getWinCount(): Flow<Int> = emptyFlow()
 
-    actual fun customCardBacks(): Flow<List<CustomCardBackHolder>> = emptyFlow()
+    private val backList = mutableStateListOf<CustomCardBackHolder>()
 
-    actual suspend fun saveCardBack(image: ImageBitmap) {}
+    actual fun customCardBacks(): Flow<List<CustomCardBackHolder>> = snapshotFlow { backList }
 
-    actual suspend fun removeCardBack(image: ImageBitmap) {}
+    @OptIn(ExperimentalUuidApi::class)
+    actual suspend fun saveCardBack(image: ImageBitmap) {
+        backList.add(CustomCardBackHolder(image, Uuid.random().toString()))
+    }
 
-    actual fun getCustomCardBack(uuid: String): Flow<CustomCardBackHolder?> = emptyFlow()
+    actual suspend fun removeCardBack(image: ImageBitmap) {
+        backList.removeAll { holder -> holder.image == image }
+    }
+
+    actual fun getCustomCardBack(uuid: String): Flow<CustomCardBackHolder?> =
+        snapshotFlow { backList.find { it.uuid == uuid } }
 }
 
 private var drawAmount = mutableStateOf(
@@ -203,8 +213,15 @@ actual fun rememberImagePicker(
     }
 }
 
+private val customBackChoice by lazy {
+    mutableStateOf(localStorage.getItem("custom_back_choice").orEmpty())
+}
+
 @Composable
-actual fun rememberCustomBackChoice(): MutableState<String> = mutableStateOf("")
+actual fun rememberCustomBackChoice(): MutableState<String> = rememberPreference(
+    customBackChoice,
+    "custom_back_choice"
+) { it }
 
 @Composable
 actual fun BackHandlerForDrawer(drawerState: DrawerState) {
