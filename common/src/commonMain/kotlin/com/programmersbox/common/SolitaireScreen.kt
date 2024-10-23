@@ -157,9 +157,7 @@ internal fun SolitaireScreen(
         )
     }
 
-    /*BackHandler(drawerState.isOpen) {
-        scope.launch { drawerState.close() }
-    }*/
+    BackHandlerForDrawer(drawerState)
 
     LaunchedEffect(drawerState) {
         snapshotFlow { drawerState.isOpen }

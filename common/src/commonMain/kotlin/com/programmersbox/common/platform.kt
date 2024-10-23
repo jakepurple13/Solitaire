@@ -1,6 +1,7 @@
 package com.programmersbox.common
 
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
@@ -84,3 +85,6 @@ expect fun rememberImagePicker(onImage: (uri: ImageSrc) -> Unit): ImagePicker
 
 @Composable
 expect fun rememberCustomBackChoice(): MutableState<String>
+
+@Composable
+expect fun BackHandlerForDrawer(drawerState: DrawerState)

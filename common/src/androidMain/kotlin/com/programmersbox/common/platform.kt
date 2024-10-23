@@ -3,7 +3,9 @@ package com.programmersbox.common
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.compose.material3.*
@@ -239,7 +241,7 @@ actual fun rememberImagePicker(
     val scope = rememberCoroutineScope()
 
     val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
+        contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
             scope.launch {
                 val imageSrc = uri?.toImageSrc(context) ?: return@launch
@@ -250,7 +252,8 @@ actual fun rememberImagePicker(
 
     return remember {
         object : ImagePicker {
-            override fun pick(mimetype: String) = launcher.launch(mimetype)
+            override fun pick(mimetype: String) =
+                launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
     }
 }
@@ -258,3 +261,11 @@ actual fun rememberImagePicker(
 @Composable
 actual fun rememberCustomBackChoice(): MutableState<String> =
     rememberCustomBackChoice { collectAsStateWithLifecycle(it) }
+
+@Composable
+actual fun BackHandlerForDrawer(drawerState: DrawerState) {
+    val scope = rememberCoroutineScope()
+    BackHandler(drawerState.isOpen) {
+        scope.launch { drawerState.close() }
+    }
+}

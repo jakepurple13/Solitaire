@@ -4,6 +4,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -316,3 +317,8 @@ class IosImagePicker(
 @Composable
 actual fun rememberCustomBackChoice(): MutableState<String> =
     rememberCustomBackChoice { collectAsState(it) }
+
+@Composable
+actual fun BackHandlerForDrawer(drawerState: DrawerState) {
+
+}
