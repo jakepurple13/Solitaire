@@ -13,6 +13,7 @@ internal const val HIGHSCORE_LIMIT = 15
 @Database(
     entities = [SolitaireScore::class, CustomCardBack::class],
     version = 2,
+    exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
     ]

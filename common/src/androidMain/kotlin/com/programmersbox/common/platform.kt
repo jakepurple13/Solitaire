@@ -32,12 +32,13 @@ import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.decodeToImageBitmap
 import java.io.ByteArrayOutputStream
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 public actual fun getPlatformName(): String {
     return "Android"
 }
 
-@OptIn(ExperimentalResourceApi::class)
+@OptIn(ExperimentalResourceApi::class, ExperimentalEncodingApi::class)
 @Composable
 public fun UIShow() {
     val context = LocalContext.current

@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.attafitamim.krop.core.crop.CropResult
-import com.attafitamim.krop.core.crop.cropSrc
+import com.attafitamim.krop.core.crop.crop
 import com.attafitamim.krop.core.crop.rememberImageCropper
 import com.attafitamim.krop.ui.ImageCropperDialog
 import com.github.skydoves.colorpicker.compose.ColorEnvelope
@@ -35,9 +35,16 @@ import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.materialkolor.ktx.from
 import com.materialkolor.palettes.TonalPalette
 import com.materialkolor.rememberDynamicColorScheme
+import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
+import io.github.vinceglb.filekit.core.PickerType
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.decodeToImageBitmap
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class, ExperimentalFoundationApi::class,
+    ExperimentalResourceApi::class
+)
 @Composable
 internal fun SettingsView(
     settings: Settings?,
@@ -333,19 +340,28 @@ internal fun SettingsView(
                                             }
                                         )
                                     }
-                                    val filePicker = rememberImagePicker { uri ->
+                                    val filePicker = rememberFilePickerLauncher(
+                                        type = PickerType.Image,
+                                        title = "Pick an Image",
+                                    ) {
                                         scope.launch {
-                                            when (val result =
-                                                imageCropper.cropSrc(
-                                                    imageSrc = uri,
-                                                    maxResultSize = IntSize(150, 100)
-                                                )) {
-                                                is CropResult.Success -> {
-                                                    database.saveCardBack(result.bitmap)
+                                            it?.readBytes()
+                                                ?.decodeToImageBitmap()
+                                                ?.let {
+                                                    when (
+                                                        val result = imageCropper.crop(
+                                                            bmp = it,
+                                                            maxResultSize = IntSize(500, 500)
+                                                        )
+                                                    ) {
+                                                        is CropResult.Success -> {
+                                                            database.saveCardBack(result.bitmap)
+                                                        }
+
+                                                        else -> {}
+                                                    }
                                                 }
 
-                                                else -> {}
-                                            }
                                         }
                                     }
 
@@ -381,7 +397,7 @@ internal fun SettingsView(
                                             modifier = Modifier
                                                 .height(150.dp)
                                                 .width(100.dp)
-                                        ) { filePicker.pick() }
+                                        ) { filePicker.launch() }
                                     }
                                 }
                             }
