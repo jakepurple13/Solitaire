@@ -5,12 +5,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Clock
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 internal const val HIGHSCORE_LIMIT = 15
 
 @Database(
-    entities = [SolitaireScore::class],
-    version = 1,
+    entities = [SolitaireScore::class, CustomCardBack::class],
+    version = 2,
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2),
+    ]
 )
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -84,6 +89,18 @@ interface SolitaireDao {
         if (getHighScores().size > HIGHSCORE_LIMIT) getHighScores().lastOrNull()?.let { removeHighScore(it) }
         incrementWinCount()
     }
+
+    @Insert
+    suspend fun insert(item: CustomCardBack)
+
+    @Delete
+    suspend fun removeCustomCardBack(item: CustomCardBack)
+
+    @Query("SELECT * FROM CustomCardBacks")
+    fun getCustomCardBacks(): Flow<List<CustomCardBack>>
+
+    @Query("SELECT * FROM CustomCardBacks where uuid = :uuid")
+    fun getCustomCardBack(uuid: String): Flow<CustomCardBack?>
 }
 
 @Entity(tableName = "SolitaireScore")
@@ -95,4 +112,12 @@ data class SolitaireScore(
     val difficulty: String? = Difficulty.Normal.name,
     @PrimaryKey
     val id: String = "${score}_${moves}_${timeTaken}_$difficulty",
+)
+
+@Entity(tableName = "CustomCardBacks")
+class CustomCardBack @OptIn(ExperimentalUuidApi::class) constructor(
+    @PrimaryKey
+    @ColumnInfo(name = "cardBack", typeAffinity = ColumnInfo.BLOB)
+    val cardBack: ByteArray,
+    val uuid: String = Uuid.random().toString(),
 )

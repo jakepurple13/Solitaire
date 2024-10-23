@@ -165,6 +165,15 @@ inline fun <reified T : Enum<T>> rememberCardBack(
     toState = toState
 )
 
+@Composable
+fun rememberCustomBackChoice(
+    toState: @Composable Flow<String>.(String) -> State<String>,
+) = rememberPreference(
+    key = stringPreferencesKey("custom_card_back"),
+    defaultValue = "",
+    toState = toState
+)
+
 fun <T> preferenceFlow(
     key: Preferences.Key<T>,
     defaultValue: T,

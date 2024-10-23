@@ -12,10 +12,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asSkiaBitmap
 import androidx.compose.ui.window.ComposeUIViewController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.attafitamim.krop.core.images.ImageSrc
+import com.attafitamim.krop.core.utils.UIImageSrc
 import com.materialkolor.rememberDynamicMaterialThemeState
 import com.programmersbox.storage.*
 import com.programmersbox.storage.Difficulty
@@ -24,11 +28,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.decodeToImageBitmap
+import org.jetbrains.skia.Image
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
-import platform.UIKit.UIViewController
+import platform.UIKit.*
+import platform.darwin.NSObject
 
 public actual fun getPlatformName(): String {
     return "iOS"
@@ -36,7 +44,7 @@ public actual fun getPlatformName(): String {
 
 public actual fun hasDisplayGsl(): Boolean = true
 
-@OptIn(ExperimentalForeignApi::class)
+@OptIn(ExperimentalForeignApi::class, ExperimentalResourceApi::class)
 @Composable
 private fun UIShow() {
     App(
@@ -92,10 +100,43 @@ private fun UIShow() {
                                     )
                                 }
                             }
+
+                    override fun customCardBacks(): Flow<List<CustomCardBackHolder>> = database
+                        .getCustomCardBacks()
+                        .map { value ->
+                            value.map {
+                                CustomCardBackHolder(
+                                    image = it.cardBack.decodeToImageBitmap(),
+                                    uuid = it.uuid
+                                )
+                            }
+                        }
+
+                    override suspend fun saveCardBack(image: ImageBitmap) = database
+                        .insert(CustomCardBack(image.toByteArray()))
+
+                    override suspend fun removeCardBack(image: ImageBitmap) = database.removeCustomCardBack(
+                        CustomCardBack(image.toByteArray())
+                    )
+
+                    override fun getCustomCardBack(uuid: String): Flow<CustomCardBackHolder?> =
+                        database.getCustomCardBack(uuid)
+                            .map {
+                                it?.let {
+                                    CustomCardBackHolder(
+                                        image = it.cardBack.decodeToImageBitmap(),
+                                        uuid = it.uuid
+                                    )
+                                }
+                            }
                 }
             )
         }
     )
+}
+
+private fun ImageBitmap.toByteArray(): ByteArray {
+    return Image.makeFromBitmap(this.asSkiaBitmap()).encodeToData()?.bytes ?: byteArrayOf()
 }
 
 fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
@@ -160,6 +201,14 @@ actual class SolitaireDatabase actual constructor(databaseStuff: DatabaseStuff) 
         }
 
     actual fun getWinCount(): Flow<Int> = winCountFlow()
+
+    actual fun customCardBacks(): Flow<List<CustomCardBackHolder>> = database.customCardBacks()
+
+    actual suspend fun saveCardBack(image: ImageBitmap) = database.saveCardBack(image)
+
+    actual suspend fun removeCardBack(image: ImageBitmap) = database.removeCardBack(image)
+
+    actual fun getCustomCardBack(uuid: String): Flow<CustomCardBackHolder?> = database.getCustomCardBack(uuid)
 }
 
 public fun MainViewController(): UIViewController = ComposeUIViewController {
@@ -216,3 +265,54 @@ actual fun colorSchemeSetup(isDarkMode: Boolean, dynamicColor: Boolean): ColorSc
 
 @Composable
 actual fun rememberUseNewDesign(): MutableState<Boolean> = rememberUseNewDesign { collectAsState(true) }
+
+@Composable
+actual fun rememberImagePicker(
+    onImage: (uri: ImageSrc) -> Unit,
+): ImagePicker {
+    val imagePicker = remember {
+        UIImagePickerController()
+    }
+
+    val galleryDelegate = remember {
+        ImagePickerDelegate(onImage)
+    }
+
+    return remember {
+        IosImagePicker(imagePicker, galleryDelegate)
+    }
+}
+
+class ImagePickerDelegate(
+    private val onImage: (uri: ImageSrc) -> Unit,
+) : NSObject(), UIImagePickerControllerDelegateProtocol, UINavigationControllerDelegateProtocol {
+    override fun imagePickerController(
+        picker: UIImagePickerController, didFinishPickingMediaWithInfo: Map<Any?, *>,
+    ) {
+        val image = didFinishPickingMediaWithInfo[UIImagePickerControllerEditedImage] as? UIImage
+            ?: didFinishPickingMediaWithInfo[UIImagePickerControllerOriginalImage] as? UIImage
+            ?: return
+
+        val imageSrc = UIImageSrc(image)
+        picker.dismissViewControllerAnimated(true, null)
+        onImage.invoke(imageSrc)
+    }
+}
+
+class IosImagePicker(
+    private val controller: UIImagePickerController,
+    private val delegate: UINavigationControllerDelegateProtocol,
+) : ImagePicker {
+    override fun pick(mimetype: String) {
+        controller.setSourceType(UIImagePickerControllerSourceType.UIImagePickerControllerSourceTypePhotoLibrary)
+        controller.setAllowsEditing(false)
+        controller.setDelegate(delegate)
+        UIApplication.sharedApplication.keyWindow?.rootViewController?.presentViewController(
+            controller, true, null
+        )
+    }
+}
+
+@Composable
+actual fun rememberCustomBackChoice(): MutableState<String> =
+    rememberCustomBackChoice { collectAsState(it) }

@@ -3,13 +3,21 @@ package com.programmersbox.common
 import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.toComposeImageBitmap
+import com.attafitamim.krop.core.images.ImageBitmapSrc
+import com.attafitamim.krop.core.images.ImageSrc
 import com.materialkolor.rememberDynamicMaterialThemeState
+import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
+import io.github.vinceglb.filekit.core.PickerType
 import kotlinx.browser.localStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.jetbrains.skia.Image
 
 actual fun getPlatformName(): String = "Web with Kotlin/Wasm"
 
@@ -46,6 +54,14 @@ actual class SolitaireDatabase actual constructor(databaseStuff: DatabaseStuff) 
     actual fun getSolitaireHighScores(): Flow<List<SolitaireScoreHold>> = emptyFlow()
 
     actual fun getWinCount(): Flow<Int> = emptyFlow()
+
+    actual fun customCardBacks(): Flow<List<CustomCardBackHolder>> = emptyFlow()
+
+    actual suspend fun saveCardBack(image: ImageBitmap) {}
+
+    actual suspend fun removeCardBack(image: ImageBitmap) {}
+
+    actual fun getCustomCardBack(uuid: String): Flow<CustomCardBackHolder?> = emptyFlow()
 }
 
 private var drawAmount = mutableStateOf(
@@ -165,3 +181,26 @@ fun <T> rememberPreference(
         }
     }
 }
+
+@Composable
+actual fun rememberImagePicker(
+    onImage: (uri: ImageSrc) -> Unit,
+): ImagePicker {
+    val scope = rememberCoroutineScope()
+    val filePicker = rememberFilePickerLauncher(PickerType.Image) {
+        scope.launch {
+            it?.readBytes()
+                ?.let { bytes -> Image.makeFromEncoded(bytes).toComposeImageBitmap() }
+                ?.let { onImage(ImageBitmapSrc(it)) }
+        }
+    }
+
+    return remember {
+        object : ImagePicker {
+            override fun pick(mimetype: String) = filePicker.launch()
+        }
+    }
+}
+
+@Composable
+actual fun rememberCustomBackChoice(): MutableState<String> = mutableStateOf("")
