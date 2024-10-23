@@ -92,8 +92,8 @@ kotlin {
                 implementation(libs.hypnoticcanvas.shaders)
                 api(libs.material.kolor)
                 implementation(libs.colorpicker.compose)
-                api("com.attafitamim.krop:ui:0.1.5")
-                api("io.github.vinceglb:filekit-compose:0.8.7")
+                api(libs.krop.ui)
+                api(libs.filekit.compose)
             }
         }
 
