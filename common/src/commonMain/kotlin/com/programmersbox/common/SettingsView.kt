@@ -8,8 +8,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,11 +38,9 @@ import com.materialkolor.rememberDynamicColorScheme
 @Composable
 internal fun SettingsView(
     settings: Settings?,
-    onStatsClick: () -> Unit,
+    database: SolitaireDatabase,
     onNewGamePress: () -> Unit,
 ) {
-    var showCardBacksDropdown by remember { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -141,73 +140,24 @@ internal fun SettingsView(
             item {
                 var cardBack by rememberCardBack()
 
-                OutlinedCard(
-                    onClick = { showCardBacksDropdown = !showCardBacksDropdown }
-                ) {
-                    ListItem(
-                        headlineContent = { Text("Card Back: ${cardBack.name}") },
-                        trailingContent = { Icon(Icons.Default.ArrowDropDown, null) },
-                        /*supportingContent = {
-                            AnimatedVisibility(showDropdown) {
-                                LazyRow(
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                                ) {
-                                    items(CardBack.entries.filter { it.includeGsl() }) {
-                                        Box(
-                                            contentAlignment = Alignment.Center,
-                                            modifier = Modifier.wrapContentSize()
-                                        ) {
-                                            EmptyCard(
-                                                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                                                cardBack = it.toModifier(),
-                                                content = {
-                                                    Text(
-                                                        it.name,
-                                                        textAlign = TextAlign.Center,
-                                                        modifier = Modifier
-                                                            .align(Alignment.BottomCenter)
-                                                            .fillMaxWidth()
-                                                            .background(
-                                                                Color.Black.copy(alpha = .5f),
-                                                                shape = RoundedCornerShape(
-                                                                    topEnd = 4.dp,
-                                                                    topStart = 4.dp
-                                                                )
-                                                            )
-                                                    )
-                                                },
-                                                modifier = Modifier
-                                                    .height(150.dp)
-                                                    .width(100.dp)
-                                            ) { cardBack = it }
-                                            if (it == cardBack) {
-                                                Icon(
-                                                    Icons.Default.CheckCircle,
-                                                    null,
-                                                    modifier = Modifier.background(
-                                                        Color.Black.copy(alpha = .5f),
-                                                        CircleShape
-                                                    )
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }*/
-                    )
-                }
-            }
+                var showCardBacks by remember { mutableStateOf(false) }
 
-            if (true) {
-                item {
-                    var cardBack by rememberCardBack()
-
-                    AnimatedVisibility(showCardBacksDropdown) {
-                        LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                if (showCardBacks) {
+                    ModalBottomSheet(
+                        onDismissRequest = { showCardBacks = false },
+                        containerColor = MaterialTheme.colorScheme.background
+                    ) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Adaptive(100.dp),
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                            modifier = Modifier.fillMaxSize()
                         ) {
-                            items(CardBack.entries.filter { it.includeGsl() }) {
+                            items(
+                                CardBack.entries.filter { it.includeGsl() },
+                                key = { it.name },
+                                contentType = { it }
+                            ) {
                                 Box(
                                     contentAlignment = Alignment.Center,
                                     modifier = Modifier.wrapContentSize()
@@ -249,6 +199,15 @@ internal fun SettingsView(
                             }
                         }
                     }
+                }
+
+
+                OutlinedCard(
+                    onClick = { showCardBacks = true }
+                ) {
+                    ListItem(
+                        headlineContent = { Text("Card Back: ${cardBack.name}") },
+                    )
                 }
             }
 
@@ -386,8 +345,21 @@ internal fun SettingsView(
             }
 
             item {
+                var showStats by remember { mutableStateOf(false) }
+                val sheetState = rememberModalBottomSheetState()
+
+                if (showStats) {
+                    ModalBottomSheet(
+                        onDismissRequest = { showStats = false },
+                        sheetState = sheetState,
+                        containerColor = MaterialTheme.colorScheme.background
+                    ) {
+                        StatsView(database)
+                    }
+                }
+
                 Button(
-                    onClick = onStatsClick,
+                    onClick = { showStats = true },
                     modifier = Modifier.fillMaxWidth()
                 ) { Text("View Stats") }
             }
