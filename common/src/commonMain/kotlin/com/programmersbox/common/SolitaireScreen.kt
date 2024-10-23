@@ -275,20 +275,23 @@ internal fun SolitaireScreen(
                     Foundations(
                         info = info,
                         winModifier = winModifier,
-                        cardBack = cardBack
+                        cardBack = cardBack,
+                        database = database
                     )
                     //---------draws---------
                     Draws(
                         winModifier = winModifier,
                         info = info,
                         drawAmount = drawAmount,
-                        cardBack = cardBack
+                        cardBack = cardBack,
+                        database = database,
                     )
                     //---------field---------
                     Field(
                         winModifier = winModifier,
                         info = info,
-                        cardBack = cardBack
+                        cardBack = cardBack,
+                        database = database,
                     )
                 }
             }
@@ -318,6 +321,7 @@ private fun ToolTipWrapper(
 @Composable
 private fun Foundations(
     info: SolitaireViewModel,
+    database: SolitaireDatabase,
     cardBack: CardBack,
     winModifier: Modifier,
 ) {
@@ -340,9 +344,10 @@ private fun Foundations(
                     .dropLast(1)
                     .takeLast(3)
                     .forEach {
-                        EmptyCard(
-                            cardBack = cardBack.toModifier(),
+                        PlayingCard(
+                            card = it,
                             border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
+                            useNewDesign = useNewDesign,
                             modifier = cardSizeModifier
                                 .fillMaxSize()
                                 .then(winModifier),
@@ -384,12 +389,12 @@ private fun Foundations(
                                     modifier = cardSizeModifier.then(winModifier)
                                 )
                             }
-                        } ?: EmptyCard(
+                        } ?: cardBack.CustomCardBackground(
+                        database = database,
                         border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
-                        cardBack = cardBack.toModifier(),
                         modifier = cardSizeModifier
                             .fillMaxSize()
-                            .then(winModifier)
+                            .then(winModifier),
                     )
                 }
             }
@@ -403,6 +408,7 @@ private fun Draws(
     info: SolitaireViewModel,
     cardBack: CardBack,
     drawAmount: Int,
+    database: SolitaireDatabase,
 ) {
     val useNewDesign by rememberUseNewDesign()
 
@@ -486,21 +492,21 @@ private fun Draws(
                         modifier = cardSizeModifier.width(100.dp)
                     )
                 }
-            } ?: EmptyCard(
-                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                cardBack = cardBack.toModifier(),
+            } ?: cardBack.CustomCardBackground(
+                database = database,
+                border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
                 modifier = cardSizeModifier
                     .width(100.dp)
-                    .then(winModifier)
+                    .then(winModifier),
             )
         }
 
         Box(
             contentAlignment = Alignment.Center
         ) {
-            EmptyCard(
+            cardBack.CustomCardBackground(
                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                cardBack = cardBack.toModifier(),
+                database = database,
                 content = {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -528,10 +534,11 @@ private fun Draws(
                         )
                     }
                 },
+                onClick = { info.draw(drawAmount) },
                 modifier = cardSizeModifier
                     .width(100.dp)
                     .then(winModifier),
-            ) { info.draw(drawAmount) }
+            )
         }
     }
 }
@@ -542,6 +549,7 @@ private fun Field(
     winModifier: Modifier,
     info: SolitaireViewModel,
     cardBack: CardBack,
+    database: SolitaireDatabase,
 ) {
     val useNewDesign by rememberUseNewDesign()
 
@@ -590,13 +598,13 @@ private fun Field(
                     )
 
                     if (fieldSlot.value.list.isEmpty()) {
-                        EmptyCard(
+                        cardBack.CustomCardBackground(
+                            database = database,
                             border = BorderStroke(2.dp, strokeColor),
                             shape = MaterialTheme.shapes.medium.copy(
                                 topEnd = CornerSize(0.dp),
                                 topStart = CornerSize(0.dp)
                             ),
-                            cardBack = cardBack.toModifier(),
                             modifier = Modifier
                                 .height(FIELD_HEIGHT.dp)
                                 .fillMaxSize()

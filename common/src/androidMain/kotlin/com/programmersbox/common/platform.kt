@@ -1,28 +1,41 @@
 package com.programmersbox.common
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.attafitamim.krop.core.images.ImageSrc
+import com.attafitamim.krop.core.images.toImageSrc
 import com.programmersbox.storage.*
 import com.programmersbox.storage.Difficulty
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.decodeToImageBitmap
+import java.io.ByteArrayOutputStream
 
 public actual fun getPlatformName(): String {
     return "Android"
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 public fun UIShow() {
     val context = LocalContext.current
@@ -68,10 +81,45 @@ public fun UIShow() {
                                     )
                                 }
                             }
+
+                    override fun customCardBacks(): Flow<List<CustomCardBackHolder>> = database
+                        .getCustomCardBacks()
+                        .map { value ->
+                            value.map {
+                                CustomCardBackHolder(
+                                    image = it.cardBack.decodeToImageBitmap(),
+                                    uuid = it.uuid
+                                )
+                            }
+                        }
+
+                    override suspend fun saveCardBack(image: ImageBitmap) = database
+                        .insert(CustomCardBack(image.toByteArray()))
+
+                    override suspend fun removeCardBack(image: ImageBitmap) = database.removeCustomCardBack(
+                        CustomCardBack(image.toByteArray())
+                    )
+
+                    override fun getCustomCardBack(uuid: String): Flow<CustomCardBackHolder?> =
+                        database.getCustomCardBack(uuid)
+                            .map {
+                                it?.let {
+                                    CustomCardBackHolder(
+                                        image = it.cardBack.decodeToImageBitmap(),
+                                        uuid = it.uuid
+                                    )
+                                }
+                            }
                 }
             )
         }
     )
+}
+
+private fun ImageBitmap.toByteArray(): ByteArray {
+    val stream = ByteArrayOutputStream()
+    this.asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream)
+    return stream.toByteArray()
 }
 
 fun getDatabaseBuilder(ctx: Context): RoomDatabase.Builder<AppDatabase> {
@@ -127,6 +175,14 @@ actual class SolitaireDatabase actual constructor(databaseStuff: DatabaseStuff) 
         }
 
     actual fun getWinCount(): Flow<Int> = winCountFlow()
+
+    actual fun customCardBacks(): Flow<List<CustomCardBackHolder>> = database.customCardBacks()
+
+    actual suspend fun saveCardBack(image: ImageBitmap) = database.saveCardBack(image)
+
+    actual suspend fun removeCardBack(image: ImageBitmap) = database.removeCardBack(image)
+
+    actual fun getCustomCardBack(uuid: String): Flow<CustomCardBackHolder?> = database.getCustomCardBack(uuid)
 }
 
 @Composable
@@ -174,3 +230,31 @@ actual fun rememberModeDifficulty(): MutableState<com.programmersbox.common.Diff
 }
 
 actual val showCardBacksAlone: Boolean = false
+
+@Composable
+actual fun rememberImagePicker(
+    onImage: (uri: ImageSrc) -> Unit,
+): ImagePicker {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri ->
+            scope.launch {
+                val imageSrc = uri?.toImageSrc(context) ?: return@launch
+                onImage(imageSrc)
+            }
+        }
+    )
+
+    return remember {
+        object : ImagePicker {
+            override fun pick(mimetype: String) = launcher.launch(mimetype)
+        }
+    }
+}
+
+@Composable
+actual fun rememberCustomBackChoice(): MutableState<String> =
+    rememberCustomBackChoice { collectAsStateWithLifecycle(it) }

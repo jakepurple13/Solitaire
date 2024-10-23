@@ -86,15 +86,14 @@ kotlin {
                 api(libs.kotlinx.datetime)
                 api(libs.navigation.compose)
                 api(libs.lifecycle.viewmodel.compose)
-                //api(libs.datastore.core)
-                //api(libs.datastore.preferences)
-                //api(libs.library.base)
                 api(libs.kotlinx.serialization.json)
                 implementation(compose.components.resources)
                 implementation(libs.hypnoticcanvas)
                 implementation(libs.hypnoticcanvas.shaders)
                 api(libs.material.kolor)
                 implementation(libs.colorpicker.compose)
+                api("com.attafitamim.krop:ui:0.1.5")
+                api("io.github.vinceglb:filekit-compose:0.8.7")
             }
         }
 
@@ -108,6 +107,7 @@ kotlin {
             dependencies {
                 api(libs.androidx.appcompat)
                 api(libs.androidx.core)
+                implementation(libs.androidx.activity.compose)
                 implementation(projects.storage)
             }
         }
