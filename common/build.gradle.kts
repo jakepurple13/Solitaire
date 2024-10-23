@@ -135,7 +135,8 @@ kotlin {
 
         val wasmJsMain by getting {
             dependencies {
-
+                implementation(libs.kstore)
+                implementation(libs.kstore.storage)
             }
         }
     }

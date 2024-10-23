@@ -15,6 +15,7 @@ colorpickerCompose = "1.1.2"
 ksp = "2.0.21-1.0.25"
 androidx-room = "2.7.0-alpha07"
 uiVersion = "0.1.5"
+kstore = "0.8.0"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp-version" }
@@ -42,3 +43,6 @@ colorpicker-compose = { module = "com.github.skydoves:colorpicker-compose", vers
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
 krop-ui = { module = "com.attafitamim.krop:ui", version.ref = "uiVersion" }
+
+kstore = { module = "io.github.xxfast:kstore", version.ref = "kstore" }
+kstore-storage = { module = "io.github.xxfast:kstore-storage", version.ref = "kstore" }
