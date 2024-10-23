@@ -14,9 +14,7 @@ internal const val HIGHSCORE_LIMIT = 15
     entities = [SolitaireScore::class, CustomCardBack::class],
     version = 2,
     exportSchema = true,
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2),
-    ]
+    autoMigrations = []
 )
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
