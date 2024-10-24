@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.AutoMode
 import androidx.compose.material.icons.filled.Gamepad
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +28,7 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.window.core.layout.WindowWidthSizeClass
 import com.materialkolor.ktx.fixIfDisliked
 import com.materialkolor.ktx.harmonize
 import com.materialkolor.ktx.harmonizeWithPrimary
@@ -172,6 +174,8 @@ internal fun SolitaireScreen(
             .launchIn(this)
     }
 
+    val window = currentWindowAdaptiveInfo().windowSizeClass
+
     val snackbarHostState = remember { SnackbarHostState() }
 
     ModalNavigationDrawer(
@@ -296,20 +300,45 @@ internal fun SolitaireScreen(
                         .padding(horizontal = 4.dp)
                         .padding(padding)
                 ) {
-                    Foundations(
-                        info = info,
-                        winModifier = winModifier,
-                        cardBack = cardBack,
-                        database = database
-                    )
-                    //---------draws---------
-                    Draws(
-                        winModifier = winModifier,
-                        info = info,
-                        drawAmount = drawAmount,
-                        cardBack = cardBack,
-                        database = database,
-                    )
+                    when (window.windowWidthSizeClass) {
+                        WindowWidthSizeClass.MEDIUM, WindowWidthSizeClass.EXPANDED -> {
+                            Row {
+                                Foundations(
+                                    info = info,
+                                    winModifier = winModifier,
+                                    cardBack = cardBack,
+                                    database = database,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                //---------draws---------
+                                Draws(
+                                    winModifier = winModifier,
+                                    info = info,
+                                    drawAmount = drawAmount,
+                                    cardBack = cardBack,
+                                    database = database,
+                                    modifier = Modifier.weight(1f)
+                                )
+                            }
+                        }
+
+                        else -> {
+                            Foundations(
+                                info = info,
+                                winModifier = winModifier,
+                                cardBack = cardBack,
+                                database = database
+                            )
+                            //---------draws---------
+                            Draws(
+                                winModifier = winModifier,
+                                info = info,
+                                drawAmount = drawAmount,
+                                cardBack = cardBack,
+                                database = database,
+                            )
+                        }
+                    }
                     //---------field---------
                     Field(
                         winModifier = winModifier,
@@ -348,13 +377,14 @@ private fun Foundations(
     database: SolitaireDatabase,
     cardBack: CardBack,
     winModifier: Modifier,
+    modifier: Modifier = Modifier,
 ) {
     val useNewDesign by rememberUseNewDesign()
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally),
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
+            //.fillMaxWidth()
             .animateContentSize()
     ) {
         info.foundations.forEach { foundation ->
@@ -435,12 +465,13 @@ private fun Draws(
     cardBack: CardBack,
     drawAmount: Int,
     database: SolitaireDatabase,
+    modifier: Modifier = Modifier,
 ) {
     val useNewDesign by rememberUseNewDesign()
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.End),
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy((-50).dp)

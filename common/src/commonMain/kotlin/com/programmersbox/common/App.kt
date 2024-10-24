@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import kotlinx.serialization.Serializable
 
 @Composable
 internal fun App(
@@ -42,6 +43,7 @@ internal fun App(
     }
 }
 
+@Serializable
 sealed class Screen(val route: String) {
     data object Solitaire : Screen("solitaire")
 }

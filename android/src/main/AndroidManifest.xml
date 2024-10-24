@@ -10,7 +10,7 @@
             android:icon="@mipmap/ic_launcher"
             android:theme="@style/Theme.Solitaire">
         <activity android:name=".MainActivity"
-                  android:screenOrientation="sensorPortrait"
+                  android:resizeableActivity="true"
                   android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
