@@ -11,10 +11,7 @@ import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.core.PickerType
 import io.github.xxfast.kstore.storage.storeOf
 import kotlinx.browser.localStorage
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
@@ -36,7 +33,7 @@ public actual class Settings actual constructor(
     actual suspend fun initialDifficulty(): Difficulty = difficulty.value
 
     actual suspend fun setGameSave(game: SolitaireUiState) {
-        solitaireUiState.value = game
+        solitaireUiState.emit(game)
         localStorage.setItem("solitaireUiState", Json.encodeToString(game))
     }
 
@@ -174,13 +171,11 @@ private var drawAmount = mutableStateOf(
     }
 )
 
-private val solitaireUiState by lazy {
-    mutableStateOf<SolitaireUiState?>(
-        localStorage.getItem("solitaireUiState").let {
-            runCatching { Json.decodeFromString<SolitaireUiState>(it.toString()) }.getOrNull()
-        }
-    )
-}
+private val solitaireUiState = MutableStateFlow(
+    localStorage.getItem("solitaireUiState").let {
+        runCatching { Json.decodeFromString<SolitaireUiState>(it.toString()) }.getOrNull()
+    }
+)
 
 @Composable
 actual fun rememberDrawAmount(): MutableState<Int> = rememberPreference(
