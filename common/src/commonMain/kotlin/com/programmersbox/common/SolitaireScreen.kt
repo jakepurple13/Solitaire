@@ -1,6 +1,7 @@
 package com.programmersbox.common
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -20,6 +21,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.style.TextAlign
@@ -32,9 +34,11 @@ import com.programmersbox.common.dragdrop.AnimatedDragDropBox
 import com.programmersbox.common.dragdrop.DragTarget
 import com.programmersbox.common.dragdrop.DragType
 import com.programmersbox.common.dragdrop.DropTarget
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 data class CardLocation(val location: Int, val card: Card, val place: Int)
 
@@ -168,6 +172,7 @@ internal fun SolitaireScreen(
             .launchIn(this)
     }
 
+    val snackbarHostState = remember { SnackbarHostState() }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -230,9 +235,29 @@ internal fun SolitaireScreen(
                             title = { Text("Auto Move") },
                             text = { Text("Will Auto Move Cards to the Foundations if possible") }
                         ) {
+                            val animatedProgress = remember { Animatable(0f) }
                             IconButton(
-                                onClick = { info.autoMove() }
-                            ) { Icon(Icons.Default.AutoMode, null) }
+                                onClick = {
+                                    scope.launch {
+                                        withContext(Dispatchers.Default) {
+                                            animatedProgress.animateTo(360f)
+                                            animatedProgress.snapTo(0f)
+                                        }
+                                        val hasMoved = info.autoMove()
+                                        if (!hasMoved) snackbarHostState.showSnackbar(
+                                            message = "Nothing Moved",
+                                            withDismissAction = true,
+                                            duration = SnackbarDuration.Short
+                                        )
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AutoMode,
+                                    contentDescription = null,
+                                    modifier = Modifier.rotate(animatedProgress.value)
+                                )
+                            }
                         }
 
                         ToolTipWrapper(
@@ -244,6 +269,7 @@ internal fun SolitaireScreen(
                     }
                 )
             },
+            snackbarHost = { SnackbarHost(snackbarHostState) },
             bottomBar = {
                 AnimatedVisibility(
                     info.hasWon,

@@ -282,7 +282,8 @@ class SolitaireViewModel(
         }
     }
 
-    fun autoMove() {
+    fun autoMove(): Boolean {
+        var hasMoved = false
         drawList.lastOrNull()?.let { card ->
             for (i in foundations) {
                 if (
@@ -290,19 +291,25 @@ class SolitaireViewModel(
                         CardLocation(DRAW_LOCATION, card, 0),
                         i.value
                     )
-                ) break
+                ) {
+                    hasMoved = true
+                    break
+                }
             }
         }
         fieldSlots.values.forEachIndexed { index, fieldSlot ->
             foundations.forEach { foundation ->
                 fieldSlot.lastCard()?.let { card ->
-                    foundationPlace(
-                        CardLocation(index, card, 0),
-                        foundation.value
-                    )
+                    if (
+                        foundationPlace(
+                            CardLocation(index, card, 0),
+                            foundation.value
+                        )
+                    ) hasMoved = true
                 }
             }
         }
+        return hasMoved
     }
 
     fun fieldToFoundationCheck(cardLocation: CardLocation): Boolean {
