@@ -176,15 +176,15 @@ internal fun SolitaireScreen(
             ModalDrawerSheet(
                 drawerContainerColor = MaterialTheme.colorScheme.background,
             ) {
+                /*Button(
+                    onClick = { info.winGame() }
+                ) { Text("Win Game") }*/
+
                 SettingsView(
                     settings = settings,
                     database = database,
                     onNewGamePress = { newGameDialog = true }
                 )
-
-                /*Button(
-                    onClick = { info.winGame() }
-                ) { Text("Win Game") }*/
             }
         }
     ) {
@@ -247,8 +247,8 @@ internal fun SolitaireScreen(
             bottomBar = {
                 AnimatedVisibility(
                     info.hasWon,
-                    enter = slideInVertically() + fadeIn(),
-                    exit = slideOutVertically() + fadeOut()
+                    enter = slideInVertically { it } + fadeIn(),
+                    exit = slideOutVertically { it } + fadeOut()
                 ) {
                     BottomAppBar {
                         Button(
