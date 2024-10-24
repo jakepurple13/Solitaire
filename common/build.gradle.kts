@@ -82,6 +82,8 @@ kotlin {
                 api(compose.ui)
                 api(compose.foundation)
                 api(compose.materialIconsExtended)
+                api(libs.material3.window.size)
+                implementation(libs.adaptive)
                 api(compose.material3)
                 api(libs.kotlinx.datetime)
                 api(libs.navigation.compose)
