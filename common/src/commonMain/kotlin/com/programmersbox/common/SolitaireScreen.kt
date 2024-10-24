@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.LookaheadScope
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -293,22 +294,23 @@ internal fun SolitaireScreen(
                 defaultDragType = DragType.Immediate,
                 scale = 1f
             ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 4.dp)
-                        .padding(padding)
-                ) {
-                    when (window.windowWidthSizeClass) {
-                        WindowWidthSizeClass.MEDIUM, WindowWidthSizeClass.EXPANDED -> {
-                            Row {
+                LookaheadScope {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 4.dp)
+                            .padding(padding)
+                    ) {
+                        val topArea = remember {
+                            movableContentWithReceiverOf<LookaheadScope, Modifier> {
+                                //---------foundation---------
                                 Foundations(
                                     info = info,
                                     winModifier = winModifier,
                                     cardBack = cardBack,
                                     database = database,
-                                    modifier = Modifier.weight(1f)
+                                    modifier = it.animatePlacementInScope(this@LookaheadScope)
                                 )
                                 //---------draws---------
                                 Draws(
@@ -317,35 +319,30 @@ internal fun SolitaireScreen(
                                     drawAmount = drawAmount,
                                     cardBack = cardBack,
                                     database = database,
-                                    modifier = Modifier.weight(1f)
+                                    modifier = it.animatePlacementInScope(this@LookaheadScope)
                                 )
                             }
                         }
 
-                        else -> {
-                            Foundations(
-                                info = info,
-                                winModifier = winModifier,
-                                cardBack = cardBack,
-                                database = database
-                            )
-                            //---------draws---------
-                            Draws(
-                                winModifier = winModifier,
-                                info = info,
-                                drawAmount = drawAmount,
-                                cardBack = cardBack,
-                                database = database,
-                            )
+                        when (window.windowWidthSizeClass) {
+                            WindowWidthSizeClass.MEDIUM, WindowWidthSizeClass.EXPANDED -> {
+                                Row {
+                                    topArea(Modifier.weight(1f))
+                                }
+                            }
+
+                            else -> {
+                                topArea(Modifier)
+                            }
                         }
+                        //---------field---------
+                        Field(
+                            winModifier = winModifier,
+                            info = info,
+                            cardBack = cardBack,
+                            database = database,
+                        )
                     }
-                    //---------field---------
-                    Field(
-                        winModifier = winModifier,
-                        info = info,
-                        cardBack = cardBack,
-                        database = database,
-                    )
                 }
             }
         }

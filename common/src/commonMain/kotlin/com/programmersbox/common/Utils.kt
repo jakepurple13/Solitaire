@@ -11,10 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.layout.*
+import androidx.compose.ui.node.ModifierNodeElement
+import androidx.compose.ui.unit.*
 import com.materialkolor.rememberDynamicColorScheme
 import kotlinx.coroutines.flow.Flow
 
@@ -196,6 +198,87 @@ fun rememberCardBackHolder(database: SolitaireDatabase): State<CustomCardBackHol
         .getCustomCardBack(item)
         .collectAsState(null)
 }
+
+
+fun Modifier.animatePlacementInScope(lookaheadScope: LookaheadScope): Modifier {
+    return this.then(AnimatePlacementNodeElement(lookaheadScope))
+}
+
+class AnimatedPlacementModifierNode(var lookaheadScope: LookaheadScope) :
+    ApproachLayoutModifierNode, Modifier.Node() {
+    // Creates an offset animation, the target of which will be known during placement.
+    @OptIn(ExperimentalAnimatableApi::class)
+    val offsetAnimation: DeferredTargetAnimation<IntOffset, AnimationVector2D> =
+        DeferredTargetAnimation(IntOffset.VectorConverter)
+
+    override fun isMeasurementApproachInProgress(lookaheadSize: IntSize): Boolean {
+        // Since we only animate the placement here, we can consider measurement approach
+        // complete.
+        return false
+    }
+
+    // Returns true when the offset animation is in progress, false otherwise.
+    @OptIn(ExperimentalAnimatableApi::class)
+    override fun Placeable.PlacementScope.isPlacementApproachInProgress(
+        lookaheadCoordinates: LayoutCoordinates,
+    ): Boolean {
+        val target =
+            with(lookaheadScope) {
+                lookaheadScopeCoordinates.localLookaheadPositionOf(lookaheadCoordinates).round()
+            }
+        offsetAnimation.updateTarget(target, coroutineScope)
+        return !offsetAnimation.isIdle
+    }
+
+    @OptIn(ExperimentalAnimatableApi::class)
+    override fun ApproachMeasureScope.approachMeasure(
+        measurable: Measurable,
+        constraints: Constraints,
+    ): MeasureResult {
+        val placeable = measurable.measure(constraints)
+        return layout(placeable.width, placeable.height) {
+            val coordinates = coordinates
+            if (coordinates != null) {
+                // Calculates the target offset within the lookaheadScope
+                val target =
+                    with(lookaheadScope) {
+                        lookaheadScopeCoordinates.localLookaheadPositionOf(coordinates).round()
+                    }
+
+                // Uses the target offset to start an offset animation
+                val animatedOffset = offsetAnimation.updateTarget(target, coroutineScope)
+                // Calculates the *current* offset within the given LookaheadScope
+                val placementOffset =
+                    with(lookaheadScope) {
+                        lookaheadScopeCoordinates
+                            .localPositionOf(coordinates, Offset.Zero)
+                            .round()
+                    }
+                // Calculates the delta between animated position in scope and current
+                // position in scope, and places the child at the delta offset. This puts
+                // the child layout at the animated position.
+                val (x, y) = animatedOffset - placementOffset
+                placeable.place(x, y)
+            } else {
+                placeable.place(0, 0)
+            }
+        }
+    }
+}
+
+// Creates a custom node element for the AnimatedPlacementModifierNode above.
+data class AnimatePlacementNodeElement(val lookaheadScope: LookaheadScope) :
+    ModifierNodeElement<AnimatedPlacementModifierNode>() {
+
+    override fun update(node: AnimatedPlacementModifierNode) {
+        node.lookaheadScope = lookaheadScope
+    }
+
+    override fun create(): AnimatedPlacementModifierNode {
+        return AnimatedPlacementModifierNode(lookaheadScope)
+    }
+}
+
 
 val SolitaireInstructions = """
     1. Start the game: You'll start by laying out cards face-up in rows.
