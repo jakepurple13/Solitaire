@@ -68,44 +68,11 @@ internal fun SettingsView(
             verticalArrangement = Arrangement.spacedBy(2.dp),
             modifier = Modifier.fillMaxSize()
         ) {
+            NewGame(onNewGamePress)
 
-            item {
-                OutlinedCard(
-                    onClick = onNewGamePress,
-                    border = CardDefaults.outlinedCardBorder(true).copy(
-                        brush = SolidColor(MaterialTheme.colorScheme.secondary)
-                    )
-                ) {
-                    ListItem(
-                        headlineContent = { Text("New Game") },
-                    )
-                }
-            }
+            DailyGame(startDailyGame, onDrawerClose)
 
-            item {
-                var showNewGameDialog by remember { mutableStateOf(false) }
-                if (showNewGameDialog) {
-                    NewGameDialog(
-                        title = "Start the Daily Game?",
-                        onDismiss = { showNewGameDialog = false },
-                        onConfirm = {
-                            showNewGameDialog = false
-                            startDailyGame()
-                            onDrawerClose()
-                        }
-                    )
-                }
-                OutlinedCard(
-                    onClick = { showNewGameDialog = true },
-                    border = CardDefaults.outlinedCardBorder(true).copy(
-                        brush = SolidColor(MaterialTheme.colorScheme.primary)
-                    )
-                ) {
-                    ListItem(
-                        headlineContent = { Text("Start Daily Game") },
-                    )
-                }
-            }
+            Instructions()
 
             DrawAmountChange(onDrawerClose)
             DifficultChange(onDrawerClose)
@@ -122,25 +89,7 @@ internal fun SettingsView(
 
             divider()
 
-            item {
-                var showStats by remember { mutableStateOf(false) }
-                val sheetState = rememberModalBottomSheetState()
-
-                if (showStats) {
-                    ModalBottomSheet(
-                        onDismissRequest = { showStats = false },
-                        sheetState = sheetState,
-                        containerColor = MaterialTheme.colorScheme.background
-                    ) {
-                        StatsView(database)
-                    }
-                }
-
-                Button(
-                    onClick = { showStats = true },
-                    modifier = Modifier.fillMaxWidth()
-                ) { Text("View Stats") }
-            }
+            ViewStats(database)
 
             item {
                 Text(
@@ -154,6 +103,117 @@ internal fun SettingsView(
 }
 
 private fun LazyListScope.divider() = item {}
+
+@OptIn(ExperimentalMaterial3Api::class)
+private fun LazyListScope.Instructions() = item {
+    var showInstructions by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+
+    if (showInstructions) {
+        ModalBottomSheet(
+            onDismissRequest = { showInstructions = false },
+            sheetState = sheetState,
+        ) {
+            CenterAlignedTopAppBar(
+                title = { Text("How to Play") },
+                windowInsets = WindowInsets(0.dp),
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                ),
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            scope.launch { sheetState.hide() }
+                                .invokeOnCompletion { showInstructions = false }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Back"
+                        )
+                    }
+                }
+            )
+            Text(
+                text = SolitaireInstructions,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            )
+        }
+    }
+
+    OutlinedCard(
+        onClick = { showInstructions = true },
+    ) {
+        ListItem(
+            headlineContent = { Text("How to Play") },
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+private fun LazyListScope.ViewStats(database: SolitaireDatabase) = item {
+    var showStats by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState()
+
+    if (showStats) {
+        ModalBottomSheet(
+            onDismissRequest = { showStats = false },
+            sheetState = sheetState,
+            containerColor = MaterialTheme.colorScheme.background
+        ) {
+            StatsView(database)
+        }
+    }
+
+    Button(
+        onClick = { showStats = true },
+        modifier = Modifier.fillMaxWidth()
+    ) { Text("View Stats") }
+}
+
+private fun LazyListScope.NewGame(onNewGamePress: () -> Unit) = item {
+    OutlinedCard(
+        onClick = onNewGamePress,
+        border = CardDefaults.outlinedCardBorder(true).copy(
+            brush = SolidColor(MaterialTheme.colorScheme.secondary)
+        )
+    ) {
+        ListItem(
+            headlineContent = { Text("New Game") },
+        )
+    }
+}
+
+private fun LazyListScope.DailyGame(
+    startDailyGame: () -> Unit,
+    onDrawerClose: () -> Unit,
+) = item {
+    var showNewGameDialog by remember { mutableStateOf(false) }
+    if (showNewGameDialog) {
+        NewGameDialog(
+            title = "Start the Daily Game?",
+            onDismiss = { showNewGameDialog = false },
+            onConfirm = {
+                showNewGameDialog = false
+                startDailyGame()
+                onDrawerClose()
+            }
+        )
+    }
+    OutlinedCard(
+        onClick = { showNewGameDialog = true },
+        border = CardDefaults.outlinedCardBorder(true).copy(
+            brush = SolidColor(MaterialTheme.colorScheme.primary)
+        )
+    ) {
+        ListItem(
+            headlineContent = { Text("Start Daily Game") },
+        )
+    }
+}
 
 @OptIn(ExperimentalLayoutApi::class)
 private fun LazyListScope.ThemeChange() = item {

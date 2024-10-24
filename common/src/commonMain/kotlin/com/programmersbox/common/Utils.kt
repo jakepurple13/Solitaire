@@ -196,3 +196,13 @@ fun rememberCardBackHolder(database: SolitaireDatabase): State<CustomCardBackHol
         .getCustomCardBack(item)
         .collectAsState(null)
 }
+
+val SolitaireInstructions = """
+    1. Start the game: You'll start by laying out cards face-up in rows.
+    
+    2. Make piles: You can only put cards on top of each other if they're alternating colors (like red and black) and if the card below is one number higher. For example, you can put a 10 on top of a Jack.
+    
+    3. Use the face-down cards: There will be some cards that are face-down. If you can make a pile with one of these cards, you can turn it over and keep playing.
+   
+    4. Win the game: You win when you've moved all the cards from the starting rows into piles that go from Ace to King.
+""".trimIndent()
