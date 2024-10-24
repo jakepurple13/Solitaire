@@ -176,14 +176,14 @@ internal fun SolitaireScreen(
             ModalDrawerSheet(
                 drawerContainerColor = MaterialTheme.colorScheme.background,
             ) {
-                /*Button(
-                    onClick = { info.winGame() }
-                ) { Text("Win Game") }*/
+                //info.WinButton()
 
                 SettingsView(
                     settings = settings,
                     database = database,
-                    onNewGamePress = { newGameDialog = true }
+                    onNewGamePress = { newGameDialog = true },
+                    startDailyGame = { info.startDailyGame(difficulty) },
+                    onDrawerClose = { scope.launch { drawerState.close() } }
                 )
             }
         }
@@ -658,4 +658,20 @@ private fun Field(
             }
         }
     }
+}
+
+@Composable
+private fun SolitaireViewModel.WinButton() {
+    Button(
+        onClick = {
+            val aceS = Card(13, Suit.Spades)
+            val aceC = Card(13, Suit.Clubs)
+            val aceD = Card(13, Suit.Diamonds)
+            val aceH = Card(13, Suit.Hearts)
+            foundations[1]?.add(aceS)
+            foundations[2]?.add(aceC)
+            foundations[3]?.add(aceD)
+            foundations[4]?.add(aceH)
+        }
+    ) { Text("Win Game") }
 }

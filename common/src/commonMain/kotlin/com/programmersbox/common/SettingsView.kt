@@ -52,6 +52,8 @@ internal fun SettingsView(
     settings: Settings?,
     database: SolitaireDatabase,
     onNewGamePress: () -> Unit,
+    startDailyGame: () -> Unit,
+    onDrawerClose: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     Scaffold(
@@ -71,7 +73,7 @@ internal fun SettingsView(
                 OutlinedCard(
                     onClick = onNewGamePress,
                     border = CardDefaults.outlinedCardBorder(true).copy(
-                        brush = SolidColor(MaterialTheme.colorScheme.primary)
+                        brush = SolidColor(MaterialTheme.colorScheme.secondary)
                     )
                 ) {
                     ListItem(
@@ -80,12 +82,45 @@ internal fun SettingsView(
                 }
             }
 
-            DrawAmountChange()
-            DifficultChange()
+            item {
+                var showNewGameDialog by remember { mutableStateOf(false) }
+                if (showNewGameDialog) {
+                    NewGameDialog(
+                        title = "Start the Daily Game?",
+                        onDismiss = { showNewGameDialog = false },
+                        onConfirm = {
+                            showNewGameDialog = false
+                            startDailyGame()
+                            onDrawerClose()
+                        }
+                    )
+                }
+                OutlinedCard(
+                    onClick = { showNewGameDialog = true },
+                    border = CardDefaults.outlinedCardBorder(true).copy(
+                        brush = SolidColor(MaterialTheme.colorScheme.primary)
+                    )
+                ) {
+                    ListItem(
+                        headlineContent = { Text("Start Daily Game") },
+                    )
+                }
+            }
+
+            DrawAmountChange(onDrawerClose)
+            DifficultChange(onDrawerClose)
+
+            divider()
+
             CardBackChange(database, scope)
             CardDesignChange()
+
+            divider()
+
             AmoledChange()
             ThemeChange()
+
+            divider()
 
             item {
                 var showStats by remember { mutableStateOf(false) }
@@ -117,6 +152,8 @@ internal fun SettingsView(
         }
     }
 }
+
+private fun LazyListScope.divider() = item {}
 
 @OptIn(ExperimentalLayoutApi::class)
 private fun LazyListScope.ThemeChange() = item {
@@ -397,13 +434,18 @@ private fun CardBackItem(
     }
 }
 
-private fun LazyListScope.DrawAmountChange() = item {
+private fun LazyListScope.DrawAmountChange(
+    onDrawerClose: () -> Unit,
+) = item {
     var drawAmount by rememberDrawAmount()
     var showDialogChange by remember { mutableStateOf(false) }
     if (showDialogChange) {
         NewGameDialog(
             title = "Change the draw amount?",
-            onConfirm = { drawAmount = if (drawAmount == 1) 3 else 1 },
+            onConfirm = {
+                drawAmount = if (drawAmount == 1) 3 else 1
+                onDrawerClose()
+            },
             onDismiss = { showDialogChange = false }
         )
     }
@@ -425,7 +467,9 @@ private fun LazyListScope.DrawAmountChange() = item {
     }
 }
 
-private fun LazyListScope.DifficultChange() = item {
+private fun LazyListScope.DifficultChange(
+    onDrawerClose: () -> Unit,
+) = item {
     var difficulty by rememberModeDifficulty()
     var showDropdown by remember { mutableStateOf(false) }
     OutlinedCard(
@@ -447,6 +491,7 @@ private fun LazyListScope.DifficultChange() = item {
                                     onConfirm = {
                                         difficulty = it
                                         showDropdown = false
+                                        onDrawerClose()
                                     },
                                     onDismiss = {
                                         showDialogChange = false

@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -218,10 +221,10 @@ class SolitaireViewModel(
             }
     }
 
-    fun newGame(difficulty: Difficulty) {
+    fun newGame(difficulty: Difficulty, seed: Long? = SEED) {
         deck.removeAllCards()
         deck.addDeck(Deck.defaultDeck())
-        deck.shuffle(SEED)
+        deck.shuffle(seed)
         foundations.values.forEach { it.clear() }
         fieldSlots.values.forEach { it.clear() }
         drawList.clear()
@@ -259,15 +262,13 @@ class SolitaireViewModel(
         lastFewMoves.clear()
     }
 
-    fun winGame() {
-        val aceS = Card(13, Suit.Spades)
-        val aceC = Card(13, Suit.Clubs)
-        val aceD = Card(13, Suit.Diamonds)
-        val aceH = Card(13, Suit.Hearts)
-        foundations[1]?.add(aceS)
-        foundations[2]?.add(aceC)
-        foundations[3]?.add(aceD)
-        foundations[4]?.add(aceH)
+    fun startDailyGame(difficulty: Difficulty) {
+        val seed = Clock.System.now()
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+            .date
+            .toEpochDays()
+            .toLong()
+        newGame(difficulty, seed)
     }
 
     fun autoMoveCard(
