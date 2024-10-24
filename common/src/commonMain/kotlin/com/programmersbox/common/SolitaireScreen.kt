@@ -362,7 +362,9 @@ private fun Foundations(
                     //modifier = Modifier.weight(1f)
                 ) { d, f ->
                     val canPlace = f?.let { cardLocation ->
-                        foundationCheck(cardLocation.card, foundation.value) && d
+                        foundationCheck(cardLocation.card, foundation.value)
+                                && d
+                                && info.fieldToFoundationCheck(cardLocation)
                     } == true
 
                     val strokeColor by animateColorAsState(

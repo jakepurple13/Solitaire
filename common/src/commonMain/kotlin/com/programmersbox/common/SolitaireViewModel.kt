@@ -304,11 +304,16 @@ class SolitaireViewModel(
         }
     }
 
+    fun fieldToFoundationCheck(cardLocation: CardLocation): Boolean {
+        return fieldSlots[cardLocation.location]
+            ?.let { f -> f.lastCard()?.value == cardLocation.card.value } != false
+    }
+
     fun foundationPlace(
         cardLocation: CardLocation,
         foundation: SnapshotStateList<Card>,
     ): Boolean {
-        return if (foundationCheck(cardLocation.card, foundation)) {
+        return if (foundationCheck(cardLocation.card, foundation) && fieldToFoundationCheck(cardLocation)) {
             saveLastMove()
             foundation.add(cardLocation.card)
             when (cardLocation.location) {
