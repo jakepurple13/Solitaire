@@ -37,7 +37,7 @@ public actual class Settings actual constructor(
         localStorage.setItem("solitaireUiState", Json.encodeToString(game))
     }
 
-    actual fun getGameSave(): Flow<SolitaireUiState?> = snapshotFlow { solitaireUiState.value }
+    actual fun getGameSave(): Flow<SolitaireUiState?> = solitaireUiState
 }
 
 private val cardBackStore = storeOf<List<CardBackStuff>>(key = "cardBacks")
