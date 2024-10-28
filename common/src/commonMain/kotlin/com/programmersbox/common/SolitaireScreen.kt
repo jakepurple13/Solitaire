@@ -37,11 +37,9 @@ import com.programmersbox.common.dragdrop.AnimatedDragDropBox
 import com.programmersbox.common.dragdrop.DragTarget
 import com.programmersbox.common.dragdrop.DragType
 import com.programmersbox.common.dragdrop.DropTarget
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 data class CardLocation(val location: Int, val card: Card, val place: Int)
 
@@ -244,11 +242,11 @@ internal fun SolitaireScreen(
                             IconButton(
                                 onClick = {
                                     scope.launch {
-                                        withContext(Dispatchers.Default) {
+                                        val hasMoved = info.autoMove()
+                                        launch {
                                             animatedProgress.animateTo(360f)
                                             animatedProgress.snapTo(0f)
                                         }
-                                        val hasMoved = info.autoMove()
                                         if (!hasMoved) snackbarHostState.showSnackbar(
                                             message = "Nothing Moved",
                                             withDismissAction = true,
