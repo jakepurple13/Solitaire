@@ -18,6 +18,7 @@ on:
       - main
       - master
 
+  workflow_call:
   workflow_dispatch:
   repository_dispatch:
     types: [ app-release ]

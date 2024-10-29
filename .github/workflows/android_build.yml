@@ -9,6 +9,7 @@ on:
     paths-ignore:
       - '.github/**'
 
+  workflow_call:
   workflow_dispatch:
 #    inputs:
 #      releaseToGooglePlay:
