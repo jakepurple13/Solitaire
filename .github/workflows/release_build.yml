@@ -22,9 +22,15 @@ jobs:
 
   android:
     uses: ./.github/workflows/android_build.yml
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-android
+      cancel-in-progress: true
 
   desktop:
     uses: ./.github/workflows/desktop_build.yml
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-desktop
+      cancel-in-progress: true
 
   release:
     name: Release APK
