@@ -68,6 +68,3 @@ jobs:
           name: Release ${{ env.VERSION_TAG }}
           files: |
             ${{ github.workspace }}/release-artifacts/**
-            ${{ jobs.android.outputs.apk }}
-            ${{ jobs.android.outputs.aab }}
-            ${{ jobs.desktop.outputs }}

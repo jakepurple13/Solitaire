@@ -10,13 +10,6 @@ on:
       - 'v*'
 
   workflow_call:
-    outputs:
-      aab:
-        description: "Aab"
-        value: ${{ jobs.aab.outputSet.aab }}
-      apk:
-        description: "Apk"
-        value: ${{ jobs.apk.outputSet.apk }}
   workflow_dispatch:
 #    inputs:
 #      releaseToGooglePlay:
@@ -77,10 +70,6 @@ jobs:
           name: Signed Solitaire App
           path: solitaire-release.aab
 
-      - outputSet:
-          - env:
-              aab: solitaire-release.aab
-
   apk:
     name: Generate Apk
     runs-on: ubuntu-latest
@@ -131,10 +120,6 @@ jobs:
         with:
           name: Signed Solitaire Apk
           path: solitaire-release.apk
-
-      - outputSet:
-          - env:
-              apk: solitaire-release.apk
 
 #  release:
 #    name: Release APK
