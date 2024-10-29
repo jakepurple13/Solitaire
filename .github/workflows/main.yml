@@ -1,5 +1,11 @@
 name: Publish Application on GitHub Pages
-on: [ push, pull_request ]
+on:
+  push:
+    branches:
+      - master
+    tags-ignore:
+      - 'v'
+
 jobs:
   # Build job
   build:

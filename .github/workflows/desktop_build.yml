@@ -12,6 +12,8 @@ on:
       - README.md
       - 'docs/**'
       - '.github/config/labels.yml'
+    tags-ignore:
+      - 'v'
 
   pull_request:
     branches:
