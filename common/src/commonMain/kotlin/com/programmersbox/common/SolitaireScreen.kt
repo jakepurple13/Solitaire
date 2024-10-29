@@ -247,11 +247,14 @@ internal fun SolitaireScreen(
                                             animatedProgress.animateTo(360f)
                                             animatedProgress.snapTo(0f)
                                         }
-                                        if (!hasMoved) snackbarHostState.showSnackbar(
-                                            message = "Nothing Moved",
-                                            withDismissAction = true,
-                                            duration = SnackbarDuration.Short
-                                        )
+                                        snackbarHostState.currentSnackbarData?.dismiss()
+                                        if (!hasMoved) {
+                                            snackbarHostState.showSnackbar(
+                                                message = "Nothing Moved",
+                                                withDismissAction = true,
+                                                duration = SnackbarDuration.Short
+                                            )
+                                        }
                                     }
                                 }
                             ) {
