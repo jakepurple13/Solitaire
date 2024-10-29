@@ -7,9 +7,16 @@ on:
     paths-ignore:
       - '.github/**'
     tags-ignore:
-      - 'v'
+      - 'v*'
 
   workflow_call:
+    outputs:
+      aab:
+        description: "Aab"
+        value: ${{ jobs.aab.outputSet.aab }}
+      apk:
+        description: "Apk"
+        value: ${{ jobs.apk.outputSet.apk }}
   workflow_dispatch:
 #    inputs:
 #      releaseToGooglePlay:
@@ -41,13 +48,6 @@ jobs:
           set -x
           echo "VERSION_TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
 
-      #      - name: Bump version
-      #        uses: chkfung/android-version-actions@v1.1
-      #        with:
-      #          gradlePath: composeApp/build.gradle.kts
-      #          versionCode: ${{github.run_number}}
-      #          versionName: ${{ env.VERSION_TAG }}
-
       - name: Build Artifacts
         id: buildApks
         uses: gradle/gradle-build-action@v2
@@ -68,96 +68,18 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
 
-      #      - name: Build Artifacts
-      #        id: buildApks2
-      #        uses: gradle/gradle-build-action@v2
-      #        with:
-      #          gradle-version: current
-      #          wrapper-cache-enabled: true
-      #          dependencies-cache-enabled: true
-      #          configuration-cache-enabled: true
-      #          arguments: android:assembleRelease
-      #
-      #      - uses: kevin-david/zipalign-sign-android-release@v2.0.1
-      #        name: Sign app APK2
-      #        id: solitairegame_apk_sign
-      #        with:
-      #          releaseDirectory: android/build/outputs/apk/release/
-      #          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-      #          alias: ${{ secrets.ALIAS }}
-      #          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-      #          keyPassword: ${{ secrets.KEY_PASSWORD }}
-      #          zipAlign: true
-
       - name: Clean up build artifacts
         run: |
           cp ${{ steps.solitairegame_sign.outputs.signedReleaseFile }} solitaire-release.aab
-      #          cp ${{ steps.solitairegame_apk_sign.outputs.signedReleaseFile }} solitaire-release.apk
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: Signed Solitaire App
           path: solitaire-release.aab
 
-  #      - uses: actions/upload-artifact@v3
-  #        with:
-  #          name: Signed Solitaire Apk
-  #          path: solitaire-release.apk
-
-  #  apk:
-  #    name: Generate APK
-  #    runs-on: ubuntu-latest
-  #    steps:
-  #      - name: Checkout
-  #        uses: actions/checkout@v3
-  #
-  #      - name: Setup JDK
-  #        uses: actions/setup-java@v3
-  #        with:
-  #          distribution: adopt
-  #          java-version: 21
-  #
-  #      - name: Get tag name
-  #        id: get_tag_name
-  #        run: |
-  #          set -x
-  #          echo "VERSION_TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
-  #
-  #      #      - name: Bump version
-  #      #        uses: chkfung/android-version-actions@v1.1
-  #      #        with:
-  #      #          gradlePath: composeApp/build.gradle.kts
-  #      #          versionCode: ${{github.run_number}}
-  #      #          versionName: ${{ env.VERSION_TAG }}
-  #
-  #      - name: Build Artifacts
-  #        id: buildApks
-  #        uses: gradle/gradle-build-action@v2
-  #        with:
-  #          gradle-version: current
-  #          wrapper-cache-enabled: true
-  #          dependencies-cache-enabled: true
-  #          configuration-cache-enabled: true
-  #          arguments: composeApp:assembleRelease
-  #
-  #      - uses: r0adkll/sign-android-release@v1
-  #        name: Sign app APK
-  #        id: solitairegame_apk_sign
-  #        with:
-  #          releaseDirectory: composeApp/build/outputs/apk/release/
-  #          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-  #          alias: ${{ secrets.ALIAS }}
-  #          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-  #          keyPassword: ${{ secrets.KEY_PASSWORD }}
-  #
-  #      - name: Clean up build artifacts
-  #        run: |
-  #          cp ${{ steps.solitairegame_apk_sign.outputs.signedReleaseFile }} solitairegame-release.apk
-  #
-  #      - uses: actions/upload-artifact@v3
-  #        with:
-  #          name: Signed solitaireGame Apk
-  #          path: solitairegame-release.apk
+      - outputSet:
+          - env:
+              aab: solitaire-release.aab
 
   apk:
     name: Generate Apk
@@ -205,10 +127,14 @@ jobs:
         run: |
           cp ${{ steps.solitairegame_apk_sign.outputs.signedReleaseFile }} solitaire-release.apk
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: Signed Solitaire Apk
           path: solitaire-release.apk
+
+      - outputSet:
+          - env:
+              apk: solitaire-release.apk
 
 #  release:
 #    name: Release APK

@@ -13,7 +13,7 @@ on:
       - 'docs/**'
       - '.github/config/labels.yml'
     tags-ignore:
-      - 'v'
+      - 'v*'
 
   pull_request:
     branches:
