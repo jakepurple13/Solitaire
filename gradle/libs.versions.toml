@@ -14,10 +14,12 @@ precompose = "1.6.0"
 datastore-version = "1.1.1"
 materialKolor = "2.0.0"
 colorpickerCompose = "1.1.2"
-ksp = "2.0.21-1.0.25"
+ksp = "2.0.21-1.0.26"
 androidx-room = "2.7.0-alpha07"
 uiVersion = "0.1.5"
 kstore = "0.8.0"
+sqlite = "2.5.0-alpha10"
+kotlinx-coroutines-core = "1.9.0"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp-version" }
@@ -46,6 +48,9 @@ material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "m
 colorpicker-compose = { module = "com.github.skydoves:colorpicker-compose", version.ref = "colorpickerCompose" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
+androidx-room-sqlite = { group = "androidx.sqlite", name = "sqlite-bundled", version.ref = "sqlite" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
+kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines-core" }
 krop-ui = { module = "com.attafitamim.krop:ui", version.ref = "uiVersion" }
 
 kstore = { module = "io.github.xxfast:kstore", version.ref = "kstore" }

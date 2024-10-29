@@ -47,7 +47,7 @@ interface SolitaireDao {
     suspend fun removeHighScore(item: SolitaireScore)
 
     @Query("SELECT * FROM SolitaireScore ORDER BY score DESC LIMIT $HIGHSCORE_LIMIT")
-    fun getHighScores(): List<SolitaireScore>
+    suspend fun getHighScores(): List<SolitaireScore>
 
     @Query("SELECT * FROM SolitaireScore ORDER BY score DESC LIMIT $HIGHSCORE_LIMIT")
     fun getSolitaireHighScores(): Flow<List<SolitaireScore>>

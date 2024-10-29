@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.asSkiaBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.attafitamim.krop.core.images.ImageBitmapSrc
 import com.attafitamim.krop.core.images.ImageSrc
 import com.materialkolor.rememberDynamicMaterialThemeState
@@ -17,6 +18,7 @@ import com.programmersbox.storage.*
 import com.programmersbox.storage.Difficulty
 import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.core.PickerType
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -48,6 +50,8 @@ public fun UIShow() {
                     databaseStuff = object : DatabaseStuff {
                         private val database = getDatabaseBuilder()
                             .fallbackToDestructiveMigration(true)
+                            .setDriver(BundledSQLiteDriver())
+                            .setQueryCoroutineContext(Dispatchers.IO)
                             .build()
                             .getDao()
 

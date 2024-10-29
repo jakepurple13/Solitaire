@@ -96,6 +96,7 @@ kotlin {
                 implementation(libs.colorpicker.compose)
                 api(libs.krop.ui)
                 api(libs.filekit.compose)
+                api(libs.kotlinx.coroutines.core)
             }
         }
 
@@ -118,6 +119,8 @@ kotlin {
             dependencies {
                 api(compose.preview)
                 implementation(projects.storage)
+                implementation(libs.androidx.room.sqlite)
+                api(libs.kotlinx.coroutines.swing)
             }
         }
 
