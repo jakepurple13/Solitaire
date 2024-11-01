@@ -13,10 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.materialkolor.ktx.harmonizeWithPrimary
+import com.programmersbox.common.generated.resources.Res
+import com.programmersbox.common.generated.resources.no
+import com.programmersbox.common.generated.resources.yes
 import kotlinx.coroutines.launch
 import kotlinx.datetime.*
 import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.char
+import org.jetbrains.compose.resources.stringResource
 
 internal val Emerald = Color(0xFF2ecc71)
 internal val Sunflower = Color(0xFFf1c40f)
@@ -115,9 +119,9 @@ private fun HighScoreItem(
                         onDelete()
                         deleteDialog = false
                     }
-                ) { Text("Yes") }
+                ) { Text(stringResource(Res.string.yes)) }
             },
-            dismissButton = { TextButton(onClick = { deleteDialog = false }) { Text("No") } }
+            dismissButton = { TextButton(onClick = { deleteDialog = false }) { Text(stringResource(Res.string.no)) } }
         )
     }
 

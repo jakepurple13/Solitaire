@@ -1,0 +1,46 @@
+<resources>
+    <string name="theme">Theme</string>
+    <string name="settings">Settings</string>
+    <string name="version">Version: %1$s</string>
+    <string name="how_to_play">How to Play</string>
+    <string name="solitaire_instructions">
+        1. Start the game: You'll start by laying out cards face-up in rows.
+
+        2. Make piles: You can only put cards on top of each other if they're alternating colors (like red and black)
+        and if the card below is one number higher. For example, you can put a 10 on top of a Jack.
+
+        3. Use the face-down cards: There will be some cards that are face-down. If you can make a pile with one of
+        these cards, you can turn it over and keep playing.
+
+        4. Win the game: You win when you've moved all the cards from the starting rows into piles that go from Ace to
+        King.
+    </string>
+    <string name="view_stats">View Stats</string>
+    <string name="new_game">New Game</string>
+    <string name="start_daily_game_title">Start the Daily Game?</string>
+    <string name="start_daily_game">Start Daily Game</string>
+    <string name="wheel">Wheel</string>
+    <string name="hex">Hex</string>
+    <string name="image">Image</string>
+    <string name="select_color_title">Select a color to use as the background color of the app.</string>
+    <string name="custom_color">Custom Color</string>
+    <string name="hex_code">Hex Code</string>
+    <string name="custom_index">Custom #%1$d</string>
+    <string name="change_image">Change Image</string>
+    <string name="done">Done</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="changing_will_restart_title">Changing this will start a new game.</string>
+    <string name="change_draw_amount">Change the draw amount?</string>
+    <string name="draw_amount">Draw Amount: %1$d</string>
+    <string name="difficulty_title">Difficulty: %1$s</string>
+    <string name="change_difficulty">Change difficulty?</string>
+    <string name="use_new_card_design">Use New Card Design</string>
+    <string name="is_amoled">Is Amoled</string>
+    <string name="default">Default</string>
+    <string name="special">Special</string>
+    <string name="custom">Custom</string>
+    <string name="pick_an_image">Pick an Image</string>
+    <string name="add">Add</string>
+    <string name="card_back">Card Back: %1$s</string>
+</resources>

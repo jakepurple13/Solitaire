@@ -37,9 +37,14 @@ import com.programmersbox.common.dragdrop.AnimatedDragDropBox
 import com.programmersbox.common.dragdrop.DragTarget
 import com.programmersbox.common.dragdrop.DragType
 import com.programmersbox.common.dragdrop.DropTarget
+import com.programmersbox.common.generated.resources.Res
+import com.programmersbox.common.generated.resources.new_game
+import com.programmersbox.common.generated.resources.no
+import com.programmersbox.common.generated.resources.yes
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 
 data class CardLocation(val location: Int, val card: Card, val place: Int)
 
@@ -152,12 +157,12 @@ internal fun SolitaireScreen(
                         newGameDialog = false
                         scope.launch { drawerState.close() }
                     }
-                ) { Text("Yes") }
+                ) { Text(stringResource(Res.string.yes)) }
             },
             dismissButton = {
                 TextButton(
                     onClick = { newGameDialog = false }
-                ) { Text("No") }
+                ) { Text(stringResource(Res.string.no)) }
             }
         )
     }
@@ -213,7 +218,7 @@ internal fun SolitaireScreen(
                             }
 
                             ToolTipWrapper(
-                                title = { Text("New Game") },
+                                title = { Text(stringResource(Res.string.new_game)) },
                                 text = { Text("Start a New Game") }
                             ) {
                                 IconButton(
