@@ -133,7 +133,7 @@ private fun LazyListScope.Instructions() = item {
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "Back"
+                            contentDescription = null
                         )
                     }
                 }
@@ -575,7 +575,7 @@ private fun SelectableMiniPalette(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Check,
-                        contentDescription = "Checked",
+                        contentDescription = null,
                         modifier = Modifier
                             .padding(8.dp)
                             .size(16.dp),

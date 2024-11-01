@@ -13,9 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.materialkolor.ktx.harmonizeWithPrimary
-import com.programmersbox.common.generated.resources.Res
-import com.programmersbox.common.generated.resources.no
-import com.programmersbox.common.generated.resources.yes
+import com.programmersbox.common.generated.resources.*
 import kotlinx.coroutines.launch
 import kotlinx.datetime.*
 import kotlinx.datetime.format.MonthNames
@@ -42,8 +40,8 @@ internal fun StatsView(
     val scope = rememberCoroutineScope()
 
     TopAppBar(
-        title = { Text("Stats") },
-        actions = { Text("Wins: $winCount") }
+        title = { Text(stringResource(Res.string.stats)) },
+        actions = { Text(stringResource(Res.string.wins, winCount)) }
     )
 
     val colorScheme = MaterialTheme.colorScheme
@@ -111,8 +109,8 @@ private fun HighScoreItem(
     if (deleteDialog) {
         AlertDialog(
             onDismissRequest = { deleteDialog = false },
-            title = { Text("Delete ${score.score} at $time") },
-            text = { Text("Are you sure?") },
+            title = { Text(stringResource(Res.string.delete_score, score.score, time)) },
+            text = { Text(stringResource(Res.string.are_you_sure)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -130,12 +128,12 @@ private fun HighScoreItem(
     ) {
         ListItem(
             overlineContent = { Text(time) },
-            headlineContent = { Text("Score: ${score.score}") },
+            headlineContent = { Text(stringResource(Res.string.score, score.score)) },
             supportingContent = {
                 Column {
-                    Text("Time Taken: ${score.timeTaken}")
-                    Text("Move Count: ${score.moves}")
-                    Text("Difficulty: ${score.difficulty ?: Difficulty.Normal.name}")
+                    Text(stringResource(Res.string.time_taken, score.timeTaken))
+                    Text(stringResource(Res.string.move_count, score.moves))
+                    Text(stringResource(Res.string.difficulty_title, score.difficulty ?: Difficulty.Normal.name))
                 }
             },
             trailingContent = {

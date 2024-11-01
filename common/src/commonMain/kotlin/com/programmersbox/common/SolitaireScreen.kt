@@ -37,13 +37,11 @@ import com.programmersbox.common.dragdrop.AnimatedDragDropBox
 import com.programmersbox.common.dragdrop.DragTarget
 import com.programmersbox.common.dragdrop.DragType
 import com.programmersbox.common.dragdrop.DropTarget
-import com.programmersbox.common.generated.resources.Res
-import com.programmersbox.common.generated.resources.new_game
-import com.programmersbox.common.generated.resources.no
-import com.programmersbox.common.generated.resources.yes
+import com.programmersbox.common.generated.resources.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 
 data class CardLocation(val location: Int, val card: Card, val place: Int)
@@ -129,17 +127,17 @@ internal fun SolitaireScreen(
     if (showWinDialog) {
         AlertDialog(
             onDismissRequest = { showWinDialog = false },
-            title = { Text("You win!") },
-            text = { Text("Start a new game?") },
+            title = { Text(stringResource(Res.string.you_win)) },
+            text = { Text(stringResource(Res.string.start_a_new_game_question)) },
             confirmButton = {
                 TextButton(
                     onClick = { info.newGame(difficulty) },
-                ) { Text("Play again!") }
+                ) { Text(stringResource(Res.string.play_again)) }
             },
             dismissButton = {
                 TextButton(
                     onClick = { showWinDialog = false },
-                ) { Text("Keep looking at the field") }
+                ) { Text(stringResource(Res.string.keep_looking_at_field)) }
             }
         )
     }
@@ -148,8 +146,8 @@ internal fun SolitaireScreen(
     if (newGameDialog) {
         AlertDialog(
             onDismissRequest = { newGameDialog = false },
-            title = { Text("New Game?") },
-            text = { Text("Are you sure you want to start a new game?") },
+            title = { Text(stringResource(Res.string.new_game_question)) },
+            text = { Text(stringResource(Res.string.are_you_sure_new_game)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -209,8 +207,8 @@ internal fun SolitaireScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             ToolTipWrapper(
-                                title = { Text("Settings") },
-                                text = { Text("Open Settings Drawer") }
+                                title = { Text(stringResource(Res.string.settings)) },
+                                text = { Text(stringResource(Res.string.open_settings_drawer)) }
                             ) {
                                 IconButton(
                                     onClick = { scope.launch { drawerState.open() } }
@@ -219,7 +217,7 @@ internal fun SolitaireScreen(
 
                             ToolTipWrapper(
                                 title = { Text(stringResource(Res.string.new_game)) },
-                                text = { Text("Start a New Game") }
+                                text = { Text(stringResource(Res.string.start_a_new_game)) }
                             ) {
                                 IconButton(
                                     onClick = { newGameDialog = true }
@@ -227,8 +225,8 @@ internal fun SolitaireScreen(
                             }
 
                             ToolTipWrapper(
-                                title = { Text("Undo") },
-                                text = { Text("Undo last move if possible") }
+                                title = { Text(stringResource(Res.string.undo)) },
+                                text = { Text(stringResource(Res.string.undo_description)) }
                             ) {
                                 IconButton(
                                     onClick = { info.undo() },
@@ -240,8 +238,8 @@ internal fun SolitaireScreen(
                     title = { Text(info.timeText) },
                     actions = {
                         ToolTipWrapper(
-                            title = { Text("Auto Move") },
-                            text = { Text("Will Auto Move Cards to the Foundations if possible") }
+                            title = { Text(stringResource(Res.string.auto_move)) },
+                            text = { Text(stringResource(Res.string.auto_move_description)) }
                         ) {
                             val animatedProgress = remember { Animatable(0f) }
                             IconButton(
@@ -255,7 +253,7 @@ internal fun SolitaireScreen(
                                         snackbarHostState.currentSnackbarData?.dismiss()
                                         if (!hasMoved) {
                                             snackbarHostState.showSnackbar(
-                                                message = "Nothing Moved",
+                                                message = getString(Res.string.nothing_moved),
                                                 withDismissAction = true,
                                                 duration = SnackbarDuration.Short
                                             )
@@ -272,10 +270,10 @@ internal fun SolitaireScreen(
                         }
 
                         ToolTipWrapper(
-                            title = { Text("Info") },
-                            text = { Text("Move Count: ${info.moveCount}") }
+                            title = { Text(stringResource(Res.string.info)) },
+                            text = { Text(stringResource(Res.string.move_count, info.moveCount)) }
                         ) {
-                            Text("Score: " + animateIntAsState(info.score).value.toString())
+                            Text(stringResource(Res.string.score, animateIntAsState(info.score).value.toString()))
                         }
                     }
                 )
@@ -291,7 +289,7 @@ internal fun SolitaireScreen(
                         Button(
                             onClick = { showWinDialog = true },
                             modifier = Modifier.fillMaxWidth()
-                        ) { Text("You won! Start New Game!") }
+                        ) { Text(stringResource(Res.string.you_won_start)) }
                     }
                 }
             }
@@ -583,7 +581,7 @@ private fun Draws(
                             .align(Alignment.BottomCenter)
                     ) {
                         Text(
-                            "Cards left:",
+                            stringResource(Res.string.cards_left),
                             textAlign = TextAlign.Center,
                             color = Color.White
                         )

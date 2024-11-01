@@ -43,4 +43,27 @@
     <string name="pick_an_image">Pick an Image</string>
     <string name="add">Add</string>
     <string name="card_back">Card Back: %1$s</string>
+    <string name="you_win">You win!</string>
+    <string name="start_a_new_game_question">Start a new game?</string>
+    <string name="play_again">Play again!</string>
+    <string name="keep_looking_at_field">Keep looking at the field</string>
+    <string name="new_game_question">New Game?</string>
+    <string name="are_you_sure_new_game">Are you sure you want to start a new game?</string>
+    <string name="open_settings_drawer">Open Settings Drawer</string>
+    <string name="start_a_new_game">Start a New Game</string>
+    <string name="undo">Undo</string>
+    <string name="undo_description">Undo last move if possible</string>
+    <string name="auto_move">Auto Move</string>
+    <string name="auto_move_description">Will Auto Move Cards to the Foundations if possible</string>
+    <string name="nothing_moved">Nothing Moved</string>
+    <string name="info">Info</string>
+    <string name="move_count">Move Count: %1$d</string>
+    <string name="score">Score: %1$d</string>
+    <string name="you_won_start">You won! Start New Game!</string>
+    <string name="cards_left">Cards Left:</string>
+    <string name="stats">Stats</string>
+    <string name="wins">Wins: %1$d</string>
+    <string name="delete_score">Delete %1$d at %2$s?</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="time_taken">Time Taken: %1$s</string>
 </resources>
