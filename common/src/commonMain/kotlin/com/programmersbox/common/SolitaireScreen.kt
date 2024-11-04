@@ -673,6 +673,18 @@ private fun Field(
                             verticalArrangement = Arrangement.spacedBy(-(FIELD_HEIGHT * .75).dp),
                             modifier = Modifier.animateContentSize()
                         ) {
+                            //TODO: Come back to this
+                            /*items(fieldSlot.value.faceDownList) {
+                                cardBack.CustomCardBackground(
+                                    database = database,
+                                    border = BorderStroke(2.dp, strokeColor),
+                                    modifier = Modifier
+                                        .height(FIELD_HEIGHT.dp)
+                                        .offset(y = (50).dp)
+                                        .fillMaxSize()
+                                        .then(winModifier)
+                                )
+                            }*/
                             itemsIndexed(fieldSlot.value.list) { index, card ->
                                 DragTarget(
                                     dataToDrop = CardLocation(fieldSlot.key, card, index),

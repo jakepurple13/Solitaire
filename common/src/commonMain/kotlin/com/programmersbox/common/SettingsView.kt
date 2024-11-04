@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -793,10 +792,7 @@ private fun LazyListScope.CardDesignChange() = item {
     var useNewDesign by rememberUseNewDesign()
 
     OutlinedCard(
-        modifier = Modifier.toggleable(
-            value = useNewDesign,
-            onValueChange = { useNewDesign = it }
-        ),
+        onClick = { useNewDesign = !useNewDesign },
         shape = MaterialTheme.shapes.extraLarge,
     ) {
         ListItem(
@@ -815,10 +811,7 @@ private fun LazyListScope.AmoledChange() = item {
     var isAmoled by rememberIsAmoled()
 
     OutlinedCard(
-        modifier = Modifier.toggleable(
-            value = isAmoled,
-            onValueChange = { isAmoled = it }
-        ),
+        onClick = { isAmoled = !isAmoled },
         shape = MaterialTheme.shapes.extraLarge,
     ) {
         ListItem(

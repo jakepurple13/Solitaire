@@ -109,8 +109,8 @@ class FieldSlot {
         return list.removeAt(num)
     }
 
-    fun removeCard(): Card {
-        return list.removeLast()
+    fun removeCard(): Card? {
+        return list.removeLastOrNull()
     }
 
     @Throws(NoSuchElementException::class)
