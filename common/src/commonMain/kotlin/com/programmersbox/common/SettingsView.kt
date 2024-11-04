@@ -21,9 +21,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
@@ -69,29 +69,61 @@ internal fun SettingsView(
         LazyColumn(
             contentPadding = padding,
             verticalArrangement = Arrangement.spacedBy(2.dp),
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
         ) {
-            NewGame(onNewGamePress)
+            item {
+                ListItem(
+                    supportingContent = { Text("Play Style") },
+                    headlineContent = {},
+                    leadingContent = { Icon(Icons.Default.SportsEsports, null) }
+                )
+            }
 
-            DailyGame(startDailyGame, onDrawerClose)
+            DifficultChange(onDrawerClose)
+            DrawAmountChange(onDrawerClose)
+
+            item {
+                ListItem(
+                    supportingContent = { Text("Theme & Card Design") },
+                    headlineContent = {},
+                    leadingContent = { Icon(Icons.Default.StarOutline, null) }
+                )
+            }
+
+            CardBackChange(database, scope)
+            ThemeChange(database)
+
+            item {
+                ListItem(
+                    supportingContent = { Text("Advanced") },
+                    headlineContent = {},
+                    leadingContent = { Icon(Icons.Default.Settings, null) }
+                )
+            }
+
+            CardDesignChange()
+            AmoledChange()
+
+            item {
+                ListItem(
+                    supportingContent = { Text("Info") },
+                    headlineContent = {},
+                    leadingContent = { Icon(Icons.Default.Info, null) }
+                )
+            }
 
             Instructions()
 
-            DrawAmountChange(onDrawerClose)
-            DifficultChange(onDrawerClose)
+            item {
+                Card(
+                    modifier = Modifier.alpha(0f)
+                ) { ListItem(headlineContent = {}) }
+            }
 
-            divider()
-
-            CardBackChange(database, scope)
-            CardDesignChange()
-
-            divider()
-
-            AmoledChange()
-            ThemeChange(database)
-
-            divider()
-
+            DailyGame(startDailyGame, onDrawerClose)
+            NewGame(onNewGamePress)
             ViewStats(database)
 
             item {
@@ -149,6 +181,7 @@ private fun LazyListScope.Instructions() = item {
 
     OutlinedCard(
         onClick = { showInstructions = true },
+        shape = MaterialTheme.shapes.extraLarge,
     ) {
         ListItem(
             headlineContent = { Text(stringResource(Res.string.how_to_play)) },
@@ -171,22 +204,19 @@ private fun LazyListScope.ViewStats(database: SolitaireDatabase) = item {
         }
     }
 
-    Button(
+    TextButton(
         onClick = { showStats = true },
         modifier = Modifier.fillMaxWidth()
     ) { Text(stringResource(Res.string.view_stats)) }
 }
 
 private fun LazyListScope.NewGame(onNewGamePress: () -> Unit) = item {
-    OutlinedCard(
+    FilledTonalButton(
         onClick = onNewGamePress,
-        border = CardDefaults.outlinedCardBorder(true).copy(
-            brush = SolidColor(MaterialTheme.colorScheme.secondary)
-        )
+        modifier = Modifier.fillMaxWidth()
     ) {
-        ListItem(
-            headlineContent = { Text(stringResource(Res.string.new_game)) },
-        )
+        Icon(Icons.Default.Add, null)
+        Text(stringResource(Res.string.new_game))
     }
 }
 
@@ -206,16 +236,11 @@ private fun LazyListScope.DailyGame(
             }
         )
     }
-    OutlinedCard(
+
+    Button(
         onClick = { showNewGameDialog = true },
-        border = CardDefaults.outlinedCardBorder(true).copy(
-            brush = SolidColor(MaterialTheme.colorScheme.primary)
-        )
-    ) {
-        ListItem(
-            headlineContent = { Text(stringResource(Res.string.start_daily_game)) },
-        )
-    }
+        modifier = Modifier.fillMaxWidth()
+    ) { Text(stringResource(Res.string.start_daily_game)) }
 }
 
 enum class ColorPickerType(val label: StringResource) {
@@ -416,7 +441,7 @@ private fun ColorPicker(
     )
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 private fun LazyListScope.ThemeChange(
     database: SolitaireDatabase,
 ) = item {
@@ -437,21 +462,16 @@ private fun LazyListScope.ThemeChange(
         )
     }
 
-    OutlinedCard(
-        onClick = { showThemes = !showThemes },
-    ) {
-        ListItem(
-            headlineContent = { Text(stringResource(Res.string.theme)) },
-            trailingContent = { Icon(Icons.Default.ArrowDropDown, null) },
-            supportingContent = { Text(themeColor.name) },
-        )
-
-        AnimatedVisibility(showThemes) {
+    if (showThemes) {
+        ModalBottomSheet(
+            onDismissRequest = { showThemes = false }
+        ) {
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(16.dp)
                     .padding(bottom = 8.dp)
             ) {
                 ThemeColor
@@ -488,6 +508,16 @@ private fun LazyListScope.ThemeChange(
                 )
             }
         }
+    }
+
+    OutlinedCard(
+        onClick = { showThemes = !showThemes },
+        shape = MaterialTheme.shapes.extraLarge,
+    ) {
+        ListItem(
+            headlineContent = { Text(stringResource(Res.string.theme)) },
+            supportingContent = { Text(themeColor.name) },
+        )
     }
 }
 
@@ -682,32 +712,29 @@ private fun LazyListScope.DrawAmountChange(
     onDrawerClose: () -> Unit,
 ) = item {
     var drawAmount by rememberDrawAmount()
-    var showDialogChange by remember { mutableStateOf(false) }
-    if (showDialogChange) {
-        NewGameDialog(
-            title = stringResource(Res.string.change_draw_amount),
-            onConfirm = {
-                drawAmount = if (drawAmount == 1) 3 else 1
-                onDrawerClose()
-            },
-            onDismiss = { showDialogChange = false }
-        )
-    }
-    OutlinedCard(
-        modifier = Modifier.toggleable(
-            value = drawAmount == DRAW_AMOUNT,
-            onValueChange = { showDialogChange = true }
-        )
+
+    SingleChoiceSegmentedButtonRow(
+        modifier = Modifier.fillMaxWidth()
     ) {
-        ListItem(
-            headlineContent = { Text(stringResource(Res.string.draw_amount, drawAmount)) },
-            trailingContent = {
-                Switch(
-                    checked = drawAmount == DRAW_AMOUNT,
-                    onCheckedChange = { showDialogChange = true }
+        listOf(1, 3).forEachIndexed { index, drawAmountItem ->
+            var showDialogChange by remember { mutableStateOf(false) }
+            if (showDialogChange) {
+                NewGameDialog(
+                    title = stringResource(Res.string.change_draw_amount),
+                    onConfirm = {
+                        drawAmount = drawAmountItem
+                        onDrawerClose()
+                    },
+                    onDismiss = { showDialogChange = false }
                 )
             }
-        )
+            SegmentedButton(
+                selected = drawAmount == drawAmountItem,
+                onClick = { showDialogChange = true },
+                shape = SegmentedButtonDefaults.itemShape(index = index, count = 2),
+                label = { Text("$drawAmountItem Card Draw") }
+            )
+        }
     }
 }
 
@@ -715,45 +742,30 @@ private fun LazyListScope.DifficultChange(
     onDrawerClose: () -> Unit,
 ) = item {
     var difficulty by rememberModeDifficulty()
-    var showDropdown by remember { mutableStateOf(false) }
-    OutlinedCard(
-        onClick = { showDropdown = true }
+    SingleChoiceSegmentedButtonRow(
+        modifier = Modifier.fillMaxWidth()
     ) {
-        ListItem(
-            headlineContent = { Text(stringResource(Res.string.difficulty_title, difficulty.name)) },
-            trailingContent = {
-                if (showDropdown) {
-                    DropdownMenu(
-                        expanded = showDropdown,
-                        onDismissRequest = { showDropdown = false }
-                    ) {
-                        Difficulty.entries.forEach {
-                            var showDialogChange by remember { mutableStateOf(false) }
-                            if (showDialogChange) {
-                                NewGameDialog(
-                                    title = stringResource(Res.string.change_difficulty),
-                                    onConfirm = {
-                                        difficulty = it
-                                        showDropdown = false
-                                        onDrawerClose()
-                                    },
-                                    onDismiss = {
-                                        showDialogChange = false
-                                        showDropdown = false
-                                    }
-                                )
-                            }
-
-                            DropdownMenuItem(
-                                text = { Text(it.name) },
-                                onClick = { showDialogChange = true }
-                            )
-                        }
+        Difficulty.entries.forEachIndexed { index, difficultyItem ->
+            var showDialogChange by remember { mutableStateOf(false) }
+            if (showDialogChange) {
+                NewGameDialog(
+                    title = stringResource(Res.string.change_difficulty),
+                    onConfirm = {
+                        difficulty = difficultyItem
+                        onDrawerClose()
+                    },
+                    onDismiss = {
+                        showDialogChange = false
                     }
-                }
-                Icon(Icons.Default.ArrowDropDown, null)
+                )
             }
-        )
+            SegmentedButton(
+                selected = difficulty == difficultyItem,
+                onClick = { showDialogChange = true },
+                shape = SegmentedButtonDefaults.itemShape(index = index, count = 2),
+                label = { Text(difficultyItem.name) }
+            )
+        }
     }
 }
 
@@ -764,7 +776,8 @@ private fun LazyListScope.CardDesignChange() = item {
         modifier = Modifier.toggleable(
             value = useNewDesign,
             onValueChange = { useNewDesign = it }
-        )
+        ),
+        shape = MaterialTheme.shapes.extraLarge,
     ) {
         ListItem(
             headlineContent = { Text(stringResource(Res.string.use_new_card_design)) },
@@ -785,7 +798,8 @@ private fun LazyListScope.AmoledChange() = item {
         modifier = Modifier.toggleable(
             value = isAmoled,
             onValueChange = { isAmoled = it }
-        )
+        ),
+        shape = MaterialTheme.shapes.extraLarge,
     ) {
         ListItem(
             headlineContent = { Text(stringResource(Res.string.is_amoled)) },
@@ -1063,10 +1077,12 @@ private fun LazyListScope.CardBackChange(
 
 
     OutlinedCard(
-        onClick = { showCardBacks = true }
+        onClick = { showCardBacks = true },
+        shape = MaterialTheme.shapes.extraLarge,
     ) {
         ListItem(
-            headlineContent = { Text(stringResource(Res.string.card_back, cardBack.name)) },
+            headlineContent = { Text(stringResource(Res.string.card_back)) },
+            supportingContent = { Text(cardBack.name) }
         )
     }
 }

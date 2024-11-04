@@ -42,7 +42,7 @@
     <string name="custom">Custom</string>
     <string name="pick_an_image">Pick an Image</string>
     <string name="add">Add</string>
-    <string name="card_back">Card Back: %1$s</string>
+    <string name="card_back">Card Back</string>
     <string name="you_win">You win!</string>
     <string name="start_a_new_game_question">Start a new game?</string>
     <string name="play_again">Play again!</string>
