@@ -75,7 +75,7 @@ internal fun SettingsView(
         ) {
             item {
                 ListItem(
-                    supportingContent = { Text("Play Style") },
+                    supportingContent = { Text(stringResource(Res.string.play_style)) },
                     headlineContent = {},
                     leadingContent = { Icon(Icons.Default.SportsEsports, null) }
                 )
@@ -86,7 +86,7 @@ internal fun SettingsView(
 
             item {
                 ListItem(
-                    supportingContent = { Text("Theme & Card Design") },
+                    supportingContent = { Text(stringResource(Res.string.theme_card_design)) },
                     headlineContent = {},
                     leadingContent = { Icon(Icons.Default.StarOutline, null) }
                 )
@@ -97,7 +97,7 @@ internal fun SettingsView(
 
             item {
                 ListItem(
-                    supportingContent = { Text("Advanced") },
+                    supportingContent = { Text(stringResource(Res.string.advanced)) },
                     headlineContent = {},
                     leadingContent = { Icon(Icons.Default.Settings, null) }
                 )
@@ -108,7 +108,7 @@ internal fun SettingsView(
 
             item {
                 ListItem(
-                    supportingContent = { Text("Info") },
+                    supportingContent = { Text(stringResource(Res.string.info)) },
                     headlineContent = {},
                     leadingContent = { Icon(Icons.Default.Info, null) }
                 )
@@ -216,6 +216,7 @@ private fun LazyListScope.NewGame(onNewGamePress: () -> Unit) = item {
         modifier = Modifier.fillMaxWidth()
     ) {
         Icon(Icons.Default.Add, null)
+        Spacer(Modifier.width(4.dp))
         Text(stringResource(Res.string.new_game))
     }
 }
@@ -517,6 +518,25 @@ private fun LazyListScope.ThemeChange(
         ListItem(
             headlineContent = { Text(stringResource(Res.string.theme)) },
             supportingContent = { Text(themeColor.name) },
+            /*leadingContent = {
+                SelectableMiniPalette(
+                    modifier = Modifier.scale(0.5f),
+                    selected = false,
+                    colorScheme = when(themeColor) {
+                        ThemeColor.Dynamic -> MaterialTheme.colorScheme
+                        ThemeColor.Custom -> rememberDynamicColorScheme(
+                            seedColor = customColor,
+                            isAmoled = isAmoled,
+                            isDark = isSystemInDarkTheme()
+                        )
+                        else -> rememberDynamicColorScheme(
+                            seedColor = themeColor.seedColor,
+                            isAmoled = isAmoled,
+                            isDark = isSystemInDarkTheme()
+                        )
+                    }
+                )
+            }*/
         )
     }
 }
@@ -716,7 +736,7 @@ private fun LazyListScope.DrawAmountChange(
     SingleChoiceSegmentedButtonRow(
         modifier = Modifier.fillMaxWidth()
     ) {
-        listOf(1, 3).forEachIndexed { index, drawAmountItem ->
+        DRAW_AMOUNTS.forEachIndexed { index, drawAmountItem ->
             var showDialogChange by remember { mutableStateOf(false) }
             if (showDialogChange) {
                 NewGameDialog(
@@ -731,8 +751,8 @@ private fun LazyListScope.DrawAmountChange(
             SegmentedButton(
                 selected = drawAmount == drawAmountItem,
                 onClick = { showDialogChange = true },
-                shape = SegmentedButtonDefaults.itemShape(index = index, count = 2),
-                label = { Text("$drawAmountItem Card Draw") }
+                shape = SegmentedButtonDefaults.itemShape(index = index, count = DRAW_AMOUNTS.size),
+                label = { Text(stringResource(Res.string.card_draw, drawAmountItem)) }
             )
         }
     }

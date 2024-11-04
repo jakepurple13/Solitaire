@@ -46,7 +46,7 @@ import org.jetbrains.compose.resources.stringResource
 
 data class CardLocation(val location: Int, val card: Card, val place: Int)
 
-const val DRAW_AMOUNT = 3 //default 3
+val DRAW_AMOUNTS = listOf(1, 3) //default 1, 3
 const val WIN_CARD_VALUE = 13 //default 13
 const val FIELD_HEIGHT = 100
 
