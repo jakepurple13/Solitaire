@@ -1,13 +1,13 @@
 [versions]
 adaptiveVersion = "1.0.0-rc01"
 filekitComposeVersion = "0.8.7"
-hypnoticcanvas = "0.1.2"
+hypnoticcanvas = "0.2.0"
 kotlinx-serialization-json-version = "1.7.3"
 material3WindowSizeClassVersion = "1.7.0"
 navigation-compose-version = "2.7.0-alpha07"
 lifecycle-viewmodel-compose-version = "2.8.2"
 kotlin-version = "2.0.21"
-agp-version = "8.2.2"
+agp-version = "8.6.1"
 compose-version = "1.7.0-rc01"
 kotlinx-datetime = "0.6.1"
 precompose = "1.6.0"
@@ -32,7 +32,7 @@ room = { id = "androidx.room", version.ref = "androidx-room" }
 [libraries]
 adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "adaptiveVersion" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version = "1.7.0" }
-androidx-core = { module = "androidx.core:core-ktx", version = "1.13.1" }
+androidx-core = { module = "androidx.core:core-ktx", version = "1.15.0" }
 androidx-activity-compose = "androidx.activity:activity-compose:1.9.3"
 filekit-compose = { module = "io.github.vinceglb:filekit-compose", version.ref = "filekitComposeVersion" }
 hypnoticcanvas = { module = "com.mikepenz.hypnoticcanvas:hypnoticcanvas", version.ref = "hypnoticcanvas" }

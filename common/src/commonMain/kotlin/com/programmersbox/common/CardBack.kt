@@ -137,6 +137,22 @@ enum class CardBack(
         override fun toModifier(): Modifier = Modifier.shaderBackground(GlossyGradients)
     },
 
+    MeshGradient({ null }) {
+        @Composable
+        override fun toModifier(): Modifier = Modifier.shaderBackground(
+            MeshGradient(
+                arrayOf(
+                    MaterialTheme.colorScheme.primary,
+                    *ThemeColor
+                        .entries
+                        .filter { it.seedColor != Color.Transparent }
+                        .map { it.seedColor }
+                        .toTypedArray()
+                )
+            )
+        )
+    },
+
     GradientColors({ null }) {
         @Composable
         override fun toModifier(): Modifier = Modifier.shaderBackground(
