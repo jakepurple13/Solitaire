@@ -103,7 +103,6 @@ internal fun SettingsView(
             }
 
             CardDesignChange()
-            AmoledChange()
 
             item {
                 ListItem(
@@ -136,8 +135,6 @@ internal fun SettingsView(
     }
 }
 
-private fun LazyListScope.divider() = item {}
-
 @OptIn(ExperimentalMaterial3Api::class)
 private fun LazyListScope.Instructions() = item {
     var showInstructions by remember { mutableStateOf(false) }
@@ -148,6 +145,7 @@ private fun LazyListScope.Instructions() = item {
         ModalBottomSheet(
             onDismissRequest = { showInstructions = false },
             sheetState = sheetState,
+            containerColor = MaterialTheme.colorScheme.background
         ) {
             CenterAlignedTopAppBar(
                 title = { Text(stringResource(Res.string.how_to_play)) },
@@ -447,7 +445,7 @@ private fun LazyListScope.ThemeChange(
 ) = item {
     var showThemes by remember { mutableStateOf(false) }
     var themeColor by rememberThemeColor()
-    val isAmoled by rememberIsAmoled()
+    var isAmoled by rememberIsAmoled()
 
     var customColor by rememberCustomColor()
 
@@ -464,48 +462,72 @@ private fun LazyListScope.ThemeChange(
 
     if (showThemes) {
         ModalBottomSheet(
-            onDismissRequest = { showThemes = false }
+            onDismissRequest = { showThemes = false },
+            containerColor = MaterialTheme.colorScheme.background
         ) {
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(horizontal = 16.dp)
                     .padding(bottom = 8.dp)
             ) {
-                ThemeColor
-                    .entries
-                    .filter { it != ThemeColor.Custom }
-                    .forEach {
-                        ThemeItem(
-                            onClick = { themeColor = it },
-                            selected = themeColor == it,
-                            themeColor = it,
-                            colorScheme = if (it == ThemeColor.Dynamic)
-                                MaterialTheme.colorScheme
-                            else
-                                rememberDynamicColorScheme(
-                                    it.seedColor,
-                                    isAmoled = isAmoled,
-                                    isDark = isSystemInDarkTheme()
-                                )
+                Card(
+                    onClick = { isAmoled = !isAmoled },
+                    shape = MaterialTheme.shapes.extraLarge,
+                ) {
+                    ListItem(
+                        headlineContent = { Text(stringResource(Res.string.is_amoled)) },
+                        trailingContent = {
+                            Switch(
+                                checked = isAmoled,
+                                onCheckedChange = { isAmoled = it }
+                            )
+                        },
+                        colors = ListItemDefaults.colors(
+                            containerColor = Color.Transparent,
                         )
-                    }
-
-                ThemeItem(
-                    onClick = {
-                        themeColor = ThemeColor.Custom
-                        showColorPicker = true
-                    },
-                    selected = themeColor == ThemeColor.Custom,
-                    themeColor = ThemeColor.Custom,
-                    colorScheme = rememberDynamicColorScheme(
-                        customColor,
-                        isAmoled = isAmoled,
-                        isDark = isSystemInDarkTheme()
                     )
-                )
+                }
+
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    ThemeColor
+                        .entries
+                        .filter { it != ThemeColor.Custom }
+                        .forEach {
+                            ThemeItem(
+                                onClick = { themeColor = it },
+                                selected = themeColor == it,
+                                themeColor = it,
+                                colorScheme = if (it == ThemeColor.Dynamic)
+                                    MaterialTheme.colorScheme
+                                else
+                                    rememberDynamicColorScheme(
+                                        seedColor = it.seedColor,
+                                        isAmoled = isAmoled,
+                                        isDark = isSystemInDarkTheme()
+                                    )
+                            )
+                        }
+
+                    ThemeItem(
+                        onClick = {
+                            themeColor = ThemeColor.Custom
+                            showColorPicker = true
+                        },
+                        selected = themeColor == ThemeColor.Custom,
+                        themeColor = ThemeColor.Custom,
+                        colorScheme = rememberDynamicColorScheme(
+                            seedColor = customColor,
+                            isAmoled = isAmoled,
+                            isDark = isSystemInDarkTheme()
+                        )
+                    )
+                }
             }
         }
     }
@@ -801,25 +823,6 @@ private fun LazyListScope.CardDesignChange() = item {
                 Switch(
                     checked = useNewDesign,
                     onCheckedChange = { useNewDesign = it }
-                )
-            }
-        )
-    }
-}
-
-private fun LazyListScope.AmoledChange() = item {
-    var isAmoled by rememberIsAmoled()
-
-    OutlinedCard(
-        onClick = { isAmoled = !isAmoled },
-        shape = MaterialTheme.shapes.extraLarge,
-    ) {
-        ListItem(
-            headlineContent = { Text(stringResource(Res.string.is_amoled)) },
-            trailingContent = {
-                Switch(
-                    checked = isAmoled,
-                    onCheckedChange = { isAmoled = it }
                 )
             }
         )
