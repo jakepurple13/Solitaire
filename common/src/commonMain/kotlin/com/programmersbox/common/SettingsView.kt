@@ -845,7 +845,7 @@ private fun LazyListScope.CardBorderChange() = item {
         shape = MaterialTheme.shapes.extraLarge,
     ) {
         ListItem(
-            headlineContent = { Text("Use Background Color for Border") },
+            headlineContent = { Text(stringResource(Res.string.background_for_border)) },
             trailingContent = {
                 Switch(
                     checked = backgroundForBorder,

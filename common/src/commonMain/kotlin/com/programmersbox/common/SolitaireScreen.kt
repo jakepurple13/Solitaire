@@ -259,8 +259,8 @@ internal fun SolitaireScreen(
                                     .fillMaxWidth()
                                     .padding(16.dp)
                             ) {
-                                Text(info.moveCount.toString() + " moves")
-                                Text(animateIntAsState(info.score).value.toString() + " pts")
+                                Text(stringResource(Res.string.moves, info.moveCount))
+                                Text(stringResource(Res.string.points, animateIntAsState(info.score).value))
                                 Text(info.timeText)
                             }
                         }
@@ -297,8 +297,8 @@ internal fun SolitaireScreen(
                             modifier = Modifier.animatePlacementInScope(this@LookaheadScope)
                         ) {
                             ToolTipWrapper(
-                                title = { Text("Game Location") },
-                                text = { Text("Choose where the game will be! On larger screens, it might be a little hard to play.") }
+                                title = { Text(stringResource(Res.string.game_location)) },
+                                text = { Text(stringResource(Res.string.game_location_description)) }
                             ) {
                                 SingleChoiceSegmentedButtonRow {
                                     GameLocation.entries.forEachIndexed { index, game ->
@@ -616,8 +616,8 @@ private fun Draws(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {*/
         ToolTipWrapper(
-            title = { Text("Draw") },
-            text = { Text("Draw Cards") }
+            title = { Text(stringResource(Res.string.draw_title)) },
+            text = { Text(stringResource(Res.string.draw_description)) }
         ) {
             cardBack.CustomCardBackground(
                 border = borderStroke(MaterialTheme.colorScheme.primary),
