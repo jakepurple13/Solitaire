@@ -5,7 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.contentColorFor
@@ -927,18 +927,18 @@ vec4 main( vec2 fragCoord ) {
         contentColor: Color = contentColorFor(color),
         shadowElevation: Dp = 0.dp,
         border: BorderStroke? = null,
-        content: @Composable () -> Unit = {},
+        content: @Composable BoxScope.() -> Unit = {},
     ) {
-        val contentComposable = when (this) {
+        val contentComposable: @Composable BoxScope.() -> Unit = when (this) {
             Custom -> {
                 val item by rememberCardBackHolder(database = database)
-                val con: @Composable () -> Unit = {
+                val con: @Composable BoxScope.() -> Unit = {
                     item?.let {
                         Image(
                             bitmap = it.image,
                             contentDescription = null,
                             contentScale = ContentScale.Fit,
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier.matchParentSize()
                         )
                     }
                     content()
@@ -947,10 +947,10 @@ vec4 main( vec2 fragCoord ) {
             }
 
             Image, DefaultBack -> {
-                val con: @Composable () -> Unit = {
+                val con: @Composable BoxScope.() -> Unit = {
                     Image(
                         bitmap = imageResource(
-                            when (this) {
+                            when (this@CardBack) {
                                 Image -> Res.drawable.card_back
                                 DefaultBack -> Res.drawable.card_back_tile
                                 else -> Res.drawable.card_background
@@ -958,7 +958,7 @@ vec4 main( vec2 fragCoord ) {
                         ),
                         contentDescription = null,
                         contentScale = ContentScale.Fit,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.matchParentSize()
                     )
                     content()
                 }
@@ -1003,7 +1003,7 @@ vec4 main( vec2 fragCoord ) {
         contentColor: Color = contentColorFor(color),
         shadowElevation: Dp = 0.dp,
         border: BorderStroke? = null,
-        content: @Composable () -> Unit = {},
+        content: @Composable BoxScope.() -> Unit = {},
     ) = Surface(
         shape = shape,
         tonalElevation = tonalElevation,
@@ -1029,7 +1029,7 @@ vec4 main( vec2 fragCoord ) {
         shadowElevation: Dp = 0.dp,
         border: BorderStroke? = null,
         interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-        content: @Composable () -> Unit = {},
+        content: @Composable BoxScope.() -> Unit = {},
         onClick: () -> Unit = {},
     ) = Surface(
         onClick = onClick,

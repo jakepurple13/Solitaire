@@ -152,6 +152,15 @@ fun rememberUseNewDesign(
 )
 
 @Composable
+fun rememberBackgroundForBorder(
+    toState: @Composable Flow<Boolean>.(Boolean) -> State<Boolean>,
+) = rememberPreference(
+    key = booleanPreferencesKey("background_for_border"),
+    defaultValue = true,
+    toState = toState
+)
+
+@Composable
 inline fun <reified T : Enum<T>> rememberCardBack(
     defaultValue: T,
     noinline mapToKey: (T) -> Int = { it.ordinal },
@@ -171,6 +180,20 @@ fun rememberCustomBackChoice(
 ) = rememberPreference(
     key = stringPreferencesKey("custom_card_back"),
     defaultValue = "",
+    toState = toState
+)
+
+@Composable
+inline fun <reified T : Enum<T>> rememberGameLocation(
+    defaultValue: T,
+    noinline mapToKey: (T) -> Int = { it.ordinal },
+    noinline mapToType: (Int) -> T = { enumValues<T>()[it] },
+    noinline toState: @Composable Flow<T>.(T) -> State<T>,
+) = rememberPreference(
+    key = intPreferencesKey("game_location"),
+    mapToKey = mapToKey,
+    mapToType = mapToType,
+    defaultValue = defaultValue,
     toState = toState
 )
 
@@ -261,3 +284,20 @@ fun <T, R> rememberPreference(
         }
     }
 }
+
+/*
+@Composable
+inline fun <reified T : Enum<T>> rememberEnum(
+    defaultValue: T,
+    key: Preferences.Key<T>,
+    noinline mapToKey: (T) -> String = { it.name },
+    noinline mapToType: (String) -> T = { enumValueOf<T>(it) },
+    noinline toState: @Composable Flow<T>.(T) -> State<T>,
+) = rememberPreference(
+    key = key,
+    mapToKey = mapToKey,
+    mapToType = mapToType,
+    defaultValue = defaultValue,
+    toState = toState
+)
+*/

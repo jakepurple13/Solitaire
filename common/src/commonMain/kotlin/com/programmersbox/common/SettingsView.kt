@@ -76,7 +76,8 @@ internal fun SettingsView(
                 ListItem(
                     supportingContent = { Text(stringResource(Res.string.play_style)) },
                     headlineContent = {},
-                    leadingContent = { Icon(Icons.Default.SportsEsports, null) }
+                    leadingContent = { Icon(Icons.Default.SportsEsports, null) },
+                    colors = ListItemDefaults.colors(containerColor = Color.Transparent)
                 )
             }
 
@@ -87,7 +88,8 @@ internal fun SettingsView(
                 ListItem(
                     supportingContent = { Text(stringResource(Res.string.theme_card_design)) },
                     headlineContent = {},
-                    leadingContent = { Icon(Icons.Default.StarOutline, null) }
+                    leadingContent = { Icon(Icons.Default.StarOutline, null) },
+                    colors = ListItemDefaults.colors(containerColor = Color.Transparent)
                 )
             }
 
@@ -98,17 +100,20 @@ internal fun SettingsView(
                 ListItem(
                     supportingContent = { Text(stringResource(Res.string.advanced)) },
                     headlineContent = {},
-                    leadingContent = { Icon(Icons.Default.Settings, null) }
+                    leadingContent = { Icon(Icons.Default.Settings, null) },
+                    colors = ListItemDefaults.colors(containerColor = Color.Transparent)
                 )
             }
 
             CardDesignChange()
+            CardBorderChange()
 
             item {
                 ListItem(
                     supportingContent = { Text(stringResource(Res.string.info)) },
                     headlineContent = {},
-                    leadingContent = { Icon(Icons.Default.Info, null) }
+                    leadingContent = { Icon(Icons.Default.Info, null) },
+                    colors = ListItemDefaults.colors(containerColor = Color.Transparent)
                 )
             }
 
@@ -823,6 +828,25 @@ private fun LazyListScope.CardDesignChange() = item {
                 Switch(
                     checked = useNewDesign,
                     onCheckedChange = { useNewDesign = it }
+                )
+            }
+        )
+    }
+}
+
+private fun LazyListScope.CardBorderChange() = item {
+    var backgroundForBorder by rememberBackgroundForBorder()
+
+    OutlinedCard(
+        onClick = { backgroundForBorder = !backgroundForBorder },
+        shape = MaterialTheme.shapes.extraLarge,
+    ) {
+        ListItem(
+            headlineContent = { Text(stringResource(Res.string.background_for_border)) },
+            trailingContent = {
+                Switch(
+                    checked = backgroundForBorder,
+                    onCheckedChange = { backgroundForBorder = it }
                 )
             }
         )

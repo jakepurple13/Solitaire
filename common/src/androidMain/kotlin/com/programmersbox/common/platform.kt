@@ -270,3 +270,12 @@ actual fun BackHandlerForDrawer(drawerState: DrawerState) {
         scope.launch { drawerState.close() }
     }
 }
+
+@Composable
+actual fun rememberBackgroundForBorder(): MutableState<Boolean> =
+    rememberBackgroundForBorder { collectAsStateWithLifecycle(it) }
+
+@Composable
+actual fun rememberGameLocation(): MutableState<GameLocation> = rememberGameLocation(
+    defaultValue = GameLocation.Center,
+) { collectAsStateWithLifecycle(it) }
