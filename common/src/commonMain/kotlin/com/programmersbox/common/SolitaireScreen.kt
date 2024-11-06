@@ -312,29 +312,32 @@ internal fun SolitaireScreen(
             ) {
                 LookaheadScope {
                     Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(4.dp),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 4.dp)
                             .padding(padding)
                     ) {
-                        val paddingType = when (windowSizeClass.windowWidthSizeClass) {
-                            WindowWidthSizeClass.MEDIUM, WindowWidthSizeClass.EXPANDED -> {
-                                val insets = WindowInsets.safeGestures.asPaddingValues()
-                                Modifier.padding(
-                                    start = insets.calculateStartPadding(LocalLayoutDirection.current),
-                                    end = insets.calculateEndPadding(LocalLayoutDirection.current)
-                                )
-                            }
+                        val isBig = windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.MEDIUM
+                                || windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED
 
-                            else -> {
-                                Modifier
-                            }
+                        val paddingType = if (isBig) {
+                            val insets = WindowInsets.safeGestures.asPaddingValues()
+                            Modifier.padding(
+                                start = insets.calculateStartPadding(LocalLayoutDirection.current),
+                                end = insets.calculateEndPadding(LocalLayoutDirection.current)
+                            )
+                        } else {
+                            Modifier
                         }
 
                         Row(
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            modifier = paddingType
+                            horizontalArrangement = if (isBig)
+                                Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
+                            else
+                                Arrangement.SpaceBetween,
+                            modifier = paddingType.fillMaxWidth()
                         ) {
                             //---------foundation---------
                             Foundations(
@@ -343,7 +346,7 @@ internal fun SolitaireScreen(
                                 cardBack = cardBack,
                                 database = database,
                                 modifier = Modifier
-                                    .weight(1f)
+                                    //.weight(1f, false)
                                     .animatePlacementInScope(this@LookaheadScope)
                             )
                             //---------draws---------
@@ -354,7 +357,7 @@ internal fun SolitaireScreen(
                                 cardBack = cardBack,
                                 database = database,
                                 modifier = Modifier
-                                    .weight(1f)
+                                    //.weight(1f)
                                     .animatePlacementInScope(this@LookaheadScope)
                             )
                         }
@@ -364,7 +367,9 @@ internal fun SolitaireScreen(
                             info = info,
                             cardBack = cardBack,
                             database = database,
-                            modifier = paddingType
+                            isBig = isBig,
+                            lookaheadScope = this@LookaheadScope,
+                            modifier = paddingType.animatePlacementInScope(this@LookaheadScope),
                         )
                     }
                 }
@@ -632,12 +637,20 @@ private fun Field(
     info: SolitaireViewModel,
     cardBack: CardBack,
     database: SolitaireDatabase,
+    isBig: Boolean,
+    lookaheadScope: LookaheadScope,
     modifier: Modifier = Modifier,
 ) {
     val useNewDesign by rememberUseNewDesign()
 
     Row(
-        horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.Start),
+        horizontalArrangement = Arrangement.spacedBy(
+            space = 2.dp,
+            alignment = if (isBig)
+                Alignment.CenterHorizontally
+            else
+                Alignment.Start
+        ),
         modifier = modifier
             .fillMaxWidth()
             .padding(top = 4.dp)
@@ -645,7 +658,9 @@ private fun Field(
         info.fieldSlots.forEach { fieldSlot ->
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.weight(1f, false)
+                modifier = Modifier
+                    .weight(1f, false)
+                    .animatePlacementInScope(lookaheadScope)
             ) {
                 DropTarget<CardLocation>(
                     onDrop = {
