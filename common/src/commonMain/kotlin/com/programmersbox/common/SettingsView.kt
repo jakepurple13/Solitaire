@@ -103,6 +103,7 @@ internal fun SettingsView(
             }
 
             CardDesignChange()
+            CardBorderChange()
 
             item {
                 ListItem(
@@ -823,6 +824,25 @@ private fun LazyListScope.CardDesignChange() = item {
                 Switch(
                     checked = useNewDesign,
                     onCheckedChange = { useNewDesign = it }
+                )
+            }
+        )
+    }
+}
+
+private fun LazyListScope.CardBorderChange() = item {
+    var backgroundForBorder by rememberBackgroundForBorder()
+
+    OutlinedCard(
+        onClick = { backgroundForBorder = !backgroundForBorder },
+        shape = MaterialTheme.shapes.extraLarge,
+    ) {
+        ListItem(
+            headlineContent = { Text("Use Background Color for Border") },
+            trailingContent = {
+                Switch(
+                    checked = backgroundForBorder,
+                    onCheckedChange = { backgroundForBorder = it }
                 )
             }
         )

@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.programmersbox.common.generated.resources.Res
 import com.programmersbox.common.generated.resources.font_awesome_stuff
 import org.jetbrains.compose.resources.Font
@@ -72,7 +73,7 @@ fun PlayingCard(
     modifier: Modifier = Modifier,
     tonalElevation: Dp = 4.dp,
     shape: Shape = PlayingCardDefaults.shape,
-    color: Color = MaterialTheme.colorScheme.surface,
+    color: Color = MaterialTheme.colorScheme.primaryContainer,
     contentColor: Color = contentColorFor(color),
     shadowElevation: Dp = 0.dp,
     border: BorderStroke? = null,
@@ -101,66 +102,24 @@ private fun CardDetail(
         CardColor.Red -> colors.red
     }
     val cardShow = LocalCardShowing.current
-    if (showFullDetail) {
-        Column(
-            verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.padding(4.dp)
-        ) {
-            Text(
-                text = card.let(cardShow.full),
-                color = textColor,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Start
-            )
-            FlowRow(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                repeat(card.value) {
-                    Text(
-                        text = card.suit.let(cardShow.suit), textAlign = TextAlign.Center,
-                        color = textColor,
-                    )
-                }
-            }
-            Text(
-                text = card.let(cardShow.full),
-                color = textColor,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.End
-            )
-        }
-    } else {
-        Box(
-            modifier = Modifier.padding(4.dp)
-        ) {
-            Text(
-                text = card.let(cardShow.full),
-                color = textColor,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.TopStart),
-                textAlign = TextAlign.Start
-            )
+    Column(
+        verticalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier.padding(4.dp)
+    ) {
+        Text(
+            text = card.let(cardShow.full),
+            color = textColor,
+            textAlign = TextAlign.Start,
+            modifier = Modifier.align(Alignment.Start),
+        )
 
-            Text(
-                text = card.suit.let(cardShow.suit),
-                color = textColor,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Center),
-                textAlign = TextAlign.Center
-            )
-
-            Text(
-                text = card.let(cardShow.full),
-                color = textColor,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomEnd),
-                textAlign = TextAlign.End
-            )
-        }
+        Text(
+            text = card.suit.let(cardShow.suit),
+            color = textColor,
+            fontSize = 24.sp,
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            textAlign = TextAlign.Center
+        )
     }
 }
 
@@ -176,115 +135,39 @@ private fun CardDetailNew(
         CardColor.Black -> if (isSystemInDarkTheme()) Color.White else Color.Black
         CardColor.Red -> Color.Red
     }
-    if (showFullDetail && card.value <= 10) {
-        Column(
-            verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.padding(4.dp)
+
+    Column(
+        verticalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier.padding(4.dp)
+    ) {
+        Row(
+            modifier = Modifier.align(Alignment.Start)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    text = card.symbol + " ",
-                    color = textColor,
-                    textAlign = TextAlign.Start
-                )
-                Text(
-                    text = card.suit.unicodeSymbol,
-                    color = textColor,
-                    fontFamily = ff,
-                    textAlign = TextAlign.Start
-                )
-            }
-
-            FlowRow(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                repeat(card.value) {
-                    Text(
-                        text = card.suit.let(cardShow.suit),
-                        textAlign = TextAlign.Center,
-                        fontFamily = ff,
-                        color = textColor,
-                    )
-                }
-            }
-
-            Row(
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    text = card.symbol + " ",
-                    color = textColor,
-                    textAlign = TextAlign.Start
-                )
-                Text(
-                    text = card.suit.unicodeSymbol,
-                    color = textColor,
-                    fontFamily = ff,
-                    textAlign = TextAlign.Start
-                )
-            }
+            Text(
+                text = card.symbol + " ",
+                color = textColor,
+                textAlign = TextAlign.Start
+            )
+            Text(
+                text = card.suit.unicodeSymbol,
+                color = textColor,
+                fontFamily = ff,
+                textAlign = TextAlign.Start
+            )
         }
-    } else {
-        Box(
-            modifier = Modifier.padding(4.dp)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.TopStart),
-            ) {
-                Text(
-                    text = card.symbol + " ",
-                    color = textColor,
-                    textAlign = TextAlign.Start
-                )
-                Text(
-                    text = card.suit.unicodeSymbol,
-                    color = textColor,
-                    fontFamily = ff,
-                    textAlign = TextAlign.Start
-                )
-            }
-
-            if (showFullDetail)
-                Text(
-                    text = when (card.value) {
-                        13 -> "♚"
-                        12 -> "♛"
-                        11 -> "⚔"
-                        else -> card.suit.let(cardShow.suit)
-                    },
-                    color = textColor,
-                    fontFamily = ff,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.Center),
-                    textAlign = TextAlign.Center
-                )
-
-            Row(
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomEnd),
-            ) {
-                Text(
-                    text = card.symbol + " ",
-                    color = textColor,
-                    textAlign = TextAlign.End
-                )
-                Text(
-                    text = card.suit.unicodeSymbol,
-                    color = textColor,
-                    fontFamily = ff,
-                    textAlign = TextAlign.End
-                )
-            }
-        }
+        Text(
+            text = when (card.value) {
+                13 -> "♚"
+                12 -> "♛"
+                11 -> "⚔"
+                else -> card.suit.let(cardShow.suit)
+            },
+            color = textColor,
+            fontFamily = ff,
+            fontSize = 24.sp,
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            textAlign = TextAlign.Center
+        )
     }
 }
 

@@ -109,39 +109,79 @@ class SolitaireViewModel(
             .launchIn(viewModelScope)
 
         viewModelScope.launch {
-            settings
-                ?.getGameSave()
-                ?.firstOrNull()
-                ?.let { state ->
-                    if (
-                        state.foundations.isEmpty()
-                        && state.table.isEmpty()
-                        && state.flippedCards.isEmpty()
-                        && state.remainingDeck == Deck.defaultDeck()
-                    ) {
-                        null
-                    } else {
-                        deck.removeAllCards()
-                        deck.addDeck(state.remainingDeck)
-                        state.foundations.forEach { entry ->
-                            foundations[entry.key]?.clear()
-                            foundations[entry.key] = entry.value.toMutableStateList()
-                        }
-                        state.table.forEach { entry ->
-                            fieldSlots[entry.key]?.clear()
-                            fieldSlots[entry.key] = entry.value
-                        }
-                        drawList.clear()
-                        drawList.addAll(state.flippedCards)
-                        score = state.score
-                        moveCount = state.moveCount
-                        time = state.time
+            getSavedGame()?.let { state ->
+                if (
+                    state.foundations.isEmpty()
+                    && state.table.isEmpty()
+                    && state.flippedCards.isEmpty()
+                    && state.remainingDeck == Deck.defaultDeck()
+                ) {
+                    null
+                } else {
+                    deck.removeAllCards()
+                    deck.addDeck(state.remainingDeck)
+                    state.foundations.forEach { entry ->
+                        foundations[entry.key]?.clear()
+                        foundations[entry.key] = entry.value.toMutableStateList()
                     }
-                } ?: newGame(initialDifficulty())
+                    state.table.forEach { entry ->
+                        fieldSlots[entry.key]?.clear()
+                        fieldSlots[entry.key] = entry.value
+                    }
+                    drawList.clear()
+                    drawList.addAll(state.flippedCards)
+                    score = state.score
+                    moveCount = state.moveCount
+                    time = state.time
+                }
+            } ?: newGame(initialDifficulty())
         }
     }
 
-    suspend fun saveGame() {
+    private suspend fun getSavedGame(): SolitaireUiState? {
+        @Suppress("ConstantConditionIf")
+        return if (true) {
+            settings
+                ?.getGameSave()
+                ?.firstOrNull()
+        } else {
+            //This is for testing! It gives the fields 6 face-down cards and K - 2.
+            val fieldSet: FieldSlot.() -> Unit = {
+                faceDownList.addAll(List(7) { Card.RandomCard })
+                list.addAll(List(12) { Card(13 - it, Suit.Spades) })
+            }
+            SolitaireUiState(
+                remainingDeck = Deck.defaultDeck(),
+                flippedCards = listOf(
+                    Card.RandomCard,
+                    Card.RandomCard,
+                    Card.RandomCard,
+                    Card.RandomCard,
+                    Card.RandomCard,
+                ),
+                foundations = mapOf(
+                    1 to listOf(Card.RandomCard, Card.RandomCard, Card.RandomCard, Card.RandomCard, Card.RandomCard),
+                    2 to listOf(Card.RandomCard, Card.RandomCard, Card.RandomCard, Card.RandomCard, Card.RandomCard),
+                    3 to listOf(Card.RandomCard, Card.RandomCard, Card.RandomCard, Card.RandomCard, Card.RandomCard),
+                    4 to listOf(Card.RandomCard, Card.RandomCard, Card.RandomCard, Card.RandomCard, Card.RandomCard),
+                ),
+                table = mapOf(
+                    0 to FieldSlot().apply(fieldSet),
+                    1 to FieldSlot().apply(fieldSet),
+                    2 to FieldSlot().apply(fieldSet),
+                    3 to FieldSlot().apply(fieldSet),
+                    4 to FieldSlot().apply(fieldSet),
+                    5 to FieldSlot().apply(fieldSet),
+                    6 to FieldSlot().apply(fieldSet),
+                ),
+                score = 79,
+                moveCount = 21,
+                time = 3650909
+            )
+        }
+    }
+
+    private suspend fun saveGame() {
         settings?.setGameSave(
             SolitaireUiState(
                 remainingDeck = deck,

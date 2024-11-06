@@ -270,3 +270,7 @@ actual fun BackHandlerForDrawer(drawerState: DrawerState) {
         scope.launch { drawerState.close() }
     }
 }
+
+@Composable
+actual fun rememberBackgroundForBorder(): MutableState<Boolean> =
+    rememberBackgroundForBorder { collectAsStateWithLifecycle(it) }

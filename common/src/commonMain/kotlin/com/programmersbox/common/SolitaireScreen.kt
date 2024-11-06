@@ -1,20 +1,18 @@
 package com.programmersbox.common
 
-import androidx.compose.animation.*
-import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Undo
-import androidx.compose.material.icons.filled.AutoMode
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Gamepad
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
@@ -22,9 +20,9 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LookaheadScope
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -50,9 +48,18 @@ val DRAW_AMOUNTS = listOf(1, 3) //default 1, 3
 const val WIN_CARD_VALUE = 13 //default 13
 const val FIELD_HEIGHT = 100
 
+private val CARD_HEIGHT = 75.dp
+private val CARD_WIDTH = 55.dp
+
 private val cardSizeModifier = Modifier.height(125.dp)
 
-@OptIn(ExperimentalMaterial3Api::class)
+private val cardSize = Modifier
+    //.height(CARD_HEIGHT)
+    .sizeIn(CARD_WIDTH, CARD_HEIGHT)
+//.fillMaxWidth(.5f)
+//.requiredSizeIn(CARD_WIDTH, CARD_HEIGHT)
+//.defaultMinSize(CARD_WIDTH, CARD_HEIGHT)
+
 @Composable
 internal fun SolitaireScreen(
     database: SolitaireDatabase,
@@ -176,9 +183,9 @@ internal fun SolitaireScreen(
             .launchIn(this)
     }
 
-    val window = currentWindowAdaptiveInfo().windowSizeClass
-
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -187,6 +194,7 @@ internal fun SolitaireScreen(
             ModalDrawerSheet(
                 drawerContainerColor = MaterialTheme.colorScheme.background,
             ) {
+                //For testing!
                 //info.WinButton()
 
                 SettingsView(
@@ -201,95 +209,99 @@ internal fun SolitaireScreen(
     ) {
         Scaffold(
             topBar = {
-                CenterAlignedTopAppBar(
-                    navigationIcon = {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            vertical = 8.dp,
+                            horizontal = 8.dp
+                        )
+                        .windowInsetsPadding(WindowInsets.statusBars)
+                ) {
+                    ToolTipWrapper(
+                        title = { Text(stringResource(Res.string.settings)) },
+                        text = { Text(stringResource(Res.string.open_settings_drawer)) }
+                    ) {
+                        IconButton(
+                            onClick = { scope.launch { drawerState.open() } },
+                        ) { Icon(Icons.Default.Settings, null) }
+                    }
+
+                    ToolTipWrapper(
+                        title = { Text(stringResource(Res.string.new_game)) },
+                        text = { Text(stringResource(Res.string.start_a_new_game)) }
+                    ) {
+                        IconButton(
+                            onClick = { newGameDialog = true },
+                        ) { Icon(Icons.Default.Gamepad, null) }
+                    }
+
+                    Card(
+                        shape = MaterialTheme.shapes.extraLarge
+                    ) {
                         Row(
-                            verticalAlignment = Alignment.CenterVertically
+                            horizontalArrangement = Arrangement.SpaceAround,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
                         ) {
-                            ToolTipWrapper(
-                                title = { Text(stringResource(Res.string.settings)) },
-                                text = { Text(stringResource(Res.string.open_settings_drawer)) }
-                            ) {
-                                IconButton(
-                                    onClick = { scope.launch { drawerState.open() } }
-                                ) { Icon(Icons.Default.Settings, null) }
-                            }
-
-                            ToolTipWrapper(
-                                title = { Text(stringResource(Res.string.new_game)) },
-                                text = { Text(stringResource(Res.string.start_a_new_game)) }
-                            ) {
-                                IconButton(
-                                    onClick = { newGameDialog = true }
-                                ) { Icon(Icons.Default.Gamepad, null) }
-                            }
-
-                            ToolTipWrapper(
-                                title = { Text(stringResource(Res.string.undo)) },
-                                text = { Text(stringResource(Res.string.undo_description)) }
-                            ) {
-                                IconButton(
-                                    onClick = { info.undo() },
-                                    enabled = info.lastFewMoves.isNotEmpty()
-                                ) { Icon(Icons.AutoMirrored.Filled.Undo, null) }
-                            }
-                        }
-                    },
-                    title = { Text(info.timeText) },
-                    actions = {
-                        ToolTipWrapper(
-                            title = { Text(stringResource(Res.string.auto_move)) },
-                            text = { Text(stringResource(Res.string.auto_move_description)) }
-                        ) {
-                            val animatedProgress = remember { Animatable(0f) }
-                            IconButton(
-                                onClick = {
-                                    scope.launch {
-                                        val hasMoved = info.autoMove()
-                                        launch {
-                                            animatedProgress.animateTo(360f)
-                                            animatedProgress.snapTo(0f)
-                                        }
-                                        snackbarHostState.currentSnackbarData?.dismiss()
-                                        if (!hasMoved) {
-                                            snackbarHostState.showSnackbar(
-                                                message = getString(Res.string.nothing_moved),
-                                                withDismissAction = true,
-                                                duration = SnackbarDuration.Short
-                                            )
-                                        }
-                                    }
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.AutoMode,
-                                    contentDescription = null,
-                                    modifier = Modifier.rotate(animatedProgress.value)
-                                )
-                            }
-                        }
-
-                        ToolTipWrapper(
-                            title = { Text(stringResource(Res.string.info)) },
-                            text = { Text(stringResource(Res.string.move_count, info.moveCount)) }
-                        ) {
-                            Text(stringResource(Res.string.score, animateIntAsState(info.score).value.toString()))
+                            Text(info.moveCount.toString() + " moves")
+                            Text(animateIntAsState(info.score).value.toString() + " pts")
+                            Text(info.timeText)
                         }
                     }
-                )
+                }
             },
             snackbarHost = { SnackbarHost(snackbarHostState) },
             bottomBar = {
-                AnimatedVisibility(
-                    info.hasWon,
-                    enter = slideInVertically { it } + fadeIn(),
-                    exit = slideOutVertically { it } + fadeOut()
+                Row(
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .windowInsetsPadding(WindowInsets.navigationBars)
                 ) {
-                    BottomAppBar {
+                    ToolTipWrapper(
+                        title = { Text(stringResource(Res.string.undo)) },
+                        text = { Text(stringResource(Res.string.undo_description)) }
+                    ) {
                         Button(
-                            onClick = { showWinDialog = true },
-                            modifier = Modifier.fillMaxWidth()
-                        ) { Text(stringResource(Res.string.you_won_start)) }
+                            onClick = info::undo,
+                            enabled = info.lastFewMoves.isNotEmpty(),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(Icons.AutoMirrored.Filled.Undo, null)
+                            Spacer(Modifier.width(8.dp))
+                            Text(stringResource(Res.string.undo))
+                        }
+                    }
+
+                    ToolTipWrapper(
+                        title = { Text(stringResource(Res.string.auto_move)) },
+                        text = { Text(stringResource(Res.string.auto_move_description)) }
+                    ) {
+                        Button(
+                            onClick = {
+                                scope.launch {
+                                    val hasMoved = info.autoMove()
+                                    snackbarHostState.currentSnackbarData?.dismiss()
+                                    if (!hasMoved) {
+                                        snackbarHostState.showSnackbar(
+                                            message = getString(Res.string.nothing_moved),
+                                            withDismissAction = true,
+                                            duration = SnackbarDuration.Short
+                                        )
+                                    }
+                                }
+                            },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(Icons.Default.AutoAwesome, null)
+                            Spacer(Modifier.width(8.dp))
+                            Text(stringResource(Res.string.auto_move))
+                        }
                     }
                 }
             }
@@ -306,38 +318,45 @@ internal fun SolitaireScreen(
                             .padding(horizontal = 4.dp)
                             .padding(padding)
                     ) {
-                        val topArea = remember {
-                            movableContentWithReceiverOf<LookaheadScope, Modifier> {
-                                //---------foundation---------
-                                Foundations(
-                                    info = info,
-                                    winModifier = winModifier,
-                                    cardBack = cardBack,
-                                    database = database,
-                                    modifier = it.animatePlacementInScope(this@LookaheadScope)
-                                )
-                                //---------draws---------
-                                Draws(
-                                    winModifier = winModifier,
-                                    info = info,
-                                    drawAmount = drawAmount,
-                                    cardBack = cardBack,
-                                    database = database,
-                                    modifier = it.animatePlacementInScope(this@LookaheadScope)
-                                )
-                            }
-                        }
-
-                        when (window.windowWidthSizeClass) {
+                        val paddingType = when (windowSizeClass.windowWidthSizeClass) {
                             WindowWidthSizeClass.MEDIUM, WindowWidthSizeClass.EXPANDED -> {
-                                Row {
-                                    topArea(Modifier.weight(1f))
-                                }
+                                val insets = WindowInsets.safeGestures.asPaddingValues()
+                                Modifier.padding(
+                                    start = insets.calculateStartPadding(LocalLayoutDirection.current),
+                                    end = insets.calculateEndPadding(LocalLayoutDirection.current)
+                                )
                             }
 
                             else -> {
-                                topArea(Modifier)
+                                Modifier
                             }
+                        }
+
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            modifier = paddingType
+                        ) {
+                            //---------foundation---------
+                            Foundations(
+                                info = info,
+                                winModifier = winModifier,
+                                cardBack = cardBack,
+                                database = database,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .animatePlacementInScope(this@LookaheadScope)
+                            )
+                            //---------draws---------
+                            Draws(
+                                winModifier = winModifier,
+                                info = info,
+                                drawAmount = drawAmount,
+                                cardBack = cardBack,
+                                database = database,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .animatePlacementInScope(this@LookaheadScope)
+                            )
                         }
                         //---------field---------
                         Field(
@@ -345,6 +364,7 @@ internal fun SolitaireScreen(
                             info = info,
                             cardBack = cardBack,
                             database = database,
+                            modifier = paddingType
                         )
                     }
                 }
@@ -383,16 +403,17 @@ private fun Foundations(
     val useNewDesign by rememberUseNewDesign()
 
     Row(
-        horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally),
+        horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.Start),
         modifier = modifier
             //.fillMaxWidth()
             .animateContentSize()
     ) {
         info.foundations.forEach { foundation ->
             Column(
-                verticalArrangement = Arrangement.spacedBy((-120).dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(-(CARD_HEIGHT - 5.dp)),
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(1f, false)
                     .animateContentSize()
             ) {
                 foundation.value
@@ -401,10 +422,10 @@ private fun Foundations(
                     .forEach {
                         PlayingCard(
                             card = it,
-                            border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
+                            border = borderStroke(MaterialTheme.colorScheme.outline),
                             useNewDesign = useNewDesign,
-                            modifier = cardSizeModifier
-                                .fillMaxSize()
+                            modifier = cardSize
+                                //.fillMaxSize()
                                 .then(winModifier),
                         )
                     }
@@ -441,16 +462,16 @@ private fun Foundations(
                             ) {
                                 PlayingCard(
                                     card = it,
-                                    border = BorderStroke(2.dp, strokeColor),
+                                    border = borderStroke(strokeColor),
                                     useNewDesign = useNewDesign,
-                                    modifier = cardSizeModifier.then(winModifier)
+                                    modifier = cardSize.then(winModifier)
                                 )
                             }
                         } ?: cardBack.CustomCardBackground(
                         database = database,
-                        border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
-                        modifier = cardSizeModifier
-                            .fillMaxSize()
+                        border = borderStroke(MaterialTheme.colorScheme.outline),
+                        modifier = cardSize
+                            //.fillMaxSize()
                             .then(winModifier),
                     )
                 }
@@ -472,10 +493,10 @@ private fun Draws(
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.End),
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier//.fillMaxWidth()
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy((-50).dp)
+            horizontalArrangement = Arrangement.spacedBy(-(CARD_WIDTH / 2))
         ) {
             /*val transition = updateTransition(info.drawList.takeLast(3))
             transition.AnimatedContent(
@@ -531,9 +552,9 @@ private fun Draws(
                 .forEach {
                     PlayingCard(
                         card = it,
-                        border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                        border = borderStroke(MaterialTheme.colorScheme.primary),
                         useNewDesign = useNewDesign,
-                        modifier = cardSizeModifier.width(100.dp)
+                        modifier = cardSize//.width(100.dp)
                     )
                 }
 
@@ -546,58 +567,61 @@ private fun Draws(
                     PlayingCard(
                         card = it,
                         useNewDesign = useNewDesign,
-                        border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                        modifier = cardSizeModifier.width(100.dp)
+                        border = borderStroke(MaterialTheme.colorScheme.primary),
+                        modifier = cardSize//.width(100.dp)
                     )
                 }
             } ?: cardBack.CustomCardBackground(
                 database = database,
-                border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
-                modifier = cardSizeModifier
-                    .width(100.dp)
+                border = borderStroke(MaterialTheme.colorScheme.outline),
+                modifier = cardSize
+                    //.width(100.dp)
                     .then(winModifier),
             )
         }
 
-        Box(
-            contentAlignment = Alignment.Center
-        ) {
-            cardBack.CustomCardBackground(
-                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                database = database,
-                content = {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .background(
-                                Color.Black.copy(alpha = 0.5f),
-                                shape = RoundedCornerShape(
-                                    topEnd = 4.dp,
-                                    topStart = 4.dp
-                                )
+        /*Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {*/
+        cardBack.CustomCardBackground(
+            border = borderStroke(MaterialTheme.colorScheme.primary),
+            database = database,
+            onClick = { info.draw(drawAmount) },
+            content = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .background(
+                            Color.Black.copy(alpha = 0.5f),
+                            shape = RoundedCornerShape(
+                                topEnd = 4.dp,
+                                topStart = 4.dp
                             )
-                            .fillMaxWidth()
-                            .align(Alignment.BottomCenter)
-                    ) {
-                        Text(
-                            stringResource(Res.string.cards_left),
-                            textAlign = TextAlign.Center,
-                            color = Color.White
                         )
-                        Text(
-                            animateIntAsState(info.cardsLeft).value.toString(),
-                            textAlign = TextAlign.Center,
-                            color = Color.White
-                        )
-                    }
-                },
-                onClick = { info.draw(drawAmount) },
-                modifier = cardSizeModifier
-                    .width(100.dp)
-                    .then(winModifier),
-            )
-        }
+                        .width(CARD_WIDTH)
+                        .align(Alignment.BottomCenter)
+                ) {
+                    Text(
+                        animateIntAsState(info.cardsLeft).value.toString(),
+                        textAlign = TextAlign.Center,
+                        color = Color.White
+                    )
+                    Text(
+                        "Cards",
+                        textAlign = TextAlign.Center,
+                        color = Color.White
+                    )
+                }
+            },
+            modifier = cardSize
+                .then(winModifier),
+        )
+        /*   Text(
+               animateIntAsState(info.cardsLeft).value.toString() + " Cards",
+               fontSize = 12.sp
+           )
+       }*/
     }
 }
 
@@ -608,32 +632,21 @@ private fun Field(
     info: SolitaireViewModel,
     cardBack: CardBack,
     database: SolitaireDatabase,
+    modifier: Modifier = Modifier,
 ) {
     val useNewDesign by rememberUseNewDesign()
 
     Row(
-        horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally),
-        modifier = Modifier
+        horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.Start),
+        modifier = modifier
             .fillMaxWidth()
             .padding(top = 4.dp)
     ) {
         info.fieldSlots.forEach { fieldSlot ->
             Column(
-                modifier = Modifier.weight(1f)
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.weight(1f, false)
             ) {
-                Text(
-                    fieldSlot.value.faceDownSize().toString(),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(
-                            BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                            shape = MaterialTheme.shapes.medium.copy(
-                                bottomEnd = CornerSize(0.dp),
-                                bottomStart = CornerSize(0.dp)
-                            )
-                        )
-                )
                 DropTarget<CardLocation>(
                     onDrop = {
                         it?.let { cardLocation ->
@@ -658,41 +671,71 @@ private fun Field(
                     if (fieldSlot.value.list.isEmpty()) {
                         cardBack.CustomCardBackground(
                             database = database,
-                            border = BorderStroke(2.dp, strokeColor),
-                            shape = MaterialTheme.shapes.medium.copy(
-                                topEnd = CornerSize(0.dp),
-                                topStart = CornerSize(0.dp)
-                            ),
+                            border = borderStroke(strokeColor),
                             modifier = Modifier
-                                .height(FIELD_HEIGHT.dp)
-                                .fillMaxSize()
+                                .then(cardSize)
+                                //.fillMaxSize()
                                 .then(winModifier)
                         )
                     } else {
                         LazyColumn(
-                            verticalArrangement = Arrangement.spacedBy(-(FIELD_HEIGHT * .75).dp),
+                            verticalArrangement = Arrangement.spacedBy(-(CARD_HEIGHT.value * .95).dp),
                             modifier = Modifier.animateContentSize()
                         ) {
-                            //TODO: Come back to this
-                            /*items(fieldSlot.value.faceDownList) {
+                            items(fieldSlot.value.faceDownList) {
                                 cardBack.CustomCardBackground(
                                     database = database,
-                                    border = BorderStroke(2.dp, strokeColor),
+                                    border = borderStroke(strokeColor),
                                     modifier = Modifier
-                                        .height(FIELD_HEIGHT.dp)
-                                        .offset(y = (50).dp)
-                                        .fillMaxSize()
+                                        .then(cardSize)
+                                        //.fillMaxSize()
                                         .then(winModifier)
                                 )
-                            }*/
-                            itemsIndexed(fieldSlot.value.list) { index, card ->
+                            }
+                            item {
+                                Column(
+                                    verticalArrangement = Arrangement.spacedBy(-(CARD_HEIGHT.value * .55).dp),
+                                ) {
+                                    fieldSlot.value.list.forEachIndexed { index, card ->
+                                        DragTarget(
+                                            dataToDrop = CardLocation(fieldSlot.key, card, index),
+                                            enable = !info.hasWon,
+                                            onDoubleTap = { it?.let { cardLocation -> info.autoMoveCard(cardLocation) } },
+                                            customDragContent = {
+                                                Column(
+                                                    verticalArrangement = Arrangement.spacedBy(-(CARD_HEIGHT.value * .55).dp),
+                                                ) {
+                                                    fieldSlot.value.getCards(index).forEach {
+                                                        PlayingCard(
+                                                            card = it,
+                                                            border = borderStroke(strokeColor),
+                                                            showFullDetail = false,
+                                                            useNewDesign = useNewDesign,
+                                                            modifier = cardSize
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        ) {
+                                            PlayingCard(
+                                                card = card,
+                                                border = borderStroke(strokeColor),
+                                                showFullDetail = false,
+                                                useNewDesign = useNewDesign,
+                                                modifier = cardSize
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                            /*itemsIndexed(fieldSlot.value.list) { index, card ->
                                 DragTarget(
                                     dataToDrop = CardLocation(fieldSlot.key, card, index),
                                     enable = !info.hasWon,
                                     onDoubleTap = { it?.let { cardLocation -> info.autoMoveCard(cardLocation) } },
                                     customDragContent = {
                                         Column(
-                                            verticalArrangement = Arrangement.spacedBy(-(FIELD_HEIGHT * .75).dp),
+                                            verticalArrangement = Arrangement.spacedBy(-(CARD_HEIGHT.value * .65).dp),
                                         ) {
                                             fieldSlot.value.getCards(index).forEach {
                                                 PlayingCard(
@@ -700,7 +743,7 @@ private fun Field(
                                                     border = BorderStroke(2.dp, strokeColor),
                                                     showFullDetail = false,
                                                     useNewDesign = useNewDesign,
-                                                    modifier = Modifier.height(FIELD_HEIGHT.dp)
+                                                    modifier = cardSize//Modifier.height(FIELD_HEIGHT.dp)
                                                 )
                                             }
                                         }
@@ -709,19 +752,12 @@ private fun Field(
                                     PlayingCard(
                                         card = card,
                                         border = BorderStroke(2.dp, strokeColor),
-                                        shape = if (index == 0)
-                                            MaterialTheme.shapes.medium.copy(
-                                                topEnd = CornerSize(0.dp),
-                                                topStart = CornerSize(0.dp)
-                                            )
-                                        else
-                                            PlayingCardDefaults.shape,
                                         showFullDetail = false,
                                         useNewDesign = useNewDesign,
-                                        modifier = Modifier.height(FIELD_HEIGHT.dp)
+                                        modifier = cardSize//Modifier.height(FIELD_HEIGHT.dp)
                                     )
                                 }
-                            }
+                            }*/
                         }
                     }
                 }
@@ -744,4 +780,13 @@ private fun SolitaireViewModel.WinButton() {
             foundations[4]?.add(aceH)
         }
     ) { Text("Win Game") }
+}
+
+@Composable
+private fun borderStroke(color: Color): BorderStroke {
+    val backgroundForBorder by rememberBackgroundForBorder()
+    return BorderStroke(
+        2.dp,
+        if (backgroundForBorder) MaterialTheme.colorScheme.background else color
+    )
 }

@@ -88,3 +88,6 @@ expect fun rememberCustomBackChoice(): MutableState<String>
 
 @Composable
 expect fun BackHandlerForDrawer(drawerState: DrawerState)
+
+@Composable
+expect fun rememberBackgroundForBorder(): MutableState<Boolean>

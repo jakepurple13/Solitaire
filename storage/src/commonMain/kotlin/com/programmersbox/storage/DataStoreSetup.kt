@@ -152,6 +152,15 @@ fun rememberUseNewDesign(
 )
 
 @Composable
+fun rememberBackgroundForBorder(
+    toState: @Composable Flow<Boolean>.(Boolean) -> State<Boolean>,
+) = rememberPreference(
+    key = booleanPreferencesKey("background_for_border"),
+    defaultValue = true,
+    toState = toState
+)
+
+@Composable
 inline fun <reified T : Enum<T>> rememberCardBack(
     defaultValue: T,
     noinline mapToKey: (T) -> Int = { it.ordinal },
