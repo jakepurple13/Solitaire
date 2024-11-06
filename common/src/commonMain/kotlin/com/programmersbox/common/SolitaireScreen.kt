@@ -484,14 +484,12 @@ private fun Foundations(
                                 && info.fieldToFoundationCheck(cardLocation)
                     } == true
 
-                    val strokeColor by animateColorAsState(
-                        if (canPlace)
-                            Color.Green
-                                .harmonize(MaterialTheme.colorScheme.primary)
-                                .fixIfDisliked()
-                        else
-                            MaterialTheme.colorScheme.primary
-                    )
+                    val strokeColor = if (canPlace)
+                        Color.Green
+                            .harmonize(MaterialTheme.colorScheme.primary)
+                            .fixIfDisliked()
+                    else
+                        MaterialTheme.colorScheme.primary
 
                     foundation.value.lastOrNull()
                         ?.let {
@@ -501,7 +499,7 @@ private fun Foundations(
                             ) {
                                 PlayingCard(
                                     card = it,
-                                    border = borderStroke(strokeColor),
+                                    border = borderStroke(strokeColor, !canPlace),
                                     useNewDesign = useNewDesign,
                                     modifier = cardSize.then(winModifier)
                                 )
@@ -711,19 +709,18 @@ private fun Field(
                         fieldCheck(cardLocation.card, fieldSlot.value) && d
                     } == true
 
-                    val strokeColor by animateColorAsState(
-                        if (canPlace)
-                            Color.Green
-                                .harmonize(MaterialTheme.colorScheme.primary)
-                                .fixIfDisliked()
-                        else
-                            MaterialTheme.colorScheme.primary
-                    )
+                    val strokeColor = if (canPlace)
+                        Color.Green
+                            .harmonize(MaterialTheme.colorScheme.primary)
+                            .fixIfDisliked()
+                    else
+                        MaterialTheme.colorScheme.primary
+
 
                     if (fieldSlot.value.list.isEmpty()) {
                         cardBack.CustomCardBackground(
                             database = database,
-                            border = borderStroke(strokeColor),
+                            border = borderStroke(strokeColor, !canPlace),
                             modifier = Modifier
                                 .then(cardSize)
                                 //.fillMaxSize()
@@ -748,7 +745,7 @@ private fun Field(
                                 ) {
                                     cardBack.CustomCardBackground(
                                         database = database,
-                                        border = borderStroke(strokeColor),
+                                        border = borderStroke(strokeColor, !canPlace),
                                         modifier = Modifier
                                             .then(cardSize)
                                             //.fillMaxSize()
@@ -772,7 +769,7 @@ private fun Field(
                                                     fieldSlot.value.getCards(index).forEach {
                                                         PlayingCard(
                                                             card = it,
-                                                            border = borderStroke(strokeColor),
+                                                            border = borderStroke(strokeColor, !canPlace),
                                                             showFullDetail = false,
                                                             useNewDesign = useNewDesign,
                                                             modifier = cardSize
@@ -783,7 +780,7 @@ private fun Field(
                                         ) {
                                             PlayingCard(
                                                 card = card,
-                                                border = borderStroke(strokeColor),
+                                                border = borderStroke(strokeColor, !canPlace),
                                                 showFullDetail = false,
                                                 useNewDesign = useNewDesign,
                                                 modifier = cardSize
@@ -847,10 +844,11 @@ private fun SolitaireViewModel.WinButton() {
 }
 
 @Composable
-private fun borderStroke(color: Color): BorderStroke {
+private fun borderStroke(color: Color, showBackground: Boolean = true): BorderStroke {
     val backgroundForBorder by rememberBackgroundForBorder()
     return BorderStroke(
         2.dp,
-        if (backgroundForBorder) MaterialTheme.colorScheme.background else color
+        animateColorAsState(if (backgroundForBorder && showBackground) MaterialTheme.colorScheme.background else color)
+            .value
     )
 }
