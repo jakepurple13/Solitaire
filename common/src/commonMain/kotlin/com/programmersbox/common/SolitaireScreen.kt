@@ -1,5 +1,6 @@
 package com.programmersbox.common
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateIntAsState
@@ -59,6 +60,12 @@ private val cardSize = Modifier
 //.fillMaxWidth(.5f)
 //.requiredSizeIn(CARD_WIDTH, CARD_HEIGHT)
 //.defaultMinSize(CARD_WIDTH, CARD_HEIGHT)
+
+enum class GameLocation {
+    Start,
+    Center,
+    End
+}
 
 @Composable
 internal fun SolitaireScreen(
@@ -185,7 +192,12 @@ internal fun SolitaireScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    var gameLocation by rememberGameLocation()
+
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+
+    val isBig = windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.MEDIUM
+            || windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -278,6 +290,24 @@ internal fun SolitaireScreen(
                         }
                     }
 
+                    //TODO: Change the animation
+                    AnimatedVisibility(isBig) {
+                        ToolTipWrapper(
+                            title = { Text("Game Location") },
+                            text = { Text("Choose where the game will be! On larger screens, it might be a little hard to play.") }
+                        ) {
+                            SingleChoiceSegmentedButtonRow {
+                                GameLocation.entries.forEachIndexed { index, game ->
+                                    SegmentedButton(
+                                        selected = game == gameLocation,
+                                        onClick = { gameLocation = game },
+                                        shape = SegmentedButtonDefaults.itemShape(index, GameLocation.entries.size)
+                                    ) { Text(game.name) }
+                                }
+                            }
+                        }
+                    }
+
                     ToolTipWrapper(
                         title = { Text(stringResource(Res.string.auto_move)) },
                         text = { Text(stringResource(Res.string.auto_move_description)) }
@@ -319,9 +349,6 @@ internal fun SolitaireScreen(
                             .padding(horizontal = 4.dp)
                             .padding(padding)
                     ) {
-                        val isBig = windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.MEDIUM
-                                || windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED
-
                         val paddingType = if (isBig) {
                             val insets = WindowInsets.safeGestures.asPaddingValues()
                             Modifier.padding(
@@ -334,7 +361,14 @@ internal fun SolitaireScreen(
 
                         Row(
                             horizontalArrangement = if (isBig)
-                                Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
+                                Arrangement.spacedBy(
+                                    space = 8.dp,
+                                    alignment = when (gameLocation) {
+                                        GameLocation.Start -> Alignment.Start
+                                        GameLocation.Center -> Alignment.CenterHorizontally
+                                        GameLocation.End -> Alignment.End
+                                    }
+                                )
                             else
                                 Arrangement.SpaceBetween,
                             modifier = paddingType.fillMaxWidth()
@@ -368,6 +402,7 @@ internal fun SolitaireScreen(
                             cardBack = cardBack,
                             database = database,
                             isBig = isBig,
+                            gameLocation = gameLocation,
                             lookaheadScope = this@LookaheadScope,
                             modifier = paddingType.animatePlacementInScope(this@LookaheadScope),
                         )
@@ -638,6 +673,7 @@ private fun Field(
     cardBack: CardBack,
     database: SolitaireDatabase,
     isBig: Boolean,
+    gameLocation: GameLocation,
     lookaheadScope: LookaheadScope,
     modifier: Modifier = Modifier,
 ) {
@@ -647,7 +683,11 @@ private fun Field(
         horizontalArrangement = Arrangement.spacedBy(
             space = 2.dp,
             alignment = if (isBig)
-                Alignment.CenterHorizontally
+                when (gameLocation) {
+                    GameLocation.Start -> Alignment.Start
+                    GameLocation.Center -> Alignment.CenterHorizontally
+                    GameLocation.End -> Alignment.End
+                }
             else
                 Alignment.Start
         ),

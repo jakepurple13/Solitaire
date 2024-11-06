@@ -183,6 +183,20 @@ fun rememberCustomBackChoice(
     toState = toState
 )
 
+@Composable
+inline fun <reified T : Enum<T>> rememberGameLocation(
+    defaultValue: T,
+    noinline mapToKey: (T) -> Int = { it.ordinal },
+    noinline mapToType: (Int) -> T = { enumValues<T>()[it] },
+    noinline toState: @Composable Flow<T>.(T) -> State<T>,
+) = rememberPreference(
+    key = intPreferencesKey("game_location"),
+    mapToKey = mapToKey,
+    mapToType = mapToType,
+    defaultValue = defaultValue,
+    toState = toState
+)
+
 fun <T> preferenceFlow(
     key: Preferences.Key<T>,
     defaultValue: T,
@@ -270,3 +284,20 @@ fun <T, R> rememberPreference(
         }
     }
 }
+
+/*
+@Composable
+inline fun <reified T : Enum<T>> rememberEnum(
+    defaultValue: T,
+    key: Preferences.Key<T>,
+    noinline mapToKey: (T) -> String = { it.name },
+    noinline mapToType: (String) -> T = { enumValueOf<T>(it) },
+    noinline toState: @Composable Flow<T>.(T) -> State<T>,
+) = rememberPreference(
+    key = key,
+    mapToKey = mapToKey,
+    mapToType = mapToType,
+    defaultValue = defaultValue,
+    toState = toState
+)
+*/

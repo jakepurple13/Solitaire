@@ -91,3 +91,6 @@ expect fun BackHandlerForDrawer(drawerState: DrawerState)
 
 @Composable
 expect fun rememberBackgroundForBorder(): MutableState<Boolean>
+
+@Composable
+expect fun rememberGameLocation(): MutableState<GameLocation>

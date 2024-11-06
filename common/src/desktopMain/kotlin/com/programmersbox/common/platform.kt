@@ -261,3 +261,8 @@ actual fun BackHandlerForDrawer(drawerState: DrawerState) {
 @Composable
 actual fun rememberBackgroundForBorder(): MutableState<Boolean> =
     rememberBackgroundForBorder { collectAsState(it) }
+
+@Composable
+actual fun rememberGameLocation(): MutableState<GameLocation> = rememberGameLocation(
+    defaultValue = GameLocation.Center,
+) { collectAsState(it) }

@@ -318,3 +318,16 @@ actual fun rememberCustomBackChoice(): MutableState<String> = rememberPreference
 actual fun BackHandlerForDrawer(drawerState: DrawerState) {
 
 }
+
+private val gameLocation by lazy {
+    mutableStateOf(
+        runCatching { GameLocation.valueOf(localStorage.getItem("game_location").orEmpty()) }
+            .getOrDefault(GameLocation.Center)
+    )
+}
+
+@Composable
+actual fun rememberGameLocation(): MutableState<GameLocation> = rememberPreference(
+    gameLocation,
+    "game_location"
+) { it.name }
