@@ -735,14 +735,26 @@ private fun Field(
                             modifier = Modifier.animateContentSize()
                         ) {
                             items(fieldSlot.value.faceDownList) {
-                                cardBack.CustomCardBackground(
-                                    database = database,
-                                    border = borderStroke(strokeColor),
-                                    modifier = Modifier
-                                        .then(cardSize)
-                                        //.fillMaxSize()
-                                        .then(winModifier)
-                                )
+                                ToolTipWrapper(
+                                    title = {
+                                        Text(
+                                            stringResource(
+                                                Res.string.cards_face_down,
+                                                fieldSlot.value.faceDownList.size
+                                            )
+                                        )
+                                    },
+                                    text = { Text(stringResource(Res.string.field_number, fieldSlot.key + 1)) }
+                                ) {
+                                    cardBack.CustomCardBackground(
+                                        database = database,
+                                        border = borderStroke(strokeColor),
+                                        modifier = Modifier
+                                            .then(cardSize)
+                                            //.fillMaxSize()
+                                            .then(winModifier)
+                                    )
+                                }
                             }
                             item {
                                 Column(

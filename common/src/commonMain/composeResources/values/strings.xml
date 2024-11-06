@@ -73,11 +73,13 @@
     <string name="points">%1$d pts</string>
     <string name="moves">%1$d moves</string>
     <string name="game_location">Game Location</string>
-    <string name="game_location_description">Choose where the game will be! On larger screens, it might be a little hard
-        to play.
+    <string name="game_location_description">
+        Choose where the game will be! On larger screens, it might be a little hard to play.
     </string>
     <string name="draw_title">Draw</string>
     <string name="draw_description">Draw Cards</string>
     <string name="cards">Cards</string>
     <string name="background_for_border">Use Background Color for Border</string>
+    <string name="cards_face_down">%1$d cards</string>
+    <string name="field_number">Field %1$d</string>
 </resources>
