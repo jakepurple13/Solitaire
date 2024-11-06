@@ -1,8 +1,6 @@
 package com.programmersbox.common
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.*
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -49,8 +47,8 @@ val DRAW_AMOUNTS = listOf(1, 3) //default 1, 3
 const val WIN_CARD_VALUE = 13 //default 13
 const val FIELD_HEIGHT = 100
 
-private val CARD_HEIGHT = 75.dp
-private val CARD_WIDTH = 55.dp
+private val CARD_HEIGHT = 70.dp
+private val CARD_WIDTH = 50.dp
 
 private val cardSizeModifier = Modifier.height(125.dp)
 
@@ -199,153 +197,158 @@ internal fun SolitaireScreen(
     val isBig = windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.MEDIUM
             || windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        gesturesEnabled = drawerState.isOpen,
-        drawerContent = {
-            ModalDrawerSheet(
-                drawerContainerColor = MaterialTheme.colorScheme.background,
-            ) {
-                //For testing!
-                //info.WinButton()
-
-                SettingsView(
-                    settings = settings,
-                    database = database,
-                    onNewGamePress = { newGameDialog = true },
-                    startDailyGame = { info.startDailyGame(difficulty) },
-                    onDrawerClose = { scope.launch { drawerState.close() } }
-                )
-            }
-        }
-    ) {
-        Scaffold(
-            topBar = {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            vertical = 8.dp,
-                            horizontal = 8.dp
-                        )
-                        .windowInsetsPadding(WindowInsets.statusBars)
+    LookaheadScope {
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            gesturesEnabled = drawerState.isOpen,
+            drawerContent = {
+                ModalDrawerSheet(
+                    drawerContainerColor = MaterialTheme.colorScheme.background,
                 ) {
-                    ToolTipWrapper(
-                        title = { Text(stringResource(Res.string.settings)) },
-                        text = { Text(stringResource(Res.string.open_settings_drawer)) }
-                    ) {
-                        IconButton(
-                            onClick = { scope.launch { drawerState.open() } },
-                        ) { Icon(Icons.Default.Settings, null) }
-                    }
+                    //For testing!
+                    //info.WinButton()
 
-                    ToolTipWrapper(
-                        title = { Text(stringResource(Res.string.new_game)) },
-                        text = { Text(stringResource(Res.string.start_a_new_game)) }
-                    ) {
-                        IconButton(
-                            onClick = { newGameDialog = true },
-                        ) { Icon(Icons.Default.Gamepad, null) }
-                    }
-
-                    Card(
-                        shape = MaterialTheme.shapes.extraLarge
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceAround,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                        ) {
-                            Text(info.moveCount.toString() + " moves")
-                            Text(animateIntAsState(info.score).value.toString() + " pts")
-                            Text(info.timeText)
-                        }
-                    }
+                    SettingsView(
+                        settings = settings,
+                        database = database,
+                        onNewGamePress = { newGameDialog = true },
+                        startDailyGame = { info.startDailyGame(difficulty) },
+                        onDrawerClose = { scope.launch { drawerState.close() } }
+                    )
                 }
-            },
-            snackbarHost = { SnackbarHost(snackbarHostState) },
-            bottomBar = {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .windowInsetsPadding(WindowInsets.navigationBars)
-                ) {
-                    ToolTipWrapper(
-                        title = { Text(stringResource(Res.string.undo)) },
-                        text = { Text(stringResource(Res.string.undo_description)) }
+            }
+        ) {
+            Scaffold(
+                topBar = {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                vertical = 8.dp,
+                                horizontal = 8.dp
+                            )
+                            .windowInsetsPadding(WindowInsets.statusBars)
                     ) {
-                        Button(
-                            onClick = info::undo,
-                            enabled = info.lastFewMoves.isNotEmpty(),
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Icon(Icons.AutoMirrored.Filled.Undo, null)
-                            Spacer(Modifier.width(8.dp))
-                            Text(stringResource(Res.string.undo))
-                        }
-                    }
-
-                    //TODO: Change the animation
-                    AnimatedVisibility(isBig) {
                         ToolTipWrapper(
-                            title = { Text("Game Location") },
-                            text = { Text("Choose where the game will be! On larger screens, it might be a little hard to play.") }
+                            title = { Text(stringResource(Res.string.settings)) },
+                            text = { Text(stringResource(Res.string.open_settings_drawer)) }
                         ) {
-                            SingleChoiceSegmentedButtonRow {
-                                GameLocation.entries.forEachIndexed { index, game ->
-                                    SegmentedButton(
-                                        selected = game == gameLocation,
-                                        onClick = { gameLocation = game },
-                                        shape = SegmentedButtonDefaults.itemShape(index, GameLocation.entries.size)
-                                    ) { Text(game.name) }
-                                }
+                            IconButton(
+                                onClick = { scope.launch { drawerState.open() } },
+                            ) { Icon(Icons.Default.Settings, null) }
+                        }
+
+                        ToolTipWrapper(
+                            title = { Text(stringResource(Res.string.new_game)) },
+                            text = { Text(stringResource(Res.string.start_a_new_game)) }
+                        ) {
+                            IconButton(
+                                onClick = { newGameDialog = true },
+                            ) { Icon(Icons.Default.Gamepad, null) }
+                        }
+
+                        Card(
+                            shape = MaterialTheme.shapes.extraLarge
+                        ) {
+                            Row(
+                                horizontalArrangement = Arrangement.SpaceAround,
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
+                            ) {
+                                Text(info.moveCount.toString() + " moves")
+                                Text(animateIntAsState(info.score).value.toString() + " pts")
+                                Text(info.timeText)
                             }
                         }
                     }
-
-                    ToolTipWrapper(
-                        title = { Text(stringResource(Res.string.auto_move)) },
-                        text = { Text(stringResource(Res.string.auto_move_description)) }
+                },
+                snackbarHost = { SnackbarHost(snackbarHostState) },
+                bottomBar = {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .animateContentSize()
+                            .windowInsetsPadding(WindowInsets.navigationBars)
                     ) {
-                        Button(
-                            onClick = {
-                                scope.launch {
-                                    val hasMoved = info.autoMove()
-                                    snackbarHostState.currentSnackbarData?.dismiss()
-                                    if (!hasMoved) {
-                                        snackbarHostState.showSnackbar(
-                                            message = getString(Res.string.nothing_moved),
-                                            withDismissAction = true,
-                                            duration = SnackbarDuration.Short
-                                        )
+                        ToolTipWrapper(
+                            title = { Text(stringResource(Res.string.undo)) },
+                            text = { Text(stringResource(Res.string.undo_description)) }
+                        ) {
+                            Button(
+                                onClick = info::undo,
+                                enabled = info.lastFewMoves.isNotEmpty(),
+                                modifier = Modifier.animatePlacementInScope(this@LookaheadScope)
+                            ) {
+                                Icon(Icons.AutoMirrored.Filled.Undo, null)
+                                Spacer(Modifier.width(8.dp))
+                                Text(stringResource(Res.string.undo))
+                            }
+                        }
+
+                        AnimatedVisibility(
+                            isBig,
+                            enter = fadeIn() + slideInVertically(),
+                            exit = fadeOut() + slideOutVertically(),
+                            modifier = Modifier.animatePlacementInScope(this@LookaheadScope)
+                        ) {
+                            ToolTipWrapper(
+                                title = { Text("Game Location") },
+                                text = { Text("Choose where the game will be! On larger screens, it might be a little hard to play.") }
+                            ) {
+                                SingleChoiceSegmentedButtonRow {
+                                    GameLocation.entries.forEachIndexed { index, game ->
+                                        SegmentedButton(
+                                            selected = game == gameLocation,
+                                            onClick = { gameLocation = game },
+                                            shape = SegmentedButtonDefaults.itemShape(index, GameLocation.entries.size)
+                                        ) { Text(game.name) }
                                     }
                                 }
-                            },
-                            modifier = Modifier.weight(1f)
+                            }
+                        }
+
+                        ToolTipWrapper(
+                            title = { Text(stringResource(Res.string.auto_move)) },
+                            text = { Text(stringResource(Res.string.auto_move_description)) }
                         ) {
-                            Icon(Icons.Default.AutoAwesome, null)
-                            Spacer(Modifier.width(8.dp))
-                            Text(stringResource(Res.string.auto_move))
+                            Button(
+                                onClick = {
+                                    scope.launch {
+                                        val hasMoved = info.autoMove()
+                                        snackbarHostState.currentSnackbarData?.dismiss()
+                                        if (!hasMoved) {
+                                            snackbarHostState.showSnackbar(
+                                                message = getString(Res.string.nothing_moved),
+                                                withDismissAction = true,
+                                                duration = SnackbarDuration.Short
+                                            )
+                                        }
+                                    }
+                                },
+                                modifier = Modifier.animatePlacementInScope(this@LookaheadScope)
+                            ) {
+                                Icon(Icons.Default.AutoAwesome, null)
+                                Spacer(Modifier.width(8.dp))
+                                Text(stringResource(Res.string.auto_move))
+                            }
                         }
                     }
                 }
-            }
-        ) { padding ->
-            AnimatedDragDropBox(
-                defaultDragType = DragType.Immediate,
-                scale = 1f
-            ) {
-                LookaheadScope {
+            ) { padding ->
+                AnimatedDragDropBox(
+                    defaultDragType = DragType.Immediate,
+                    scale = 1f
+                ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(4.dp),
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .fillMaxSize()
                             .padding(horizontal = 4.dp)
                             .padding(padding)
                     ) {
@@ -379,9 +382,7 @@ internal fun SolitaireScreen(
                                 winModifier = winModifier,
                                 cardBack = cardBack,
                                 database = database,
-                                modifier = Modifier
-                                    //.weight(1f, false)
-                                    .animatePlacementInScope(this@LookaheadScope)
+                                modifier = Modifier.animatePlacementInScope(this@LookaheadScope)
                             )
                             //---------draws---------
                             Draws(
@@ -390,9 +391,7 @@ internal fun SolitaireScreen(
                                 drawAmount = drawAmount,
                                 cardBack = cardBack,
                                 database = database,
-                                modifier = Modifier
-                                    //.weight(1f)
-                                    .animatePlacementInScope(this@LookaheadScope)
+                                modifier = Modifier.animatePlacementInScope(this@LookaheadScope)
                             )
                         }
                         //---------field---------
@@ -533,70 +532,63 @@ private fun Draws(
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.End),
-        modifier = modifier//.fillMaxWidth()
+        modifier = modifier
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(-(CARD_WIDTH / 2))
         ) {
-            /*val transition = updateTransition(info.drawList.takeLast(3))
-            transition.AnimatedContent(
-                transitionSpec = {
-                    if (targetState.isEmpty()) {
-                        fadeIn() togetherWith fadeOut()
-                    } else {
-                        slideInHorizontally { height -> height } + fadeIn() togetherWith
-                                slideOutHorizontally { height -> -height } + fadeOut()
-                    }
-                },
-                contentAlignment = Alignment.CenterEnd
-            ) { target ->
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy((-50).dp)
-                ) {
-                    target
-                        .dropLast(1)
-                        .forEach {
-                            PlayingCard(
-                                card = it,
-                                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                                modifier = cardSizeModifier.width(100.dp)
-                            )
-                        }
-
-                    target.lastOrNull()?.let {
-                        DragTarget(
-                            dataToDrop = CardLocation(DRAW_LOCATION, it, 0),
-                            enable = !info.hasWon,
-                        ) {
-                            PlayingCard(
-                                card = it,
-                                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                                modifier = cardSizeModifier.width(100.dp)
-                            )
-                        }
-                    } ?: EmptyCard(
-                        border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                        cardBack = cardBack.toModifier(),
-                        modifier = cardSizeModifier
-                            .width(100.dp)
-                            .then(winModifier)
-                    )
-                }
-            }*/
-
             //draws
-            info
+            val lastTwo = info
                 .drawList
                 .dropLast(1)
                 .takeLast(2)
-                .forEach {
-                    PlayingCard(
-                        card = it,
-                        border = borderStroke(MaterialTheme.colorScheme.primary),
-                        useNewDesign = useNewDesign,
-                        modifier = cardSize//.width(100.dp)
+            /*.forEach {
+                PlayingCard(
+                    card = it,
+                    border = borderStroke(MaterialTheme.colorScheme.primary),
+                    useNewDesign = useNewDesign,
+                    modifier = cardSize//.width(100.dp)
+                )
+            }*/
+
+            when (lastTwo.size) {
+                1 -> {
+                    cardBack.CustomCardBackground(
+                        database = database,
+                        border = borderStroke(MaterialTheme.colorScheme.outline),
+                        modifier = cardSize.then(winModifier)
                     )
+                    lastTwo.forEach {
+                        PlayingCard(
+                            card = it,
+                            border = borderStroke(MaterialTheme.colorScheme.primary),
+                            useNewDesign = useNewDesign,
+                            modifier = cardSize
+                        )
+                    }
                 }
+
+                2 -> {
+                    lastTwo.forEach {
+                        PlayingCard(
+                            card = it,
+                            border = borderStroke(MaterialTheme.colorScheme.primary),
+                            useNewDesign = useNewDesign,
+                            modifier = cardSize
+                        )
+                    }
+                }
+
+                else -> {
+                    repeat(2) {
+                        cardBack.CustomCardBackground(
+                            database = database,
+                            border = borderStroke(MaterialTheme.colorScheme.outline),
+                            modifier = cardSize.then(winModifier)
+                        )
+                    }
+                }
+            }
 
             info.drawList.lastOrNull()?.let {
                 DragTarget(
@@ -623,40 +615,44 @@ private fun Draws(
         /*Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {*/
-        cardBack.CustomCardBackground(
-            border = borderStroke(MaterialTheme.colorScheme.primary),
-            database = database,
-            onClick = { info.draw(drawAmount) },
-            content = {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .background(
-                            Color.Black.copy(alpha = 0.5f),
-                            shape = RoundedCornerShape(
-                                topEnd = 4.dp,
-                                topStart = 4.dp
+        ToolTipWrapper(
+            title = { Text("Draw") },
+            text = { Text("Draw Cards") }
+        ) {
+            cardBack.CustomCardBackground(
+                border = borderStroke(MaterialTheme.colorScheme.primary),
+                database = database,
+                onClick = { info.draw(drawAmount) },
+                content = {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .background(
+                                Color.Black.copy(alpha = 0.5f),
+                                shape = RoundedCornerShape(
+                                    topEnd = 4.dp,
+                                    topStart = 4.dp
+                                )
                             )
+                            .width(CARD_WIDTH)
+                            .align(Alignment.BottomCenter)
+                    ) {
+                        Text(
+                            animateIntAsState(info.cardsLeft).value.toString(),
+                            textAlign = TextAlign.Center,
+                            color = Color.White
                         )
-                        .width(CARD_WIDTH)
-                        .align(Alignment.BottomCenter)
-                ) {
-                    Text(
-                        animateIntAsState(info.cardsLeft).value.toString(),
-                        textAlign = TextAlign.Center,
-                        color = Color.White
-                    )
-                    Text(
-                        "Cards",
-                        textAlign = TextAlign.Center,
-                        color = Color.White
-                    )
-                }
-            },
-            modifier = cardSize
-                .then(winModifier),
-        )
+                        Text(
+                            "Cards",
+                            textAlign = TextAlign.Center,
+                            color = Color.White
+                        )
+                    }
+                },
+                modifier = cardSize.then(winModifier),
+            )
+        }
         /*   Text(
                animateIntAsState(info.cardsLeft).value.toString() + " Cards",
                fontSize = 12.sp
@@ -680,17 +676,18 @@ private fun Field(
     val useNewDesign by rememberUseNewDesign()
 
     Row(
-        horizontalArrangement = Arrangement.spacedBy(
-            space = 2.dp,
-            alignment = if (isBig)
-                when (gameLocation) {
+        horizontalArrangement = if (isBig) {
+            Arrangement.spacedBy(
+                space = 2.dp,
+                alignment = when (gameLocation) {
                     GameLocation.Start -> Alignment.Start
                     GameLocation.Center -> Alignment.CenterHorizontally
                     GameLocation.End -> Alignment.End
                 }
-            else
-                Alignment.Start
-        ),
+            )
+        } else {
+            Arrangement.SpaceEvenly
+        },
         modifier = modifier
             .fillMaxWidth()
             .padding(top = 4.dp)

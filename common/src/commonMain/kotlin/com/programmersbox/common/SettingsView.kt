@@ -61,7 +61,10 @@ internal fun SettingsView(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(Res.string.settings)) }
+                title = { Text(stringResource(Res.string.settings)) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent
+                )
             )
         }
     ) { padding ->
@@ -76,7 +79,8 @@ internal fun SettingsView(
                 ListItem(
                     supportingContent = { Text(stringResource(Res.string.play_style)) },
                     headlineContent = {},
-                    leadingContent = { Icon(Icons.Default.SportsEsports, null) }
+                    leadingContent = { Icon(Icons.Default.SportsEsports, null) },
+                    colors = ListItemDefaults.colors(containerColor = Color.Transparent)
                 )
             }
 
@@ -87,7 +91,8 @@ internal fun SettingsView(
                 ListItem(
                     supportingContent = { Text(stringResource(Res.string.theme_card_design)) },
                     headlineContent = {},
-                    leadingContent = { Icon(Icons.Default.StarOutline, null) }
+                    leadingContent = { Icon(Icons.Default.StarOutline, null) },
+                    colors = ListItemDefaults.colors(containerColor = Color.Transparent)
                 )
             }
 
@@ -98,7 +103,8 @@ internal fun SettingsView(
                 ListItem(
                     supportingContent = { Text(stringResource(Res.string.advanced)) },
                     headlineContent = {},
-                    leadingContent = { Icon(Icons.Default.Settings, null) }
+                    leadingContent = { Icon(Icons.Default.Settings, null) },
+                    colors = ListItemDefaults.colors(containerColor = Color.Transparent)
                 )
             }
 
@@ -109,7 +115,8 @@ internal fun SettingsView(
                 ListItem(
                     supportingContent = { Text(stringResource(Res.string.info)) },
                     headlineContent = {},
-                    leadingContent = { Icon(Icons.Default.Info, null) }
+                    leadingContent = { Icon(Icons.Default.Info, null) },
+                    colors = ListItemDefaults.colors(containerColor = Color.Transparent)
                 )
             }
 
