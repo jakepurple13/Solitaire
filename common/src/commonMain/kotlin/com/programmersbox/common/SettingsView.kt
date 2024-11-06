@@ -61,10 +61,7 @@ internal fun SettingsView(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(Res.string.settings)) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                )
+                title = { Text(stringResource(Res.string.settings)) }
             )
         }
     ) { padding ->
