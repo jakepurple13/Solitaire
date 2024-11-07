@@ -54,7 +54,7 @@ private val cardSizeModifier = Modifier.height(125.dp)
 
 private val cardSize = Modifier
     //.height(CARD_HEIGHT)
-    .sizeIn(CARD_WIDTH, CARD_HEIGHT)
+    .size(CARD_WIDTH, CARD_HEIGHT)
 //.fillMaxWidth(.5f)
 //.requiredSizeIn(CARD_WIDTH, CARD_HEIGHT)
 //.defaultMinSize(CARD_WIDTH, CARD_HEIGHT)
@@ -506,7 +506,7 @@ private fun Foundations(
                             }
                         } ?: cardBack.CustomCardBackground(
                         database = database,
-                        border = borderStroke(MaterialTheme.colorScheme.outline),
+                        border = borderStroke(strokeColor, !canPlace),
                         modifier = cardSize
                             //.fillMaxSize()
                             .then(winModifier),
@@ -729,7 +729,9 @@ private fun Field(
                     } else {
                         LazyColumn(
                             verticalArrangement = Arrangement.spacedBy(-(CARD_HEIGHT.value * .95).dp),
-                            modifier = Modifier.animateContentSize()
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .animateContentSize()
                         ) {
                             items(fieldSlot.value.faceDownList) {
                                 ToolTipWrapper(
@@ -743,8 +745,7 @@ private fun Field(
                                     },
                                     text = { Text(stringResource(Res.string.field_number, fieldSlot.key + 1)) }
                                 ) {
-                                    cardBack.CustomCardBackground(
-                                        database = database,
+                                    EmptyCard(
                                         border = borderStroke(strokeColor, !canPlace),
                                         modifier = Modifier
                                             .then(cardSize)
