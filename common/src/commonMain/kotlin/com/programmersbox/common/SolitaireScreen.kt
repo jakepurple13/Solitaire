@@ -53,8 +53,8 @@ private val CARD_WIDTH = 50.dp
 private val cardSizeModifier = Modifier.height(125.dp)
 
 private val cardSize = Modifier
-    //.height(CARD_HEIGHT)
     .size(CARD_WIDTH, CARD_HEIGHT)
+//.height(CARD_HEIGHT)
 //.fillMaxWidth(.5f)
 //.requiredSizeIn(CARD_WIDTH, CARD_HEIGHT)
 //.defaultMinSize(CARD_WIDTH, CARD_HEIGHT)
@@ -642,7 +642,7 @@ private fun Draws(
                             color = Color.White
                         )
                         Text(
-                            "Cards",
+                            stringResource(Res.string.cards),
                             textAlign = TextAlign.Center,
                             color = Color.White
                         )
@@ -848,8 +848,12 @@ private fun SolitaireViewModel.WinButton() {
 private fun borderStroke(color: Color, showBackground: Boolean = true): BorderStroke {
     val backgroundForBorder by rememberBackgroundForBorder()
     return BorderStroke(
-        2.dp,
-        animateColorAsState(if (backgroundForBorder && showBackground) MaterialTheme.colorScheme.background else color)
-            .value
+        width = 2.dp,
+        color = animateColorAsState(
+            if (backgroundForBorder && showBackground)
+                MaterialTheme.colorScheme.background
+            else
+                color
+        ).value
     )
 }
