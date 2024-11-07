@@ -197,6 +197,7 @@ class SolitaireViewModel(
 
     fun draw(drawAmount: Int) {
         saveLastMove()
+        moveCount++
         if (deck.size > 0) {
             repeat(drawAmount) {
                 runCatching { drawList.add(deck.draw()) }
@@ -239,8 +240,8 @@ class SolitaireViewModel(
     }
 
     fun undo() {
-        runCatching { lastFewMoves.removeLastOrNull() }
-            .getOrNull()
+        lastFewMoves
+            .removeLastOrNull()
             ?.let { state ->
                 deck.removeAllCards()
                 deck.addDeck(state.remainingDeck)
@@ -258,6 +259,7 @@ class SolitaireViewModel(
                 drawList.clear()
                 drawList.addAll(state.flippedCards)
                 score = state.score
+                moveCount++
             }
     }
 
