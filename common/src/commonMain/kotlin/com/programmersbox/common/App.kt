@@ -29,9 +29,9 @@ internal fun App(
                 val navigator = rememberNavController()
                 NavHost(
                     navController = navigator,
-                    startDestination = Screen.Solitaire.route
+                    startDestination = Screen.Solitaire
                 ) {
-                    composable(Screen.Solitaire.route) {
+                    composable<Screen.Solitaire> {
                         SolitaireScreen(
                             settings = settings,
                             database = solitaireDatabase
@@ -44,6 +44,7 @@ internal fun App(
 }
 
 @Serializable
-sealed class Screen(val route: String) {
-    data object Solitaire : Screen("solitaire")
+sealed class Screen {
+    @Serializable
+    data object Solitaire : Screen()
 }
