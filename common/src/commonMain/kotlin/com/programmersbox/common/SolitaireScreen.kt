@@ -36,7 +36,8 @@ import com.programmersbox.common.dragdrop.DragType
 import com.programmersbox.common.dragdrop.DropTarget
 import com.programmersbox.common.generated.resources.*
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
@@ -79,16 +80,6 @@ internal fun SolitaireScreen(
     val drawAmount by rememberDrawAmount()
     val difficulty by rememberModeDifficulty()
     val cardBack by rememberCardBack()
-
-    LaunchedEffect(drawAmount, difficulty) {
-        combine(
-            snapshotFlow { drawAmount }.distinctUntilChanged(),
-            snapshotFlow { difficulty }.distinctUntilChanged()
-        ) { _, m -> m }
-            .drop(1)
-            .onEach { info.newGame(it) }
-            .launchIn(this)
-    }
 
     val windowInfo = LocalWindowInfo.current.isWindowFocused
     LaunchedEffect(windowInfo) {
@@ -213,7 +204,8 @@ internal fun SolitaireScreen(
                         database = database,
                         onNewGamePress = { newGameDialog = true },
                         startDailyGame = { info.startDailyGame(difficulty) },
-                        onDrawerClose = { scope.launch { drawerState.close() } }
+                        onDrawerClose = { scope.launch { drawerState.close() } },
+                        onNewGame = { info.newGame(difficulty) },
                     )
                 }
             }

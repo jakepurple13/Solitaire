@@ -56,6 +56,7 @@ internal fun SettingsView(
     onNewGamePress: () -> Unit,
     startDailyGame: () -> Unit,
     onDrawerClose: () -> Unit,
+    onNewGame: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     Scaffold(
@@ -81,8 +82,8 @@ internal fun SettingsView(
                 )
             }
 
-            DifficultChange(onDrawerClose)
-            DrawAmountChange(onDrawerClose)
+            DifficultChange(onDrawerClose, onNewGame)
+            DrawAmountChange(onDrawerClose, onNewGame)
 
             item {
                 ListItem(
@@ -756,6 +757,7 @@ private fun CardBackItem(
 
 private fun LazyListScope.DrawAmountChange(
     onDrawerClose: () -> Unit,
+    onNewGame: () -> Unit,
 ) = item {
     var drawAmount by rememberDrawAmount()
 
@@ -770,6 +772,7 @@ private fun LazyListScope.DrawAmountChange(
                     onConfirm = {
                         drawAmount = drawAmountItem
                         onDrawerClose()
+                        onNewGame()
                     },
                     onDismiss = { showDialogChange = false }
                 )
@@ -786,6 +789,7 @@ private fun LazyListScope.DrawAmountChange(
 
 private fun LazyListScope.DifficultChange(
     onDrawerClose: () -> Unit,
+    onNewGame: () -> Unit,
 ) = item {
     var difficulty by rememberModeDifficulty()
     SingleChoiceSegmentedButtonRow(
@@ -799,6 +803,7 @@ private fun LazyListScope.DifficultChange(
                     onConfirm = {
                         difficulty = difficultyItem
                         onDrawerClose()
+                        onNewGame()
                     },
                     onDismiss = {
                         showDialogChange = false
