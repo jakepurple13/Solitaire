@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.programmersbox"
-version = "3.0-SNAPSHOT"
+version = "6.0.1"
 
 kotlin {
     jvm {
@@ -33,7 +33,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "Solitaire"
-            packageVersion = "3.0.0"
+            packageVersion = "6.0.1"
         }
     }
 }

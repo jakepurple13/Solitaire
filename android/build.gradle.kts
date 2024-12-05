@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.programmersbox"
-version = "3.0.0"
+version = "6.0.1"
 
 android {
     compileSdk = 35
@@ -15,7 +15,7 @@ android {
         minSdk = 24
         targetSdk = 35
         versionCode = 2
-        versionName = "3.0.0"
+        versionName = "6.0.1"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
