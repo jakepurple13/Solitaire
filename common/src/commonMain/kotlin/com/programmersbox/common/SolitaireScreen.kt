@@ -66,6 +66,7 @@ enum class GameLocation {
     End
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SolitaireScreen(
     database: SolitaireDatabase,
@@ -222,6 +223,7 @@ internal fun SolitaireScreen(
                                 horizontal = 8.dp
                             )
                             .windowInsetsPadding(WindowInsets.statusBars)
+                            .padding(TopAppBarDefaults.windowInsets.asPaddingValues())
                     ) {
                         ToolTipWrapper(
                             title = { Text(stringResource(Res.string.settings)) },
