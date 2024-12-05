@@ -205,7 +205,7 @@ internal fun SolitaireScreen(
                         onNewGamePress = { newGameDialog = true },
                         startDailyGame = { info.startDailyGame(difficulty) },
                         onDrawerClose = { scope.launch { drawerState.close() } },
-                        onNewGame = { info.newGame(difficulty) },
+                        onNewGame = { info.newGame(it) },
                     )
                 }
             }
