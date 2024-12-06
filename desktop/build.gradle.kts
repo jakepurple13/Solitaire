@@ -33,7 +33,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "Solitaire"
-            packageVersion = "6.0.1"
+            packageVersion = libs.versions.appVersion.get()
         }
     }
 }

@@ -190,6 +190,7 @@ internal fun SolitaireScreen(
             || windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED
 
     LookaheadScope {
+        //TODO: Maybe switch this drawer to one of the new ones?
         ModalNavigationDrawer(
             drawerState = drawerState,
             gesturesEnabled = drawerState.isOpen,
@@ -222,8 +223,7 @@ internal fun SolitaireScreen(
                                 vertical = 8.dp,
                                 horizontal = 8.dp
                             )
-                            .windowInsetsPadding(WindowInsets.statusBars)
-                            .padding(TopAppBarDefaults.windowInsets.asPaddingValues())
+                            .windowInsetsPadding(TopAppBarDefaults.windowInsets)
                     ) {
                         ToolTipWrapper(
                             title = { Text(stringResource(Res.string.settings)) },

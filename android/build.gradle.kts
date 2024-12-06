@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.programmersbox"
-version = "6.0.1"
+version = libs.versions.appVersion.get()
 
 android {
     compileSdk = 35
@@ -14,8 +14,8 @@ android {
         applicationId = "com.programmersbox.solitaire"
         minSdk = 24
         targetSdk = 35
-        versionCode = 2
-        versionName = "6.0.1"
+        versionCode = 3
+        versionName = libs.versions.appVersion.get()
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

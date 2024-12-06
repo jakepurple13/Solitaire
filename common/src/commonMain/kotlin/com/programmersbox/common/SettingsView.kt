@@ -144,7 +144,7 @@ internal fun SettingsView(
 @OptIn(ExperimentalMaterial3Api::class)
 private fun LazyListScope.Instructions() = item {
     var showInstructions by remember { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(true)
     val scope = rememberCoroutineScope()
 
     if (showInstructions) {
