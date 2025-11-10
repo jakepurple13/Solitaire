@@ -68,7 +68,7 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@v4
+        uses: gradle/gradle-build-action@v2
         with:
           gradle-version: current
           arguments: "packageDistributionForCurrentOS"
