@@ -23,7 +23,7 @@ kotlin {
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        moduleName = "common"
+        //moduleName = "common"
         browser {
             val projectDirPath = project.projectDir.path
             commonWebpackConfig {
@@ -47,7 +47,11 @@ kotlin {
     }
     jvm("desktop") {
         compilations.all {
-            kotlinOptions.jvmTarget = "17"
+            kotlin {
+                compilerOptions {
+                    jvmToolchain(17)
+                }
+            }
         }
     }
 
@@ -126,7 +130,7 @@ kotlin {
 
         val desktopTest by getting
 
-        val iosX64Main by getting
+        /*val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
         val iosMain by getting {
@@ -136,7 +140,7 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
-        }
+        }*/
 
         val wasmJsMain by getting {
             dependencies {
