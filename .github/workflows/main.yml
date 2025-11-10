@@ -31,7 +31,7 @@ jobs:
           done
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v5
+        uses: actions/upload-pages-artifact@v3
         with:
           path: common/build/dist/wasmJs/productionExecutable/
 
