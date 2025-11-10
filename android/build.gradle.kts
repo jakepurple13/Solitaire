@@ -11,11 +11,11 @@ group = "com.programmersbox"
 version = libs.versions.appVersion.get()
 
 android {
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         applicationId = "com.programmersbox.solitaire"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 4
         versionName = libs.versions.appVersion.get()
     }
