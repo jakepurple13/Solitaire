@@ -126,7 +126,7 @@ kotlin {
 
         val desktopTest by getting
 
-        val iosX64Main by getting
+        /*val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
         val iosMain by getting {
@@ -136,7 +136,7 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
-        }
+        }*/
 
         val wasmJsMain by getting {
             dependencies {
