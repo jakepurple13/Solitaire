@@ -53,8 +53,8 @@ kotlin {
 
     applyDefaultHierarchyTemplate()
 
-    listOf(
-        //iosX64(),
+    /*listOf(
+        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -62,7 +62,7 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
         }
-    }
+    }*/
 
     cocoapods {
         summary = "Some description for the Shared Module"
