@@ -97,6 +97,21 @@ enum class CardBack(
         override fun toModifier(): Modifier = Modifier.shaderBackground(BlackCherryCosmos)
     },
 
+    BubblesRings({ null }) {
+        @Composable
+        override fun toModifier(): Modifier = Modifier.shaderBackground(BubbleRings)
+    },
+
+    Heats({ null }) {
+        @Composable
+        override fun toModifier(): Modifier = Modifier.shaderBackground(Heat())
+    },
+
+    Stripys({ null }) {
+        @Composable
+        override fun toModifier(): Modifier = Modifier.shaderBackground(Stripy())
+    },
+
     GoldenLava({ null }) {
         @Composable
         override fun toModifier(): Modifier = Modifier.shaderBackground(GoldenMagma)
