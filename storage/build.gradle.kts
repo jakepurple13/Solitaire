@@ -14,13 +14,21 @@ version = "1.0-SNAPSHOT"
 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 kotlin {
     androidTarget {
-        compilations.all {
-            kotlinOptions.jvmTarget = "11"
-        }
+        /*compilations.all {
+            kotlin {
+                compilerOptions {
+                    jvmToolchain(11)
+                }
+            }
+        }*/
     }
     jvm("desktop") {
         compilations.all {
-            kotlinOptions.jvmTarget = "17"
+            kotlin {
+                compilerOptions {
+                    jvmToolchain(17)
+                }
+            }
         }
     }
 

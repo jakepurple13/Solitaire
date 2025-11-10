@@ -12,7 +12,11 @@ version = "6.0.1"
 kotlin {
     jvm {
         compilations.all {
-            kotlinOptions.jvmTarget = "17"
+            kotlin {
+                compilerOptions {
+                    jvmToolchain(17)
+                }
+            }
         }
         withJava()
     }

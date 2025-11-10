@@ -23,7 +23,7 @@ kotlin {
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        moduleName = "common"
+        //moduleName = "common"
         browser {
             val projectDirPath = project.projectDir.path
             commonWebpackConfig {
@@ -47,7 +47,11 @@ kotlin {
     }
     jvm("desktop") {
         compilations.all {
-            kotlinOptions.jvmTarget = "17"
+            kotlin {
+                compilerOptions {
+                    jvmToolchain(17)
+                }
+            }
         }
     }
 
