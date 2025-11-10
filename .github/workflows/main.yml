@@ -13,13 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up JDK
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v5
         with:
           distribution: 'adopt'
           java-version: '17'
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: Run Gradle Tasks
         run: ./gradlew wasmJsBrowserDistribution
@@ -31,7 +31,7 @@ jobs:
           done
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: common/build/dist/wasmJs/productionExecutable/
 
