@@ -43,7 +43,7 @@ jobs:
 
       - name: Build Artifacts
         id: buildApks
-        uses: gradle/gradle-build-action@v5
+        uses: gradle/gradle-build-action@v4
         with:
           gradle-version: current
           wrapper-cache-enabled: true
