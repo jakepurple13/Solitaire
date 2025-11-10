@@ -20,7 +20,7 @@ uiVersion = "0.1.5"
 kstore = "0.8.0"
 sqlite = "2.6.1"
 kotlinx-coroutines-core = "1.9.0"
-appVersion = "6.0.3"
+appVersion = "6.0.4"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp-version" }

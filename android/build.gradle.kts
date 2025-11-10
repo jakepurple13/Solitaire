@@ -16,7 +16,7 @@ android {
         applicationId = "com.programmersbox.solitaire"
         minSdk = 24
         targetSdk = 35
-        versionCode = 3
+        versionCode = 4
         versionName = libs.versions.appVersion.get()
     }
     compileOptions {
