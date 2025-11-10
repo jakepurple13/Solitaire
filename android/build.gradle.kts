@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("org.jetbrains.compose")
     id("com.android.application")
@@ -21,8 +23,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_11)
+        }
     }
     buildTypes {
         getByName("release") {
@@ -45,6 +49,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-test-junit4-android:1.7.0-beta05")
 }
 
+/*
 tasks.register("BuildAndRun") {
     doFirst {
         exec {
@@ -54,3 +59,4 @@ tasks.register("BuildAndRun") {
         }
     }
 }
+*/
