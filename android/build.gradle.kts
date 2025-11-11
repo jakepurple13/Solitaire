@@ -7,6 +7,13 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
+if (file("google-services.json").exists()) {
+    plugins {
+        alias(libs.plugins.google.gms.google.services)
+        alias(libs.plugins.google.firebase.crashlytics)
+    }
+}
+
 group = "com.programmersbox"
 version = libs.versions.appVersion.get()
 
@@ -47,6 +54,10 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.compose.ui:ui-test-junit4-android:1.7.0-beta05")
+    if (file("google-services.json").exists()) {
+        implementation(platform(libs.firebase.bom))
+        implementation(libs.firebase.crashlytics)
+    }
 }
 
 /*

@@ -21,6 +21,9 @@ kstore = "0.8.0"
 sqlite = "2.6.1"
 kotlinx-coroutines-core = "1.9.0"
 appVersion = "6.0.4"
+googleGmsGoogleServices = "4.4.4"
+googleFirebaseCrashlytics = "3.0.6"
+firebaseBom = "34.4.0"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp-version" }
@@ -29,6 +32,8 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-ve
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin-version" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "androidx-room" }
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
+google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "googleFirebaseCrashlytics" }
 
 [libraries]
 adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "adaptiveVersion" }
@@ -56,3 +61,6 @@ krop-ui = { module = "com.attafitamim.krop:ui", version.ref = "uiVersion" }
 
 kstore = { module = "io.github.xxfast:kstore", version.ref = "kstore" }
 kstore-storage = { module = "io.github.xxfast:kstore-storage", version.ref = "kstore" }
+
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
