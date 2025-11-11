@@ -8,8 +8,8 @@ plugins {
 }
 
 if (file("google-services.json").exists()) {
-    apply(libs.plugins.google.gms.google.services)
-    apply(libs.plugins.google.firebase.crashlytics)
+    apply(plugin = libs.plugins.google.gms.google.services.get().toString())
+    apply(plugin = libs.plugins.google.firebase.crashlytics.get().toString())
 }
 
 group = "com.programmersbox"
