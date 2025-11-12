@@ -4,7 +4,8 @@ import androidx.room.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -52,6 +53,7 @@ interface SolitaireDao {
     @Query("SELECT * FROM SolitaireScore ORDER BY score DESC LIMIT $HIGHSCORE_LIMIT")
     fun getSolitaireHighScores(): Flow<List<SolitaireScore>>
 
+    @OptIn(ExperimentalTime::class)
     @Ignore
     suspend fun addHighScore(
         timeTaken: String,
@@ -68,6 +70,7 @@ interface SolitaireDao {
         )
     }
 
+    @OptIn(ExperimentalTime::class)
     @Ignore
     suspend fun addHighScore(
         timeTaken: String,
@@ -103,7 +106,7 @@ interface SolitaireDao {
 }
 
 @Entity(tableName = "SolitaireScore")
-data class SolitaireScore(
+data class SolitaireScore @OptIn(ExperimentalTime::class) constructor(
     val time: Long = Clock.System.now().toEpochMilliseconds(),
     val score: Int = 0,
     val moves: Int = 0,
