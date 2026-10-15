@@ -209,7 +209,6 @@ fun Modifier.animatePlacementInScope(lookaheadScope: LookaheadScope): Modifier {
 class AnimatedPlacementModifierNode(var lookaheadScope: LookaheadScope) :
     ApproachLayoutModifierNode, Modifier.Node() {
     // Creates an offset animation, the target of which will be known during placement.
-    @OptIn(ExperimentalAnimatableApi::class)
     val offsetAnimation: DeferredTargetAnimation<IntOffset, AnimationVector2D> =
         DeferredTargetAnimation(IntOffset.VectorConverter)
 
@@ -220,7 +219,6 @@ class AnimatedPlacementModifierNode(var lookaheadScope: LookaheadScope) :
     }
 
     // Returns true when the offset animation is in progress, false otherwise.
-    @OptIn(ExperimentalAnimatableApi::class)
     override fun Placeable.PlacementScope.isPlacementApproachInProgress(
         lookaheadCoordinates: LayoutCoordinates,
     ): Boolean {
@@ -232,7 +230,6 @@ class AnimatedPlacementModifierNode(var lookaheadScope: LookaheadScope) :
         return !offsetAnimation.isIdle
     }
 
-    @OptIn(ExperimentalAnimatableApi::class)
     override fun ApproachMeasureScope.approachMeasure(
         measurable: Measurable,
         constraints: Constraints,

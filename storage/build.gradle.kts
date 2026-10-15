@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     kotlin("multiplatform")
     id("org.jetbrains.compose")
-    id("com.android.library")
+    alias(libs.plugins.android.kotlin.multiplatform.library)
     kotlin("native.cocoapods")
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
@@ -13,14 +13,10 @@ version = "1.0-SNAPSHOT"
 
 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 kotlin {
-    androidTarget {
-        /*compilations.all {
-            kotlin {
-                compilerOptions {
-                    jvmToolchain(11)
-                }
-            }
-        }*/
+    android {
+        namespace = "com.programmersbox.storage"
+        compileSdk = 37
+        minSdk = 24
     }
     jvm("desktop") {
         compilations.all {
@@ -35,7 +31,6 @@ kotlin {
     applyDefaultHierarchyTemplate()
 
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -64,23 +59,10 @@ kotlin {
 }
 
 dependencies {
-    add("ksp", libs.androidx.room.compiler)
+    add("kspAndroid", libs.androidx.room.compiler)
 }
 
 room {
     schemaDirectory("$projectDir/schemas")
 }
 
-android {
-    compileSdk = 34
-    //sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    defaultConfig {
-        minSdk = 24
-        targetSdk = 34
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    namespace = "com.programmersbox.storage"
-}

@@ -9,7 +9,7 @@ import io.realm.kotlin.query.Sort
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 internal const val HIGHSCORE_LIMIT = 15
 

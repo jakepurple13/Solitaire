@@ -231,7 +231,7 @@ internal fun SolitaireScreen(
                         ) {
                             IconButton(
                                 onClick = { scope.launch { drawerState.open() } },
-                            ) { Icon(Icons.Default.Settings, null) }
+                            ) { Icon(Icons.Default.Settings, contentDescription = "Settings") }
                         }
 
                         ToolTipWrapper(
@@ -240,7 +240,7 @@ internal fun SolitaireScreen(
                         ) {
                             IconButton(
                                 onClick = { newGameDialog = true },
-                            ) { Icon(Icons.Default.Gamepad, null) }
+                            ) { Icon(Icons.Default.Gamepad, contentDescription = "New Game") }
                         }
 
                         Card(
