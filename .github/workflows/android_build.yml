@@ -22,12 +22,58 @@ on:
 #  cancel-in-progress: true
 
 jobs:
+  baselineProfile:
+    name: Generate Baseline Profile
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - run: |
+          echo $GOOGLE_SERVICES_JSON > android/google-services.json
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+
+      - name: Setup JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: adopt
+          java-version: 21
+
+      # Hardware acceleration for the Gradle Managed Device emulator.
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Generate baseline and startup profiles
+        run: >
+          ./gradlew :android:generateReleaseBaselineProfile
+          -Pandroid.testoptions.manageddevices.emulator.gpu=swiftshader_indirect
+          -Pandroid.testInstrumentationRunnerArguments.class=com.programmersbox.baselineprofile.BaselineProfileGenerator
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: baseline-profiles
+          path: android/src/release/generated/baselineProfiles/
+          if-no-files-found: error
+
   aab:
     name: Generate AAB
+    needs: baselineProfile
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Download baseline profiles
+        uses: actions/download-artifact@v4
+        with:
+          name: baseline-profiles
+          path: android/src/release/generated/baselineProfiles/
       - run: |
           echo $GOOGLE_SERVICES_JSON > android/google-services.json
         env:
@@ -76,10 +122,16 @@ jobs:
 
   apk:
     name: Generate Apk
+    needs: baselineProfile
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Download baseline profiles
+        uses: actions/download-artifact@v4
+        with:
+          name: baseline-profiles
+          path: android/src/release/generated/baselineProfiles/
       - run: |
           echo $GOOGLE_SERVICES_JSON > android/google-services.json
         env:

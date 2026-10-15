@@ -14,4 +14,5 @@ rootProject.name = "Solitaire"
 include(":android")
 include(":desktop")
 include(":common")
-include("storage")
+include(":storage")
+include(":baselineprofile")

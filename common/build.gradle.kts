@@ -1,13 +1,12 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.compose.compiler)
     kotlin("multiplatform")
     id("org.jetbrains.compose")
-    id("com.android.library")
+    alias(libs.plugins.android.kotlin.multiplatform.library)
     kotlin("native.cocoapods")
     kotlin("plugin.serialization")
     //id("io.realm.kotlin")
@@ -39,8 +38,11 @@ kotlin {
         binaries.executable()
     }
 
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    android {
+        namespace = "com.programmersbox.common"
+        compileSdk = 37
+        minSdk = 24
+        androidResources { enable = true }
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
@@ -58,7 +60,6 @@ kotlin {
     applyDefaultHierarchyTemplate()
 
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -151,16 +152,3 @@ kotlin {
     }
 }
 
-android {
-    compileSdk = 35
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    defaultConfig {
-        minSdk = 24
-        targetSdk = 35
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    namespace = "com.programmersbox.common"
-}

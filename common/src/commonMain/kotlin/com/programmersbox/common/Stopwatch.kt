@@ -4,7 +4,7 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.isActive
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 internal interface Stopwatch {
     val time: Flow<Long>
